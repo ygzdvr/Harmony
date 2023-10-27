@@ -9,6 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    
+    private let redirectURI = Config.redirectURI
+    private let clientID = Config.clientID
+    private let scope = Config.scope
+    
+    
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
 

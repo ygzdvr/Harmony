@@ -15,6 +15,7 @@
 		AB20E48F2AE9F445009ABAA8 /* HarmonyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB20E48E2AE9F445009ABAA8 /* HarmonyTests.swift */; };
 		AB20E4992AE9F445009ABAA8 /* HarmonyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB20E4982AE9F445009ABAA8 /* HarmonyUITests.swift */; };
 		AB20E49B2AE9F445009ABAA8 /* HarmonyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB20E49A2AE9F445009ABAA8 /* HarmonyUITestsLaunchTests.swift */; };
+		AB262CB22AEB7CB70084A9F5 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB262CB12AEB7CB70084A9F5 /* Config.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		AB20E4942AE9F445009ABAA8 /* HarmonyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HarmonyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB20E4982AE9F445009ABAA8 /* HarmonyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITests.swift; sourceTree = "<group>"; };
 		AB20E49A2AE9F445009ABAA8 /* HarmonyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		AB262CB12AEB7CB70084A9F5 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				AB20E4842AE9F445009ABAA8 /* Harmony.entitlements */,
 				AB20E4852AE9F445009ABAA8 /* Info.plist */,
 				AB20E4812AE9F445009ABAA8 /* Preview Content */,
+				AB262CB12AEB7CB70084A9F5 /* Config.swift */,
 			);
 			path = Harmony;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB20E47C2AE9F443009ABAA8 /* ContentView.swift in Sources */,
+				AB262CB22AEB7CB70084A9F5 /* Config.swift in Sources */,
 				AB20E47E2AE9F443009ABAA8 /* Item.swift in Sources */,
 				AB20E47A2AE9F443009ABAA8 /* HarmonyApp.swift in Sources */,
 			);
