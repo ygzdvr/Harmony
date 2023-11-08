@@ -11,6 +11,9 @@ import SignupStyles from '../../constants/styles/SignupStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Progress from 'react-native-progress';
 
+import PhoneNumberInput from '../../partials/authentication/signup/Phone';
+import PhoneVerificationInput from '../../partials/authentication/signup/PhoneVerification';
+
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -29,40 +32,19 @@ const SignupView = ({navigation}) => {
     switch (step) {
       case 1:
         return (
-          <View style={SignupStyles.inputContainer}>
-            <Text style={SignupStyles.textTitle}>
-              What's your phone number?
-            </Text>
-            <Text style={SignupStyles.textDescription}>
-              We protect our community by making sure everyine on Harmony is
-              real.
-            </Text>
-            <TextInput
-              style={SignupStyles.textInput}
-              placeholder="Enter your phone number"
-              placeholderTextColor={COLORS.text}
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
-          </View>
+          <PhoneNumberInput
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+          />
         );
+
       case 2:
         return (
-          <View style={SignupStyles.inputContainer}>
-            <Text style={SignupStyles.textTitle}>Verify your number</Text>
-            <Text style={SignupStyles.textDescription}>
-              Enter the code we've sent by text to {phoneNumber}
-            </Text>
-            <TextInput
-              style={SignupStyles.textInput}
-              placeholder="Enter verification code"
-              placeholderTextColor={COLORS.text}
-              keyboardType="number-pad"
-              value={verificationCode}
-              onChangeText={setVerificationCode}
-            />
-          </View>
+          <PhoneVerificationInput
+            phoneNumber={phoneNumber}
+            verificationCode={verificationCode}
+            setVerificationCode={setVerificationCode}
+          />
         );
       case 3:
         return (
