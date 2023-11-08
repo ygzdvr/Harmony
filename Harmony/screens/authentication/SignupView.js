@@ -120,14 +120,14 @@ const SignupView = ({navigation}) => {
         <TouchableOpacity
           onPress={() => setStep(prevStep => prevStep - 1)}
           style={SignupStyles.backButton}>
-          <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
+          <Ionicons name="chevron-back" size={20} color={COLORS.background} />
         </TouchableOpacity>
       )}
       {step < 2 && (
         <TouchableOpacity
           onPress={() => navigation.navigate('WelcomeView')}
           style={SignupStyles.backButton}>
-          <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
+          <Ionicons name="chevron-back" size={20} color={COLORS.background} />
         </TouchableOpacity>
       )}
       {renderStep()}
