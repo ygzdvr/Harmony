@@ -17,7 +17,7 @@ const PhoneNumberInput = ({
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Enter verification code"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         keyboardType="number-pad"
         value={verificationCode}
         onChangeText={setVerificationCode}

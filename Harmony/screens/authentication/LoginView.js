@@ -27,7 +27,7 @@ const LoginView = ({navigation}) => {
         <TextInput
           style={styles.textInput}
           placeholder="Enter your username"
-          placeholderTextColor={COLORS.text}
+          placeholderTextColor={COLORS.background}
           keyboardType="email-address"
           textContentType="emailAddress"
         />
@@ -36,7 +36,7 @@ const LoginView = ({navigation}) => {
         <TextInput
           style={styles.textInput}
           placeholder="Enter your password"
-          placeholderTextColor={COLORS.text}
+          placeholderTextColor={COLORS.background}
           secureTextEntry={true}
           textContentType="password"
         />
@@ -92,17 +92,15 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   textInput: {
+    backgroundColor: COLORS.text,
     height: 50,
-    borderColor: COLORS.text,
-    borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: 10,
     paddingHorizontal: 15,
-    color: COLORS.text,
     marginBottom: 20,
     width: '95%',
   },
   signInButton: {
-    backgroundColor: COLORS.text,
+    backgroundColor: COLORS.titlePurple,
     padding: 15,
     borderRadius: 15,
     justifyContent: 'center',
@@ -111,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signInText: {
-    color: COLORS.primary,
+    color: COLORS.text,
     fontSize: 16,
     fontWeight: 'medium',
   },

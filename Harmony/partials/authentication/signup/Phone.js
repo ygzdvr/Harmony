@@ -13,7 +13,7 @@ const PhoneNumberInput = ({phoneNumber, setPhoneNumber}) => {
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Enter your phone number"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         keyboardType="phone-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
