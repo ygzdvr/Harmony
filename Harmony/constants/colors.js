@@ -10,6 +10,8 @@ const COLORS = {
 
   titlePurple: '#764EBC',
   titlePink: '#ED1C65',
+
+  spotifyGreen: '#1DB954',
 };
 
 export default COLORS;

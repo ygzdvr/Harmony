@@ -18,6 +18,7 @@ import GenderInput from '../../partials/authentication/signup/Gender';
 import BirthdayInput from '../../partials/authentication/signup/Birthday';
 import ModeInput from '../../partials/authentication/signup/Modes';
 import InterestedInput from '../../partials/authentication/signup/Interested';
+import Spotify from '../../partials/authentication/signup/Spotify';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -90,7 +91,13 @@ const SignupView = ({navigation}) => {
         return (
           <InterestedInput interest={interest} setInterest={setInterest} />
         );
-
+      case 14:
+        return (
+          <Spotify
+            spotifyConnected={spotifyConnected}
+            setSpotifyConnected={setSpotifyConnected}
+          />
+        );
       default:
         return null;
     }
@@ -126,7 +133,11 @@ const SignupView = ({navigation}) => {
       {renderStep()}
       <View style={SignupStyles.inputContainer}>
         <TouchableOpacity
-          style={SignupStyles.signInButton}
+          style={
+            step === totalSteps
+              ? SignupStyles.finishButton
+              : SignupStyles.continueButton
+          }
           onPress={() => {
             if (step < totalSteps) {
               setStep(prevStep => prevStep + 1);
@@ -134,8 +145,13 @@ const SignupView = ({navigation}) => {
               // Submit the final form
             }
           }}>
-          <Text style={SignupStyles.signInText}>
-            {step === totalSteps ? 'Finish' : 'Continue'}
+          <Text
+            style={
+              step === totalSteps
+                ? SignupStyles.finishText
+                : SignupStyles.continueText
+            }>
+            {step === totalSteps ? 'Connect & Finish' : 'Continue'}
           </Text>
         </TouchableOpacity>
       </View>

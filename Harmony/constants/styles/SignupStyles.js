@@ -58,7 +58,7 @@ const SignupStyles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 20,
   },
-  signInButton: {
+  continueButton: {
     backgroundColor: COLORS.primary,
     padding: 15,
     borderRadius: 15,
@@ -67,8 +67,23 @@ const SignupStyles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
   },
-  signInText: {
+  finishButton: {
+    backgroundColor: COLORS.text,
+    padding: 15,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  continueText: {
     color: COLORS.text,
+    fontSize: 16,
+    fontWeight: 'medium',
+  },
+  finishText: {
+    color: COLORS.background,
     fontSize: 16,
     fontWeight: 'medium',
   },
