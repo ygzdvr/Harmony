@@ -20,17 +20,17 @@ function App(): JSX.Element {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen
-          name="Welcome"
+          name="WelcomeView"
           component={WelcomeView}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="Login"
+          name="LoginView"
           component={LoginView}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="Signup"
+          name="SignupView"
           component={SignupView}
           options={{headerShown: false}}
         />
