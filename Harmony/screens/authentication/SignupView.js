@@ -12,6 +12,7 @@ import NameInput from '../../partials/authentication/signup/Name';
 import UsernameInput from '../../partials/authentication/signup/Username';
 import PasswordInput from '../../partials/authentication/signup/Password';
 import EmailInput from '../../partials/authentication/signup/Email';
+import GenderInput from '../../partials/authentication/signup/Gender';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -20,8 +21,12 @@ const SignupView = ({navigation}) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthDay, setBirthDay] = useState('');
+  const [birthYear, setBirthYear] = useState('');
 
   const totalSteps = 9;
   const progress = step / totalSteps;
@@ -54,6 +59,9 @@ const SignupView = ({navigation}) => {
         return <PasswordInput password={password} setPassword={setPassword} />;
       case 7:
         return <EmailInput email={email} setEmail={setEmail} />;
+
+      case 9:
+        return <GenderInput gender={gender} setGender={setGender} />;
 
       default:
         return null;
