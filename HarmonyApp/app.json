@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Harmony",
-    "slug": "Harmony",
+    "name": "HarmonyApp",
+    "slug": "HarmonyApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
