@@ -16,6 +16,8 @@ import PasswordInput from '../../partials/authentication/signup/Password';
 import EmailInput from '../../partials/authentication/signup/Email';
 import GenderInput from '../../partials/authentication/signup/Gender';
 import BirthdayInput from '../../partials/authentication/signup/Birthday';
+import ModeInput from '../../partials/authentication/signup/Modes';
+import InterestedInput from '../../partials/authentication/signup/Interested';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -30,11 +32,12 @@ const SignupView = ({navigation}) => {
   const [birthMonth, setBirthMonth] = useState('');
   const [birthDay, setBirthDay] = useState('');
   const [birthYear, setBirthYear] = useState('');
+  const [mode, setMode] = useState('');
+  const [interest, setInterest] = useState('');
+  const [spotifyConnected, setSpotifyConnected] = useState(false);
 
-  const totalSteps = 12;
+  const totalSteps = 14;
   const progress = step / totalSteps;
-
-  // Function to render the correct form based on the step
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -77,9 +80,16 @@ const SignupView = ({navigation}) => {
             setBirthYear={setBirthYear}
           />
         );
-
       case 11:
         return <GenderInput gender={gender} setGender={setGender} />;
+
+      case 12:
+        return <ModeInput mode={mode} setMode={setMode} />;
+
+      case 13:
+        return (
+          <InterestedInput interest={interest} setInterest={setInterest} />
+        );
 
       default:
         return null;

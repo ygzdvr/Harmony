@@ -13,7 +13,7 @@ const UsernameInput = ({username, setUsername}) => {
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Enter a username"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         value={username}
         onChangeText={setUsername}
       />

@@ -2,63 +2,63 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const GenderInput = ({gender, setGender}) => {
+const InterestedInput = ({interest, setInterest}) => {
   return (
     <View style={SignupStyles.buttonsContainer}>
-      <Text style={SignupStyles.textTitle}>How do you identify?</Text>
+      <Text style={SignupStyles.textTitle}>Who are you interested in?</Text>
       <Text style={SignupStyles.textDescription}>
-        Everyone's welcomed on Harmony. Pick which best describes you.
+        Choose your preference for connections.
       </Text>
       <TouchableOpacity
         style={
-          gender === 'Woman'
+          interest === 'Woman'
             ? SignupStyles.selectedButton
             : SignupStyles.selectorButton
         }
-        onPress={() => setGender('Woman')}>
+        onPress={() => setInterest('Woman')}>
         <Text
           style={
-            gender === 'Woman'
+            interest === 'Woman'
               ? SignupStyles.selectedText
               : SignupStyles.selectorText
           }>
-          Woman
+          I am interested in Women
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={
-          gender === 'Man'
+          interest === 'Man'
             ? SignupStyles.selectedButton
             : SignupStyles.selectorButton
         }
-        onPress={() => setGender('Man')}>
+        onPress={() => setInterest('Man')}>
         <Text
           style={
-            gender === 'Man'
+            interest === 'Man'
               ? SignupStyles.selectedText
               : SignupStyles.selectorText
           }>
-          Man
+          I am interested in Men
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={
-          gender === 'Nonbinary'
+          interest === 'Everyone'
             ? SignupStyles.selectedButton
             : SignupStyles.selectorButton
         }
-        onPress={() => setGender('Nonbinary')}>
+        onPress={() => setInterest('Everyone')}>
         <Text
           style={
-            gender === 'Nonbinary'
+            interest === 'Everyone'
               ? SignupStyles.selectedText
               : SignupStyles.selectorText
           }>
-          Nonbinary
+          I am interested in Everyone
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default GenderInput;
+export default InterestedInput;

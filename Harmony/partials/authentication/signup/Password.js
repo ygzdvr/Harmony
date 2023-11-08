@@ -13,7 +13,7 @@ const PasswordInput = ({password, setPassword}) => {
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Enter a password"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
@@ -21,7 +21,7 @@ const PasswordInput = ({password, setPassword}) => {
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Verify your password"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         secureTextEntry={true}
         value={password}
         onChangeText={setPassword}

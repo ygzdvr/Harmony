@@ -75,7 +75,7 @@ const SignupStyles = StyleSheet.create({
   selectorButton: {
     backgroundColor: COLORS.background,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.text,
     padding: 15,
     borderRadius: 15,
     justifyContent: 'center',
@@ -84,8 +84,7 @@ const SignupStyles = StyleSheet.create({
     marginBottom: 10,
   },
   selectedButton: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.text,
+    backgroundColor: COLORS.text,
     padding: 15,
     borderRadius: 15,
     justifyContent: 'center',
@@ -98,6 +97,11 @@ const SignupStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'medium',
   },
+  selectedText: {
+    color: COLORS.background,
+    fontSize: 16,
+    fontWeight: 'medium',
+  },
   birthdayContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -106,8 +110,7 @@ const SignupStyles = StyleSheet.create({
   },
   birthdayInput: {
     height: 50,
-    borderColor: COLORS.text,
-    borderWidth: 1,
+    backgroundColor: COLORS.text,
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
@@ -117,17 +120,49 @@ const SignupStyles = StyleSheet.create({
   monthInput: {
     flex: 1,
     marginRight: 10,
-    color: COLORS.text,
+    color: COLORS.background,
   },
   dayInput: {
     flex: 1,
     marginHorizontal: 5,
-    color: COLORS.text,
+    color: COLORS.background,
   },
   yearInput: {
     flex: 1.5,
     marginLeft: 10,
+    color: COLORS.background,
+  },
+  modeOption: {
+    borderWidth: 1,
+    borderColor: COLORS.text,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    width: '100%',
+  },
+  modeOptionSelected: {
+    backgroundColor: COLORS.text,
+    borderColor: 'transparent',
+  },
+  modeTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 5,
     color: COLORS.text,
+  },
+  modeDescription: {
+    fontSize: 12,
+    color: COLORS.text,
+  },
+  modeTitleSelected: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: COLORS.background,
+  },
+  modeDescriptionSelected: {
+    fontSize: 12,
+    color: COLORS.background,
   },
 });
 

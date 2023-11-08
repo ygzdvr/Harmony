@@ -13,7 +13,7 @@ const EmailInput = ({email, setEmail}) => {
       <TextInput
         style={SignupStyles.textInput}
         placeholder="Enter your email"
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.background}
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}

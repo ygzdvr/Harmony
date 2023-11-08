@@ -21,7 +21,7 @@ const BirthdayInput = ({
         <TextInput
           style={[SignupStyles.birthdayInput, SignupStyles.monthInput]}
           placeholder="MM"
-          placeholderTextColor={COLORS.text}
+          placeholderTextColor={COLORS.background}
           keyboardType="number-pad"
           maxLength={2}
           value={birthMonth}
@@ -30,7 +30,7 @@ const BirthdayInput = ({
         <TextInput
           style={[SignupStyles.birthdayInput, SignupStyles.dayInput]}
           placeholder="DD"
-          placeholderTextColor={COLORS.text}
+          placeholderTextColor={COLORS.background}
           keyboardType="number-pad"
           maxLength={2}
           value={birthDay}
@@ -39,7 +39,7 @@ const BirthdayInput = ({
         <TextInput
           style={[SignupStyles.birthdayInput, SignupStyles.yearInput]}
           placeholder="YYYY"
-          placeholderTextColor={COLORS.text}
+          placeholderTextColor={COLORS.background}
           keyboardType="number-pad"
           maxLength={4}
           value={birthYear}
