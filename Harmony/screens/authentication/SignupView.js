@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import COLORS from '../../constants/colors';
 import SignupStyles from '../../constants/styles/SignupStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,6 +7,8 @@ import * as Progress from 'react-native-progress';
 
 import PhoneNumberInput from '../../partials/authentication/signup/Phone';
 import PhoneVerificationInput from '../../partials/authentication/signup/PhoneVerification';
+import Tracking from '../../partials/authentication/signup/Tracking';
+import NameInput from '../../partials/authentication/signup/Name';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -37,7 +33,6 @@ const SignupView = ({navigation}) => {
             setPhoneNumber={setPhoneNumber}
           />
         );
-
       case 2:
         return (
           <PhoneVerificationInput
@@ -47,33 +42,9 @@ const SignupView = ({navigation}) => {
           />
         );
       case 3:
-        return (
-          <View style={SignupStyles.inputContainer}>
-            <Text style={SignupStyles.textTitle}>
-              Personalize your experience
-            </Text>
-            <Text style={SignupStyles.textDescription}>
-              We use tracking to improve our marketing and your experience, like
-              letting you connect to Instagram {phoneNumber}
-            </Text>
-          </View>
-        );
+        return <Tracking />;
       case 4:
-        return (
-          <View style={SignupStyles.inputContainer}>
-            <Text style={SignupStyles.textTitle}>Let's Meet</Text>
-            <Text style={SignupStyles.textDescription}>
-              What should we call you? This will be your display name.
-            </Text>
-            <TextInput
-              style={SignupStyles.textInput}
-              placeholder="Enter your name"
-              placeholderTextColor={COLORS.text}
-              value={name}
-              onChangeText={setName}
-            />
-          </View>
-        );
+        return <NameInput name={name} setName={setName} />;
       case 5:
         return (
           <View style={SignupStyles.inputContainer}>
