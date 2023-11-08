@@ -7,12 +7,15 @@ import * as Progress from 'react-native-progress';
 
 import PhoneNumberInput from '../../partials/authentication/signup/Phone';
 import PhoneVerificationInput from '../../partials/authentication/signup/PhoneVerification';
+import Notifications from '../../partials/authentication/signup/Notifications';
+import LocationServices from '../../partials/authentication/signup/Location';
 import Tracking from '../../partials/authentication/signup/Tracking';
 import NameInput from '../../partials/authentication/signup/Name';
 import UsernameInput from '../../partials/authentication/signup/Username';
 import PasswordInput from '../../partials/authentication/signup/Password';
 import EmailInput from '../../partials/authentication/signup/Email';
 import GenderInput from '../../partials/authentication/signup/Gender';
+import BirthdayInput from '../../partials/authentication/signup/Birthday';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -28,7 +31,7 @@ const SignupView = ({navigation}) => {
   const [birthDay, setBirthDay] = useState('');
   const [birthYear, setBirthYear] = useState('');
 
-  const totalSteps = 9;
+  const totalSteps = 12;
   const progress = step / totalSteps;
 
   // Function to render the correct form based on the step
@@ -50,17 +53,32 @@ const SignupView = ({navigation}) => {
           />
         );
       case 3:
-        return <Tracking />;
+        return <Notifications />;
       case 4:
-        return <NameInput name={name} setName={setName} />;
+        return <LocationServices />;
       case 5:
-        return <UsernameInput username={username} setUsername={setUsername} />;
+        return <Tracking />;
       case 6:
-        return <PasswordInput password={password} setPassword={setPassword} />;
+        return <NameInput name={name} setName={setName} />;
       case 7:
-        return <EmailInput email={email} setEmail={setEmail} />;
-
+        return <UsernameInput username={username} setUsername={setUsername} />;
+      case 8:
+        return <PasswordInput password={password} setPassword={setPassword} />;
       case 9:
+        return <EmailInput email={email} setEmail={setEmail} />;
+      case 10:
+        return (
+          <BirthdayInput
+            birthMonth={birthMonth}
+            setBirthMonth={setBirthMonth}
+            birthDay={birthDay}
+            setBirthDay={setBirthDay}
+            birthYear={birthYear}
+            setBirthYear={setBirthYear}
+          />
+        );
+
+      case 11:
         return <GenderInput gender={gender} setGender={setGender} />;
 
       default:
