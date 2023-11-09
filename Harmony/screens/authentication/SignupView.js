@@ -1,9 +1,13 @@
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import COLORS from '../../constants/colors';
 import SignupStyles from '../../constants/styles/SignupStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Progress from 'react-native-progress';
+
+import {ResponseType, useAuthRequest} from 'expo-auth-session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import PhoneNumberInput from '../../partials/authentication/signup/Phone';
 import PhoneVerificationInput from '../../partials/authentication/signup/PhoneVerification';
@@ -20,6 +24,8 @@ import ModeInput from '../../partials/authentication/signup/Modes';
 import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
+import {fetchProfile} from '../../api/spotify/Profile';
+
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -35,6 +41,62 @@ const SignupView = ({navigation}) => {
   const [birthYear, setBirthYear] = useState('');
   const [mode, setMode] = useState('');
   const [interest, setInterest] = useState('');
+
+  const discovery = {
+    authorizationEndpoint: 'https://accounts.spotify.com/authorize',
+    tokenEndpoint: 'https://accounts.spotify.com/api/token',
+  };
+
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      responseType: ResponseType.Token,
+      clientId: '00a67ca369d24a7ebbdd01ea2f4ae4f8',
+      clientSecret: 'a80201d5ed70494094a90756f6f8cc52',
+      scopes: [
+        'user-top-read',
+        'user-library-read',
+        'user-read-playback-position',
+        'playlist-read-private',
+        'user-read-currently-playing',
+        'user-read-recently-played',
+        'user-read-playback-state',
+        'user-modify-playback-state',
+        'streaming',
+        'user-read-email',
+        'user-read-private',
+      ],
+      usePKCE: false,
+      redirectUri: 'exp://127.0.0.1:19000/',
+    },
+    discovery,
+  );
+  const storeData = async (storeageName, data) => {
+    try {
+      await AsyncStorage.setItem(storeageName, data);
+    } catch (e) {
+      // saving error
+      console.log('Error', e);
+    }
+  };
+  const getData = async storeageName => {
+    try {
+      const responseData = await AsyncStorage.getItem(storeageName);
+      return responseData;
+    } catch (error) {
+      return error;
+    }
+  };
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const {access_token} = response.params;
+      console.log('access_token', access_token);
+      fetchProfile(access_token).then(data => {
+        console.log('data', data);
+      });
+      storeData('@access_token', access_token);
+      navigation.navigate('HomeView', {screen: 'HomeView'});
+    }
+  }, [response]);
 
   const totalSteps = 14;
   const progress = step / totalSteps;
@@ -137,7 +199,7 @@ const SignupView = ({navigation}) => {
             if (step < totalSteps) {
               setStep(prevStep => prevStep + 1);
             } else {
-              navigation.navigate('HomeView');
+              promptAsync();
             }
           }}>
           <Text

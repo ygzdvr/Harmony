@@ -10,6 +10,30 @@ PODS:
     - React-Core
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
+  - EXApplication (5.3.1):
+    - ExpoModulesCore
+  - EXConstants (14.4.2):
+    - ExpoModulesCore
+  - EXFileSystem (15.4.4):
+    - ExpoModulesCore
+  - EXFont (11.4.0):
+    - ExpoModulesCore
+  - Expo (49.0.17):
+    - ExpoModulesCore
+  - ExpoCrypto (12.4.1):
+    - ExpoModulesCore
+  - ExpoKeepAwake (12.3.0):
+    - ExpoModulesCore
+  - ExpoLinearGradient (12.5.0):
+    - ExpoModulesCore
+  - ExpoModulesCore (1.5.11):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - React-NativeModulesApple
+    - React-RCTAppDelegate
+    - ReactCommon/turbomodule/core
+  - ExpoWebBrowser (12.3.2):
+    - ExpoModulesCore
   - FBLazyVector (0.72.6)
   - FBReactNativeSpec (0.72.6):
     - RCT-Folly (= 2021.07.22.00)
@@ -539,6 +563,8 @@ PODS:
   - RNScreens (3.27.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - RNSVG (13.14.0):
+    - React-Core
   - RNTextGradientView (0.1.7):
     - React
   - SocketRocket (0.6.1)
@@ -550,6 +576,16 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXFileSystem (from `../node_modules/expo-file-system/ios`)
+  - EXFont (from `../node_modules/expo-font/ios`)
+  - Expo (from `../node_modules/expo`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
+  - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
+  - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (= 0.182.0)
@@ -618,6 +654,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNTextGradientView (from `../node_modules/react-native-text-gradient`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -646,6 +683,26 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  EXApplication:
+    :path: "../node_modules/expo-application/ios"
+  EXConstants:
+    :path: "../node_modules/expo-constants/ios"
+  EXFileSystem:
+    :path: "../node_modules/expo-file-system/ios"
+  EXFont:
+    :path: "../node_modules/expo-font/ios"
+  Expo:
+    :path: "../node_modules/expo"
+  ExpoCrypto:
+    :path: "../node_modules/expo-crypto/ios"
+  ExpoKeepAwake:
+    :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLinearGradient:
+    :path: "../node_modules/expo-linear-gradient/ios"
+  ExpoModulesCore:
+    :path: "../node_modules/expo-modules-core"
+  ExpoWebBrowser:
+    :path: "../node_modules/expo-web-browser/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -735,6 +792,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNTextGradientView:
     :path: "../node_modules/react-native-text-gradient"
   Yoga:
@@ -746,6 +805,16 @@ SPEC CHECKSUMS:
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
+  EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
+  EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
+  EXFileSystem: 2b826a3bf1071a4b80a8457e97124783d1ac860e
+  EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
+  Expo: 61f0ce2461122eb405d373e512a0dbc79804001a
+  ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
+  ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
+  ExpoLinearGradient: 5d18293f89c063036121281175c4653d6a7c34a2
+  ExpoModulesCore: 51cb2e7ab4c8da14be3f40b66d54c1781002e99d
+  ExpoWebBrowser: 2c788f9c07718a780fe6d8bf2f6195c47609faaa
   FBLazyVector: 748c0ef74f2bf4b36cfcccf37916806940a64c32
   FBReactNativeSpec: 966f29e4e697de53a3b366355e8f57375c856ad9
   Flipper: 6edb735e6c3e332975d1b17956bcc584eccf5818
@@ -801,11 +870,12 @@ SPEC CHECKSUMS:
   RNGestureHandler: 6e46dde1f87e5f018a54fe5d40cd0e0b942b49ee
   RNReanimated: ab2e96c6d5591c3dfbb38a464f54c8d17fb34a87
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
+  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   RNTextGradientView: 3eb4744303f801546fad35ac47a53cc82257cb25
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: fa41697824408e013d6e0508950fd0adbcbfb518
+PODFILE CHECKSUM: f1403e6676096f91eca546addcffa95240187335
 
 COCOAPODS: 1.14.2
