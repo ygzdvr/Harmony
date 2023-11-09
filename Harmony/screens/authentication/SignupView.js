@@ -31,17 +31,40 @@ const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
+
   const [verificationCode, setVerificationCode] = useState('');
+  const [verifyCode, setVerifyCode] = useState(''); // [TODO
+
   const [name, setName] = useState('');
+  const [verifyName, setVerifyName] = useState(''); // [TODO
+
   const [username, setUsername] = useState('');
+  const [verifyUsername, setVerifyUsername] = useState(''); // [TODO
+
   const [password, setPassword] = useState('');
+  const [verifyPassword, setVerifyPassword] = useState(''); // [TODO
+
   const [email, setEmail] = useState('');
+  const [verifyEmail, setVerifyEmail] = useState(''); // [TODO
+
   const [gender, setGender] = useState('');
+  const [verifyGender, setVerifyGender] = useState(''); // [TODO
+
   const [birthMonth, setBirthMonth] = useState('');
+  const [verifyMonth, setVerifyMonth] = useState('');
+
   const [birthDay, setBirthDay] = useState('');
+  const [verifyDay, setVerifyDay] = useState('');
+
   const [birthYear, setBirthYear] = useState('');
+  const [verifyYear, setVerifyYear] = useState('');
+
   const [mode, setMode] = useState('');
+  const [verifyMode, setVerifyMode] = useState('');
+
   const [interest, setInterest] = useState('');
+  const [verifyInterest, setVerifyInterest] = useState('');
 
   const discovery = {
     authorizationEndpoint: 'https://accounts.spotify.com/authorize',
@@ -94,6 +117,7 @@ const SignupView = ({navigation}) => {
           <PhoneNumberInput
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
+            verifyPhone={verifyPhone}
           />
         );
       case 2:
@@ -102,6 +126,7 @@ const SignupView = ({navigation}) => {
             phoneNumber={phoneNumber}
             verificationCode={verificationCode}
             setVerificationCode={setVerificationCode}
+            verifyCode={verifyCode}
           />
         );
       case 3:
@@ -111,13 +136,33 @@ const SignupView = ({navigation}) => {
       case 5:
         return <Tracking />;
       case 6:
-        return <NameInput name={name} setName={setName} />;
+        return (
+          <NameInput name={name} setName={setName} verifyName={verifyName} />
+        );
       case 7:
-        return <UsernameInput username={username} setUsername={setUsername} />;
+        return (
+          <UsernameInput
+            username={username}
+            setUsername={setUsername}
+            verifyUsername={verifyUsername}
+          />
+        );
       case 8:
-        return <PasswordInput password={password} setPassword={setPassword} />;
+        return (
+          <PasswordInput
+            password={password}
+            setPassword={setPassword}
+            verifyPassword={verifyPassword}
+          />
+        );
       case 9:
-        return <EmailInput email={email} setEmail={setEmail} />;
+        return (
+          <EmailInput
+            email={email}
+            setEmail={setEmail}
+            verifyEmail={verifyEmail}
+          />
+        );
       case 10:
         return (
           <BirthdayInput
@@ -127,17 +172,32 @@ const SignupView = ({navigation}) => {
             setBirthDay={setBirthDay}
             birthYear={birthYear}
             setBirthYear={setBirthYear}
+            verifyMonth={verifyMonth}
+            verifyDay={verifyDay}
+            verifyYear={verifyYear}
           />
         );
       case 11:
-        return <GenderInput gender={gender} setGender={setGender} />;
+        return (
+          <GenderInput
+            gender={gender}
+            setGender={setGender}
+            verifyGender={verifyGender}
+          />
+        );
 
       case 12:
-        return <ModeInput mode={mode} setMode={setMode} />;
+        return (
+          <ModeInput mode={mode} setMode={setMode} verifyMode={verifyMode} />
+        );
 
       case 13:
         return (
-          <InterestedInput interest={interest} setInterest={setInterest} />
+          <InterestedInput
+            interest={interest}
+            setInterest={setInterest}
+            verifyInterest={verifyInterest}
+          />
         );
       case 14:
         return <Spotify />;
@@ -146,6 +206,141 @@ const SignupView = ({navigation}) => {
     }
   };
 
+  const validateStep = () => {
+    switch (step) {
+      case 1:
+        return phoneNumber.trim() !== ''; // Validate phone number
+      case 2:
+        return verificationCode.trim() !== ''; // Validate verification code
+      case 3:
+        return true; // No validation for other steps by default
+      case 4:
+        return true; // No validation for other steps by default
+      case 5:
+        return true; // No validation for other steps by default
+      case 6:
+        return name.trim() !== ''; // Validate name
+      case 7:
+        return username.trim() !== ''; // Validate username
+      case 8:
+        return password.trim() !== ''; // Validate password
+      case 9:
+        return email.trim() !== ''; // Validate email
+      case 10:
+        return (
+          birthDay.trim() !== '' &&
+          birthMonth.trim() !== '' &&
+          birthYear.trim() !== ''
+        ); // Validate birthday
+      case 11:
+        return gender.trim() !== '';
+      case 12:
+        return mode.trim() !== '';
+      case 13:
+        return interest.trim() !== '';
+      case 14:
+        return true;
+
+      default:
+        return true; // No validation for other steps by default
+    }
+  };
+
+  const handleContinue = () => {
+    if (validateStep()) {
+      if (step < totalSteps) {
+        setStep(prevStep => prevStep + 1);
+        switch (step) {
+          case 1:
+            setVerifyPhone('');
+            break;
+          case 2:
+            setVerifyCode('');
+            break;
+          case 3:
+            break;
+          case 4:
+            break;
+          case 5:
+            break;
+          case 6:
+            setVerifyName('');
+            break;
+          case 7:
+            setVerifyUsername('');
+            break;
+          case 8:
+            setVerifyPassword('');
+            break;
+          case 9:
+            setVerifyEmail('');
+            break;
+          case 10:
+            setVerifyMonth('');
+            setVerifyDay('');
+            setVerifyYear('');
+            break;
+          case 11:
+            setVerifyGender('');
+            break;
+          case 12:
+            setVerifyMode('');
+            break;
+          case 13:
+            setVerifyInterest('');
+            break;
+          default:
+            break;
+        }
+      } else {
+        promptAsync();
+      }
+    } else {
+      // Display an error message or handle it as you prefer
+      switch (step) {
+        case 1:
+          setVerifyPhone('Please enter a valid phone number.');
+          break;
+        case 2:
+          setVerifyCode('Please enter a valid verification code.');
+          break;
+        case 3:
+          break;
+        case 4:
+          break;
+        case 5:
+          break;
+        case 6:
+          setVerifyName('Please enter a valid name.');
+          break;
+        case 7:
+          setVerifyUsername('Please enter a valid username.');
+          break;
+        case 8:
+          setVerifyPassword('Please enter a valid password.');
+          break;
+        case 9:
+          setVerifyEmail('Please enter a valid email.');
+          break;
+        case 10:
+          setVerifyMonth('Please enter a valid month.');
+          setVerifyDay('Please enter a valid day.');
+          setVerifyYear('Please enter a valid year.');
+          break;
+        case 11:
+          setVerifyGender('Please select one of the options.');
+          break;
+        case 12:
+          setVerifyMode('Please select one of the options.');
+          break;
+        case 13:
+          setVerifyInterest('Please select one of the options.');
+          break;
+        default:
+          break;
+      }
+    }
+  };
   return (
     <View style={SignupStyles.container}>
       <View style={SignupStyles.progressContainer}>
@@ -181,13 +376,7 @@ const SignupView = ({navigation}) => {
               ? SignupStyles.finishButton
               : SignupStyles.continueButton
           }
-          onPress={() => {
-            if (step < totalSteps) {
-              setStep(prevStep => prevStep + 1);
-            } else {
-              promptAsync();
-            }
-          }}>
+          onPress={handleContinue}>
           <Text
             style={
               step === totalSteps

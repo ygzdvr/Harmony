@@ -7,6 +7,7 @@ const PhoneNumberInput = ({
   phoneNumber,
   verificationCode,
   setVerificationCode,
+  verifyCode,
 }) => {
   return (
     <View style={SignupStyles.inputContainer}>
@@ -15,13 +16,18 @@ const PhoneNumberInput = ({
         Enter the code we've sent by text to {phoneNumber}
       </Text>
       <TextInput
-        style={SignupStyles.textInput}
+        style={
+          verifyCode === ''
+            ? SignupStyles.textInput
+            : SignupStyles.textInputError
+        }
         placeholder="Enter verification code"
         placeholderTextColor={COLORS.background}
         keyboardType="number-pad"
         value={verificationCode}
         onChangeText={setVerificationCode}
       />
+      <Text style={SignupStyles.errorMessage}>{verifyCode}</Text>
     </View>
   );
 };
