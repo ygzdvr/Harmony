@@ -3,7 +3,7 @@ import {View, Text, TextInput} from 'react-native';
 import COLORS from '../../../constants/colors';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const PasswordInput = ({password, setPassword}) => {
+const PasswordInput = ({password, setPassword, verifyPassword}) => {
   return (
     <View style={SignupStyles.inputContainer}>
       <Text style={SignupStyles.textTitle}>Pick a password</Text>
@@ -11,21 +11,18 @@ const PasswordInput = ({password, setPassword}) => {
         Make sure it's at least 8 characters.
       </Text>
       <TextInput
-        style={SignupStyles.textInput}
+        style={
+          verifyPassword === ''
+            ? SignupStyles.textInput
+            : SignupStyles.textInputError
+        }
         placeholder="Enter a password"
         placeholderTextColor={COLORS.background}
         secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
       />
-      <TextInput
-        style={SignupStyles.textInput}
-        placeholder="Verify your password"
-        placeholderTextColor={COLORS.background}
-        secureTextEntry={true}
-        value={password}
-        onChangeText={setPassword}
-      />
+      <Text style={SignupStyles.errorMessage}>{verifyPassword}</Text>
     </View>
   );
 };
