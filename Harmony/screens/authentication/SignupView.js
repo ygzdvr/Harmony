@@ -77,7 +77,7 @@ const SignupView = ({navigation}) => {
       const {access_token} = response.params;
       console.log('access_token', access_token);
       SPOTIFY(access_token).then(data => {
-        console.log('data', data.profile.email);
+        console.log('data', data.topArtistsLongTerm.items[0]);
       });
       put('@access_token', access_token);
       navigation.navigate('HomeView', {screen: 'HomeView'});
