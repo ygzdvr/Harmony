@@ -2,13 +2,14 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const InterestedInput = ({interest, setInterest}) => {
+const InterestedInput = ({interest, setInterest, verifyInterest}) => {
   return (
     <View style={SignupStyles.buttonsContainer}>
       <Text style={SignupStyles.textTitle}>Who are you interested in?</Text>
       <Text style={SignupStyles.textDescription}>
         Choose your preference for connections.
       </Text>
+      <Text style={SignupStyles.errorMessage}>{verifyInterest}</Text>
       <TouchableOpacity
         style={
           interest === 'Woman'

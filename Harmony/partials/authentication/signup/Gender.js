@@ -2,13 +2,14 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const GenderInput = ({gender, setGender}) => {
+const GenderInput = ({gender, setGender, verifyGender}) => {
   return (
     <View style={SignupStyles.buttonsContainer}>
       <Text style={SignupStyles.textTitle}>How do you identify?</Text>
       <Text style={SignupStyles.textDescription}>
         Everyone's welcomed on Harmony. Pick which best describes you.
       </Text>
+      <Text style={SignupStyles.errorMessage}>{verifyGender}</Text>
       <TouchableOpacity
         style={
           gender === 'Woman'

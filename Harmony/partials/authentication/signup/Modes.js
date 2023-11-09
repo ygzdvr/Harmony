@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const ModeInput = ({mode, setMode}) => {
+const ModeInput = ({mode, setMode, verifyMode}) => {
   return (
     <View style={SignupStyles.buttonsContainer}>
       <Text style={SignupStyles.textTitle}>
@@ -12,6 +12,7 @@ const ModeInput = ({mode, setMode}) => {
         Harmony is for making all kinds of connections. You will be able to
         switch modes once you are all set up.
       </Text>
+      <Text style={SignupStyles.errorMessage}>{verifyMode}</Text>
       <TouchableOpacity
         style={[
           SignupStyles.modeOption,
