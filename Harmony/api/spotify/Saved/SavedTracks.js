@@ -1,4 +1,4 @@
-export async function TopArtistsShortTerm(code) {
+export async function SavedTracks(code) {
   const result = await fetch(
     'https://api.spotify.com/v1/me/tracks?limit=50&offset=0',
     {
