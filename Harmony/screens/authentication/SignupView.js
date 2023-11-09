@@ -25,6 +25,8 @@ import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
 import {fetchProfile} from '../../api/spotify/Profile';
+import {put} from '../../api/util/put';
+import {get} from '../../api/util/get';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -70,30 +72,15 @@ const SignupView = ({navigation}) => {
     },
     discovery,
   );
-  const storeData = async (storeageName, data) => {
-    try {
-      await AsyncStorage.setItem(storeageName, data);
-    } catch (e) {
-      // saving error
-      console.log('Error', e);
-    }
-  };
-  const getData = async storeageName => {
-    try {
-      const responseData = await AsyncStorage.getItem(storeageName);
-      return responseData;
-    } catch (error) {
-      return error;
-    }
-  };
+
   useEffect(() => {
     if (response?.type === 'success') {
       const {access_token} = response.params;
       console.log('access_token', access_token);
       fetchProfile(access_token).then(data => {
-        console.log('data', data);
+        console.log('data', data.country);
       });
-      storeData('@access_token', access_token);
+      put('@access_token', access_token);
       navigation.navigate('HomeView', {screen: 'HomeView'});
     }
   }, [response]);
