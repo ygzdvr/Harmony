@@ -1,7 +1,5 @@
-/* eslint-disable react-native/no-inline-styles */
 import {View, Text, TouchableOpacity, Image, Pressable} from 'react-native';
 import React from 'react';
-import COLORS from '../../constants/colors';
 import WelcomeStyles from '../../constants/styles/WelcomeStyles';
 
 import GradientText from '../../components/GradientText';
