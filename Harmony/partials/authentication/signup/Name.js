@@ -3,7 +3,7 @@ import {View, Text, TextInput} from 'react-native';
 import COLORS from '../../../constants/colors';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const NameInput = ({name, setName}) => {
+const NameInput = ({name, setName, verifyName}) => {
   return (
     <View style={SignupStyles.inputContainer}>
       <Text style={SignupStyles.textTitle}>Let's Meet</Text>
@@ -11,12 +11,17 @@ const NameInput = ({name, setName}) => {
         What should we call you? This will be your display name.
       </Text>
       <TextInput
-        style={SignupStyles.textInput}
+        style={
+          verifyName === ''
+            ? SignupStyles.textInput
+            : SignupStyles.textInputError
+        }
         placeholder="Enter your name"
         placeholderTextColor={COLORS.background}
         value={name}
         onChangeText={setName}
       />
+      <Text style={SignupStyles.errorMessage}>{verifyName}</Text>
     </View>
   );
 };

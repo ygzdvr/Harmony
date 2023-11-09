@@ -47,6 +47,8 @@ const SignupStyles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: COLORS.text,
+    borderColor: COLORS.text,
+    borderWidth: 1,
     height: 50,
     borderRadius: 10,
     paddingHorizontal: 15,
