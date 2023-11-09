@@ -10,6 +10,9 @@ const BirthdayInput = ({
   setBirthDay,
   birthYear,
   setBirthYear,
+  verifyMonth,
+  verifyDay,
+  verifyYear,
 }) => {
   return (
     <View style={SignupStyles.inputContainer}>
@@ -46,6 +49,7 @@ const BirthdayInput = ({
           onChangeText={setBirthYear}
         />
       </View>
+      <Text style={SignupStyles.errorMessage}>{verifyYear}</Text>
     </View>
   );
 };

@@ -144,7 +144,7 @@ const SignupStyles = StyleSheet.create({
     backgroundColor: COLORS.text,
     borderRadius: 10,
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 5,
     textAlign: 'center',
     fontSize: 16,
   },
