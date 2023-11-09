@@ -20,6 +20,8 @@ import ModeInput from '../../partials/authentication/signup/Modes';
 import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
+import HomeView from '../mainView/HomeView';
+
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -142,7 +144,7 @@ const SignupView = ({navigation}) => {
             if (step < totalSteps) {
               setStep(prevStep => prevStep + 1);
             } else {
-              // Submit the final form
+              navigation.navigate('HomeView');
             }
           }}>
           <Text

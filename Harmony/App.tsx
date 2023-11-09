@@ -13,6 +13,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WelcomeView from './screens/authentication/WelcomeView';
 import LoginView from './screens/authentication/LoginView';
 import SignupView from './screens/authentication/SignupView';
+import HomeView from './screens/mainView/HomeView';
 
 const Stack = createNativeStackNavigator();
 function App(): JSX.Element {
@@ -32,6 +33,11 @@ function App(): JSX.Element {
         <Stack.Screen
           name="SignupView"
           component={SignupView}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="HomeView"
+          component={HomeView}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

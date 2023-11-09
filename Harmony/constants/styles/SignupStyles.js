@@ -89,8 +89,6 @@ const SignupStyles = StyleSheet.create({
   },
   selectorButton: {
     backgroundColor: COLORS.background,
-    borderWidth: 1,
-    borderColor: COLORS.text,
     padding: 15,
     borderRadius: 15,
     justifyContent: 'center',
@@ -149,7 +147,7 @@ const SignupStyles = StyleSheet.create({
   },
   modeOption: {
     borderWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: 'transparent',
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,

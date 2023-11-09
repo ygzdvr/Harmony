@@ -42,7 +42,9 @@ const LoginView = ({navigation}) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.signInButton} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.signInButton}
+        onPress={() => navigation.navigate('HomeView')}>
         <Text style={styles.signInText}>Sign In</Text>
       </TouchableOpacity>
 
