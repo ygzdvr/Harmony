@@ -20,8 +20,6 @@ import ModeInput from '../../partials/authentication/signup/Modes';
 import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
-import HomeView from '../mainView/HomeView';
-
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -37,10 +35,10 @@ const SignupView = ({navigation}) => {
   const [birthYear, setBirthYear] = useState('');
   const [mode, setMode] = useState('');
   const [interest, setInterest] = useState('');
-  const [spotifyConnected, setSpotifyConnected] = useState(false);
 
   const totalSteps = 14;
   const progress = step / totalSteps;
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -94,12 +92,7 @@ const SignupView = ({navigation}) => {
           <InterestedInput interest={interest} setInterest={setInterest} />
         );
       case 14:
-        return (
-          <Spotify
-            spotifyConnected={spotifyConnected}
-            setSpotifyConnected={setSpotifyConnected}
-          />
-        );
+        return <Spotify />;
       default:
         return null;
     }

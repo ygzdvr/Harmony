@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text} from 'react-native';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 
-const Tracking = ({spotifyConnected, setSpotifyConnected}) => {
+const Tracking = () => {
   return (
     <View style={SignupStyles.inputContainer}>
       <Text style={SignupStyles.textTitle}>Connect your Spotify account</Text>
