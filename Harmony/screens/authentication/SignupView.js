@@ -24,9 +24,8 @@ import ModeInput from '../../partials/authentication/signup/Modes';
 import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
-import {fetchProfile} from '../../api/spotify/Profile';
+import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
-import {get} from '../../api/util/get';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -77,8 +76,8 @@ const SignupView = ({navigation}) => {
     if (response?.type === 'success') {
       const {access_token} = response.params;
       console.log('access_token', access_token);
-      fetchProfile(access_token).then(data => {
-        console.log('data', data.country);
+      SPOTIFY(access_token).then(data => {
+        console.log('data', data.profile.email);
       });
       put('@access_token', access_token);
       navigation.navigate('HomeView', {screen: 'HomeView'});

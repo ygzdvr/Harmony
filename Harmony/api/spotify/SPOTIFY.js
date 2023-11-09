@@ -16,8 +16,6 @@ import {SavedTracks} from './Saved/SavedTracks';
 import {SavedShows} from './Saved/SavedShows';
 import {SavedEpisodes} from './Saved/SavedEpisodes';
 
-import {get} from '../util/get';
-
 export const SPOTIFY = async access_token => {
   const profile = await fetchProfile(access_token);
   const playlists = await Playlists(access_token);
