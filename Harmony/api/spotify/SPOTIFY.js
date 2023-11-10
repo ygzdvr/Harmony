@@ -16,6 +16,42 @@ import {SavedTracks} from './Saved/SavedTracks';
 import {SavedShows} from './Saved/SavedShows';
 import {SavedEpisodes} from './Saved/SavedEpisodes';
 
+const extractInfo = data => {
+  const extractedInfo = {
+    profileInfo: {
+      displayName: data.profile.display_name,
+      followers: data.profile.followers.total,
+      type: data.profile.type,
+      id: data.profile.id,
+    },
+
+    TopArtistsShortTerm: data.topArtistsShortTerm.items.map(artist => ({
+      name: artist.name,
+      genre: artist.genres,
+      popularity: artist.popularity,
+      type: artist.type,
+      id: artist.id,
+    })),
+
+    TopArtistsMediumTerm: data.topArtistsMediumTerm.items.map(artist => ({
+      name: artist.name,
+      genre: artist.genres,
+      popularity: artist.popularity,
+      type: artist.type,
+      id: artist.id,
+    })),
+
+    TopArtistsLongTerm: data.topArtistsLongTerm.items.map(artist => ({
+      name: artist.name,
+      genre: artist.genres,
+      popularity: artist.popularity,
+      type: artist.type,
+      id: artist.id,
+    })),
+  };
+  return extractedInfo;
+};
+
 export const SPOTIFY = async access_token => {
   const profile = await fetchProfile(access_token);
   const playlists = await Playlists(access_token);
@@ -32,19 +68,21 @@ export const SPOTIFY = async access_token => {
   const savedEpisodes = await SavedEpisodes(access_token);
 
   const data = {
-    profile: profile,
-    playlists: playlists,
-    topArtistsShortTerm: topArtistsShortTerm,
-    topArtistsMediumTerm: topArtistsMediumTerm,
-    topArtistsLongTerm: topArtistsLongTerm,
-    topTracksShortTerm: topTracksShortTerm,
-    topTracksMediumTerm: topTracksMediumTerm,
-    topTracksLongTerm: topTracksLongTerm,
-    history: history,
-    savedAlbums: savedAlbums,
-    savedTracks: savedTracks,
-    savedShows: savedShows,
-    savedEpisodes: savedEpisodes,
+    profile,
+    playlists,
+    topArtistsShortTerm,
+    topArtistsMediumTerm,
+    topArtistsLongTerm,
+    topTracksShortTerm,
+    topTracksMediumTerm,
+    topTracksLongTerm,
+    history,
+    savedAlbums,
+    savedTracks,
+    savedShows,
+    savedEpisodes,
   };
-  return data;
+  const extractedInfo = extractInfo(data);
+
+  return extractedInfo;
 };

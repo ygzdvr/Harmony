@@ -38,7 +38,7 @@ function App(): JSX.Element {
         <Stack.Screen
           name="HomeView"
           component={HomeView}
-          options={{headerShown: false, gestureEnabled: false}}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

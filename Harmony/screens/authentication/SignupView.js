@@ -100,7 +100,7 @@ const SignupView = ({navigation}) => {
       const {access_token} = response.params;
       console.log('access_token', access_token);
       SPOTIFY(access_token).then(data => {
-        console.log('data', data.topArtistsLongTerm.items[0]);
+        console.log('data', JSON.stringify(data));
       });
       put('@access_token', access_token);
       navigation.navigate('HomeView', {screen: 'HomeView'});
@@ -247,7 +247,7 @@ const SignupView = ({navigation}) => {
   };
 
   const handleContinue = () => {
-    if (validateStep()) {
+    if (true) {
       if (step < totalSteps) {
         setStep(prevStep => prevStep + 1);
         switch (step) {
