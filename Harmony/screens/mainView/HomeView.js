@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react'
 import {View, Text, StyleSheet} from 'react-native';
+import axios from 'axios'
 
 import HomeStyles from '../../constants/styles/HomeStyles';
+
 
 const HomeView = () => {
   return (
@@ -15,3 +17,4 @@ const HomeView = () => {
 };
 
 export default HomeView;
+

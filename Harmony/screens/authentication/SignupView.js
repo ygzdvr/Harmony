@@ -27,6 +27,7 @@ import Spotify from '../../partials/authentication/signup/Spotify';
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
 
+
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -95,6 +96,30 @@ const SignupView = ({navigation}) => {
     discovery,
   );
 
+  const fetchAIResponse = async () => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer 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`
+        },
+        body: JSON.stringify({
+          model: "text-davinci-003",
+          prompt: "Say this is a test",
+          max_tokens: 7,
+          temperature: 0,
+        }),
+      })
+
+      const json = await response.json();  
+      console.log("this is the result", json)
+    } catch (error) {
+      console.error("this is the result", error);
+    }
+  }
+
   useEffect(() => {
     if (response?.type === 'success') {
       const {access_token} = response.params;
@@ -103,6 +128,7 @@ const SignupView = ({navigation}) => {
         console.log('data', JSON.stringify(data));
       });
       put('@access_token', access_token);
+      fetchAIResponse();
       navigation.navigate('HomeView', {screen: 'HomeView'});
     }
   }, [response]);

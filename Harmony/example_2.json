@@ -1,0 +1,717 @@
+{
+  "profileInfo": {
+    "displayName": "Devre",
+    "followers": 13
+  },
+  "TopArtistsShortTerm": [
+    {
+      "name": "Trent Reznor and Atticus Ross",
+      "genre": [
+        "soundtrack"
+      ],
+      "popularity": 49
+    },
+    {
+      "name": "Kanye West",
+      "genre": [
+        "chicago rap",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 88
+    },
+    {
+      "name": "Eminem",
+      "genre": [
+        "detroit hip hop",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Will Smith",
+      "genre": [
+        "hip hop",
+        "pop rap"
+      ],
+      "popularity": 64
+    },
+    {
+      "name": "Dominic Lewis",
+      "genre": [
+        "british soundtrack",
+        "soundtrack"
+      ],
+      "popularity": 34
+    },
+    {
+      "name": "Ahmet Kaya",
+      "genre": [],
+      "popularity": 61
+    },
+    {
+      "name": "Kenan Doğulu",
+      "genre": [
+        "turkish pop"
+      ],
+      "popularity": 57
+    },
+    {
+      "name": "Michael Hunter",
+      "genre": [],
+      "popularity": 38
+    },
+    {
+      "name": "Future",
+      "genre": [
+        "atl hip hop",
+        "hip hop",
+        "rap",
+        "southern hip hop",
+        "trap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Desiigner",
+      "genre": [
+        "pop rap",
+        "rap",
+        "southern hip hop",
+        "trap",
+        "viral trap"
+      ],
+      "popularity": 59
+    }
+  ],
+  "TopArtistsMediumTerm": [
+    {
+      "name": "Trent Reznor and Atticus Ross",
+      "genre": [
+        "soundtrack"
+      ],
+      "popularity": 49
+    },
+    {
+      "name": "Kanye West",
+      "genre": [
+        "chicago rap",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 88
+    },
+    {
+      "name": "Eminem",
+      "genre": [
+        "detroit hip hop",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Will Smith",
+      "genre": [
+        "hip hop",
+        "pop rap"
+      ],
+      "popularity": 64
+    },
+    {
+      "name": "Dominic Lewis",
+      "genre": [
+        "british soundtrack",
+        "soundtrack"
+      ],
+      "popularity": 34
+    },
+    {
+      "name": "Ahmet Kaya",
+      "genre": [],
+      "popularity": 61
+    },
+    {
+      "name": "Kenan Doğulu",
+      "genre": [
+        "turkish pop"
+      ],
+      "popularity": 57
+    },
+    {
+      "name": "Michael Hunter",
+      "genre": [],
+      "popularity": 38
+    },
+    {
+      "name": "Future",
+      "genre": [
+        "atl hip hop",
+        "hip hop",
+        "rap",
+        "southern hip hop",
+        "trap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Desiigner",
+      "genre": [
+        "pop rap",
+        "rap",
+        "southern hip hop",
+        "trap",
+        "viral trap"
+      ],
+      "popularity": 59
+    }
+  ],
+  "TopArtistsLongTerm": [
+    {
+      "name": "Trent Reznor and Atticus Ross",
+      "genre": [
+        "soundtrack"
+      ],
+      "popularity": 49
+    },
+    {
+      "name": "Kanye West",
+      "genre": [
+        "chicago rap",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 88
+    },
+    {
+      "name": "Eminem",
+      "genre": [
+        "detroit hip hop",
+        "hip hop",
+        "rap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Will Smith",
+      "genre": [
+        "hip hop",
+        "pop rap"
+      ],
+      "popularity": 64
+    },
+    {
+      "name": "Dominic Lewis",
+      "genre": [
+        "british soundtrack",
+        "soundtrack"
+      ],
+      "popularity": 34
+    },
+    {
+      "name": "Ahmet Kaya",
+      "genre": [],
+      "popularity": 61
+    },
+    {
+      "name": "Kenan Doğulu",
+      "genre": [
+        "turkish pop"
+      ],
+      "popularity": 57
+    },
+    {
+      "name": "Michael Hunter",
+      "genre": [],
+      "popularity": 38
+    },
+    {
+      "name": "Future",
+      "genre": [
+        "atl hip hop",
+        "hip hop",
+        "rap",
+        "southern hip hop",
+        "trap"
+      ],
+      "popularity": 87
+    },
+    {
+      "name": "Desiigner",
+      "genre": [
+        "pop rap",
+        "rap",
+        "southern hip hop",
+        "trap",
+        "viral trap"
+      ],
+      "popularity": 59
+    }
+  ],
+  "TopTracksShortTerm": [
+    {
+      "name": "In Motion",
+      "popularity": 50,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Don't Like.1",
+      "popularity": 67,
+      "artist": [
+        "Kanye West",
+        "Chief Keef",
+        "Pusha T",
+        "Big Sean",
+        "Jadakiss"
+      ],
+      "albumName": "Kanye West Presents Good Music Cruel Summer"
+    },
+    {
+      "name": "Hand Covers Bruise",
+      "popularity": 53,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Soviet Connection — The Theme from Grand Theft Auto IV",
+      "popularity": 57,
+      "artist": [
+        "Michael Hunter"
+      ],
+      "albumName": "Grand Theft Auto IV — The Theme Song Collection"
+    },
+    {
+      "name": "Sebastian",
+      "popularity": 59,
+      "artist": [
+        "Hande Yener"
+      ],
+      "albumName": "İki Deli"
+    },
+    {
+      "name": "MIDDLE CHILD",
+      "popularity": 84,
+      "artist": [
+        "J. Cole"
+      ],
+      "albumName": "MIDDLE CHILD"
+    },
+    {
+      "name": "Gold Digger",
+      "popularity": 83,
+      "artist": [
+        "Kanye West",
+        "Jamie Foxx"
+      ],
+      "albumName": "Late Registration"
+    },
+    {
+      "name": "Homecoming",
+      "popularity": 85,
+      "artist": [
+        "Kanye West",
+        "Chris Martin"
+      ],
+      "albumName": "Graduation"
+    },
+    {
+      "name": "Intriguing Possibilities",
+      "popularity": 46,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Arabian Nights (2019)",
+      "popularity": 70,
+      "artist": [
+        "Will Smith"
+      ],
+      "albumName": "Aladdin (Original Motion Picture Soundtrack)"
+    }
+  ],
+  "TopTracksMediumTerm": [
+    {
+      "name": "In Motion",
+      "popularity": 50,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Hand Covers Bruise",
+      "popularity": 53,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Intriguing Possibilities",
+      "popularity": 46,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Painted Sun in Abstract",
+      "popularity": 44,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Rap God",
+      "popularity": 79,
+      "artist": [
+        "Eminem"
+      ],
+      "albumName": "The Marshall Mathers LP2 (Deluxe)"
+    },
+    {
+      "name": "A Familiar Taste",
+      "popularity": 44,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Stronger",
+      "popularity": 85,
+      "artist": [
+        "Kanye West"
+      ],
+      "albumName": "Graduation"
+    },
+    {
+      "name": "The Real Slim Shady",
+      "popularity": 88,
+      "artist": [
+        "Eminem"
+      ],
+      "albumName": "The Marshall Mathers LP"
+    },
+    {
+      "name": "3:14 Every Night",
+      "popularity": 40,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "It Catches up With You",
+      "popularity": 46,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    }
+  ],
+  "TopTracksLongTerm": [
+    {
+      "name": "Alexander Hamilton",
+      "popularity": 73,
+      "artist": [
+        "Leslie Odom Jr.",
+        "Daveed Diggs",
+        "Okieriete Onaodowan",
+        "Lin-Manuel Miranda",
+        "Phillipa Soo",
+        "Christopher Jackson",
+        "Original Broadway Cast of Hamilton",
+        "Anthony Ramos"
+      ],
+      "albumName": "Hamilton (Original Broadway Cast Recording)"
+    },
+    {
+      "name": "G.O.A.T.",
+      "popularity": 55,
+      "artist": [
+        "Polyphia"
+      ],
+      "albumName": "New Levels New Devils"
+    },
+    {
+      "name": "My Shot",
+      "popularity": 71,
+      "artist": [
+        "Lin-Manuel Miranda",
+        "Daveed Diggs",
+        "Okieriete Onaodowan",
+        "Leslie Odom Jr.",
+        "Original Broadway Cast of Hamilton",
+        "Anthony Ramos"
+      ],
+      "albumName": "Hamilton (Original Broadway Cast Recording)"
+    },
+    {
+      "name": "Ten Duel Commandments",
+      "popularity": 66,
+      "artist": [
+        "Lin-Manuel Miranda",
+        "Jon Rua",
+        "Leslie Odom Jr.",
+        "Original Broadway Cast of Hamilton",
+        "Anthony Ramos"
+      ],
+      "albumName": "Hamilton (Original Broadway Cast Recording)"
+    },
+    {
+      "name": "In Motion",
+      "popularity": 50,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Hand Covers Bruise",
+      "popularity": 53,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "Yorktown (The World Turned Upside Down)",
+      "popularity": 67,
+      "artist": [
+        "Original Broadway Cast of Hamilton"
+      ],
+      "albumName": "Hamilton (Original Broadway Cast Recording)"
+    },
+    {
+      "name": "No Good",
+      "popularity": 66,
+      "artist": [
+        "KALEO"
+      ],
+      "albumName": "A/B"
+    },
+    {
+      "name": "Right Hand Man",
+      "popularity": 68,
+      "artist": [
+        "Lin-Manuel Miranda",
+        "Leslie Odom Jr.",
+        "Original Broadway Cast of Hamilton"
+      ],
+      "albumName": "Hamilton (Original Broadway Cast Recording)"
+    },
+    {
+      "name": "Ain't No Rest for the Wicked",
+      "popularity": 77,
+      "artist": [
+        "Cage The Elephant"
+      ],
+      "albumName": "Cage The Elephant (Expanded Edition)"
+    }
+  ],
+  "RecentlyPlayed": [
+    {
+      "name": "We Got Pirates",
+      "popularity": 33,
+      "artist": [
+        "Joseph Shirley",
+        "Ludwig Göransson"
+      ],
+      "albumName": "The Mandalorian: Season 3 - Vol. 1 (Chapters 17-20) [Original Score]"
+    },
+    {
+      "name": "Spider-Woman (Gwen Stacy)",
+      "popularity": 61,
+      "artist": [
+        "Daniel Pemberton"
+      ],
+      "albumName": "Spider-Man: Across the Spider-Verse (Original Score)"
+    },
+    {
+      "name": "Across the Spider-Verse (Intro)",
+      "popularity": 58,
+      "artist": [
+        "Daniel Pemberton"
+      ],
+      "albumName": "Spider-Man: Across the Spider-Verse (Original Score)"
+    },
+    {
+      "name": "Annihilate (Spider-Man: Across the Spider-Verse) (Metro Boomin & Swae Lee, Lil Wayne, Offset)",
+      "popularity": 81,
+      "artist": [
+        "Metro Boomin",
+        "Swae Lee",
+        "Lil Wayne",
+        "Offset"
+      ],
+      "albumName": "METRO BOOMIN PRESENTS SPIDER-MAN: ACROSS THE SPIDER-VERSE (SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE)"
+    },
+    {
+      "name": "I Can't Stop (Big Boss Vette & Omah Lay)",
+      "popularity": 59,
+      "artist": [
+        "Big Boss Vette",
+        "Omah Lay"
+      ],
+      "albumName": "METRO BOOMIN PRESENTS SPIDER-MAN: ACROSS THE SPIDER-VERSE (SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE / DELUXE EDITION)"
+    },
+    {
+      "name": "Annihilate (Spider-Man: Across the Spider-Verse) (Metro Boomin & Swae Lee, Lil Wayne, Offset)",
+      "popularity": 81,
+      "artist": [
+        "Metro Boomin",
+        "Swae Lee",
+        "Lil Wayne",
+        "Offset"
+      ],
+      "albumName": "METRO BOOMIN PRESENTS SPIDER-MAN: ACROSS THE SPIDER-VERSE (SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE)"
+    },
+    {
+      "name": "Annihilate - Spider-Man: Across the Spider-Verse",
+      "popularity": 57,
+      "artist": [
+        "Metro Boomin",
+        "Swae Lee",
+        "Lil Wayne",
+        "Offset"
+      ],
+      "albumName": "METRO BOOMIN PRESENTS SPIDER-MAN: ACROSS THE SPIDER-VERSE [SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE (METROVERSE INSTRUMENTAL EDITION)]"
+    },
+    {
+      "name": "Homecoming",
+      "popularity": 85,
+      "artist": [
+        "Kanye West",
+        "Chris Martin"
+      ],
+      "albumName": "Graduation"
+    },
+    {
+      "name": "Ricegum Sucks",
+      "popularity": 44,
+      "artist": [
+        "W2S"
+      ],
+      "albumName": "Ricegum Sucks"
+    },
+    {
+      "name": "Gold Digger",
+      "popularity": 83,
+      "artist": [
+        "Kanye West",
+        "Jamie Foxx"
+      ],
+      "albumName": "Late Registration"
+    }
+  ],
+  "SavedAlbums": [
+    {
+      "name": "The Social Network",
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ]
+    },
+    {
+      "name": "Darmaduman",
+      "artist": [
+        "Duman"
+      ]
+    }
+  ],
+  "SavedTracks": [
+    {
+      "name": "Red Dead Redemption 2 Inspired Theme",
+      "popularity": 9,
+      "artist": [
+        "Ben Morfitt (SquidPhysics)"
+      ],
+      "albumName": "Squidography, Vol. IV"
+    },
+    {
+      "name": "WWE: Head of the Table (Roman Reigns)",
+      "popularity": 62,
+      "artist": [
+        "WWE",
+        "def rebel"
+      ],
+      "albumName": "WWE: Head of the Table (Roman Reigns)"
+    },
+    {
+      "name": "Panda",
+      "popularity": 71,
+      "artist": [
+        "Desiigner"
+      ],
+      "albumName": "New English"
+    },
+    {
+      "name": "MIDDLE CHILD",
+      "popularity": 84,
+      "artist": [
+        "J. Cole"
+      ],
+      "albumName": "MIDDLE CHILD"
+    },
+    {
+      "name": "Hot (feat. Gunna)",
+      "popularity": 75,
+      "artist": [
+        "Young Thug",
+        "Gunna"
+      ],
+      "albumName": "So Much Fun"
+    },
+    {
+      "name": "Hand Covers Bruise",
+      "popularity": 53,
+      "artist": [
+        "Trent Reznor and Atticus Ross"
+      ],
+      "albumName": "The Social Network"
+    },
+    {
+      "name": "POWER",
+      "popularity": 81,
+      "artist": [
+        "Kanye West"
+      ],
+      "albumName": "My Beautiful Dark Twisted Fantasy"
+    },
+    {
+      "name": "Stronger",
+      "popularity": 85,
+      "artist": [
+        "Kanye West"
+      ],
+      "albumName": "Graduation"
+    },
+    {
+      "name": "California Love - Original Version",
+      "popularity": 82,
+      "artist": [
+        "2Pac",
+        "Roger",
+        "Dr. Dre"
+      ],
+      "albumName": "Greatest Hits"
+    },
+    {
+      "name": "Business",
+      "popularity": 73,
+      "artist": [
+        "Eminem"
+      ],
+      "albumName": "The Eminem Show"
+    }
+  ]
+}
