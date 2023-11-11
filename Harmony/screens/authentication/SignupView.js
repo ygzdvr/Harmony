@@ -26,6 +26,7 @@ import Spotify from '../../partials/authentication/signup/Spotify';
 
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
+import {textify} from '../../api/openai/textify';
 
 
 const SignupView = ({navigation}) => {
@@ -95,29 +96,12 @@ const SignupView = ({navigation}) => {
     },
     discovery,
   );
-
-  const fetchAIResponse = async () => {
-    try {
-      const response = await fetch('https://api.openai.com/v1/completions', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer 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`
-        },
-        body: JSON.stringify({
-          model: "text-davinci-003",
-          prompt: "Say this is a test",
-          max_tokens: 7,
-          temperature: 0,
-        }),
-      })
-
-      const json = await response.json();  
-      console.log("this is the result", json)
-    } catch (error) {
-      console.error("this is the result", error);
-    }
+  const example_JSON = {
+    "squadName": "Super hero squad",
+    "homeTown": "Metro City",
+    "formed": 2016,
+    "secretBase": "Super tower",
+    "active": true,
   }
 
   useEffect(() => {
@@ -126,9 +110,11 @@ const SignupView = ({navigation}) => {
       console.log('access_token', access_token);
       SPOTIFY(access_token).then(data => {
         console.log('data', JSON.stringify(data));
+        textify(data).then(textResponse => {
+          console.log('textResponse', textResponse);
+        });
       });
       put('@access_token', access_token);
-      fetchAIResponse();
       navigation.navigate('HomeView', {screen: 'HomeView'});
     }
   }, [response]);
