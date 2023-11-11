@@ -16,6 +16,8 @@ import {SavedTracks} from './Saved/SavedTracks';
 import {SavedShows} from './Saved/SavedShows';
 import {SavedEpisodes} from './Saved/SavedEpisodes';
 
+import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
+
 const extractInfo = data => {
   const extractedInfo = {
     profileInfo: {
@@ -48,6 +50,68 @@ const extractInfo = data => {
       type: artist.type,
       id: artist.id,
     })),
+
+    TopTracksShortTerm: data.topTracksShortTerm.items.map(track => ({
+      name: track.name,
+      popularity: track.popularity,
+      artist: track.artists.map(artist => artist.name),
+      albumName: track.album.name,
+      duration: track.duration_ms,
+      type: track.type,
+      id: track.id,
+    })),
+
+    TopTracksMediumTerm: data.topTracksMediumTerm.items.map(track => ({
+      name: track.name,
+      popularity: track.popularity,
+      artist: track.artists.map(artist => artist.name),
+      albumName: track.album.name,
+      duration: track.duration_ms,
+      type: track.type,
+      id: track.id,
+    })),
+
+    TopTracksLongTerm: data.topTracksLongTerm.items.map(track => ({
+      name: track.name,
+      popularity: track.popularity,
+      artist: track.artists.map(artist => artist.name),
+      albumName: track.album.name,
+      duration: track.duration_ms,
+      type: track.type,
+      id: track.id,
+    })),
+    RecentlyPlayed: data.history.items.map(track => ({
+      name: track.track.name,
+      popularity: track.track.popularity,
+      artist: track.track.artists.map(artist => artist.name),
+      albumName: track.track.album.name,
+      duration: track.track.duration_ms,
+      type: track.track.type,
+      id: track.track.id,
+    })),
+    SavedAlbums: data.savedAlbums.items.map(album => ({
+      name: album.album.name,
+      artist: album.album.artists.map(artist => artist.name),
+      releaseDate: album.album.release_date,
+      type: album.album.type,
+      id: album.album.id,
+    })),
+    SavedTracks: data.savedTracks.items.map(track => ({
+      name: track.track.name,
+      popularity: track.track.popularity,
+      artist: track.track.artists.map(artist => artist.name),
+      albumName: track.track.album.name,
+      duration: track.track.duration_ms,
+      type: track.track.type,
+      id: track.track.id,
+    })),
+    SavedEpisodes: data.savedEpisodes.items.map(episode => ({
+      name: episode.episode.name,
+      releaseDate: episode.episode.release_date,
+      duration: episode.episode.duration_ms,
+      type: episode.episode.type,
+      id: episode.episode.id,
+    })),
   };
   return extractedInfo;
 };
@@ -68,6 +132,7 @@ export const SPOTIFY = async access_token => {
   const savedEpisodes = await SavedEpisodes(access_token);
 
   const data = {
+    access_token,
     profile,
     playlists,
     topArtistsShortTerm,

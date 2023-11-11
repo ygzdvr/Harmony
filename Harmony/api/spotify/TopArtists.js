@@ -1,6 +1,6 @@
 export async function TopArtistsShortTerm(code) {
   const result = await fetch(
-    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=50&offset=0',
+    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10&offset=0',
     {
       method: 'GET',
       headers: {Authorization: `Bearer ${code}`},
@@ -11,7 +11,7 @@ export async function TopArtistsShortTerm(code) {
 
 export async function TopArtistsMediumTerm(code) {
   const result = await fetch(
-    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=50&offset=0',
+    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10&offset=0',
     {
       method: 'GET',
       headers: {Authorization: `Bearer ${code}`},
@@ -22,7 +22,7 @@ export async function TopArtistsMediumTerm(code) {
 
 export async function TopArtistsLongTerm(code) {
   const result = await fetch(
-    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=50&offset=0',
+    'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10&offset=0',
     {
       method: 'GET',
       headers: {Authorization: `Bearer ${code}`},
