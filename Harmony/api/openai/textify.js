@@ -5,7 +5,7 @@ export async function textify(data) {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer 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`
+        'Authorization': `Bearer `
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo-instruct",

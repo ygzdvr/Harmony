@@ -27,6 +27,7 @@ import Spotify from '../../partials/authentication/signup/Spotify';
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
 import {textify} from '../../api/openai/textify';
+import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
 
 
 const SignupView = ({navigation}) => {
@@ -112,6 +113,9 @@ const SignupView = ({navigation}) => {
         console.log('data', JSON.stringify(data));
         textify(data).then(textResponse => {
           console.log('textResponse', textResponse);
+          vectorEmbedding(textResponse).then(vectorResponse => {
+            console.log('vectorResponse', vectorResponse);
+          });
         });
       });
       put('@access_token', access_token);
