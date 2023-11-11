@@ -29,7 +29,6 @@ import {put} from '../../api/util/put';
 import {textify} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
 
-
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
   // States for form data
@@ -97,14 +96,6 @@ const SignupView = ({navigation}) => {
     },
     discovery,
   );
-  const example_JSON = {
-    "squadName": "Super hero squad",
-    "homeTown": "Metro City",
-    "formed": 2016,
-    "secretBase": "Super tower",
-    "active": true,
-  }
-
   useEffect(() => {
     if (response?.type === 'success') {
       const {access_token} = response.params;
