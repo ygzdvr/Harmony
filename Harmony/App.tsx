@@ -49,10 +49,10 @@ function MyTabs() {
         tabBarInactiveTintColor: COLORS.text,
         tabBarStyle: {
           backgroundColor: COLORS.tabBar,
-          borderTopLeftRadius: 20, // Rounded corners on the left
-          borderTopRightRadius: 20, // Rounded corners on the right
-          borderBottomLeftRadius: 20, // Rounded corners on the left
-          borderBottomRightRadius: 20, // Rounded corners on the right
+          borderTopLeftRadius: 23, // Rounded corners on the left
+          borderTopRightRadius: 23, // Rounded corners on the right
+          borderBottomLeftRadius: 23, // Rounded corners on the left
+          borderBottomRightRadius: 23, // Rounded corners on the right
           height: 60, // Adjust the height as needed
           position: 'absolute', // Needed to show the rounded corners
           borderTopWidth: 1, // Remove default border
