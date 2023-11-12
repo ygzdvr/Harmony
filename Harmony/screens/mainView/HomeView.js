@@ -6,28 +6,32 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import COLORS from '../../constants/colors';
 
-const Tile = ({title}) => (
-  <TouchableOpacity style={styles.tile}>
+const Tile = ({title, isRectangle = false}) => (
+  <TouchableOpacity
+    style={[styles.tile, isRectangle ? styles.rectangleTile : null]}>
     <Text style={styles.tileText}>{title}</Text>
   </TouchableOpacity>
 );
 
 const HomeView = () => {
-  // Array of example tiles
+  const rectangularTiles = ['Rectangle 1', 'Rectangle 2'];
   const exampleTiles = ['Tile 1', 'Tile 2', 'Tile 3', 'Tile 4', 'Tile 5'];
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.textTitle}>Welcome to Harmony</Text>
-        <Text style={styles.textDescription}>
-          Your personalized experience begins now!
-        </Text>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Popular Tracks</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {rectangularTiles.map((title, index) => (
+            <Tile key={index} title={title} isRectangle />
+          ))}
+        </ScrollView>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Featured Tracks & Albums</Text>
+        <Text style={styles.sectionTitle}>Featured for You</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {exampleTiles.map((title, index) => (
             <Tile key={index} title={title} />
@@ -36,7 +40,7 @@ const HomeView = () => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>What People Nearby Listen To</Text>
+        <Text style={styles.sectionTitle}>People Nearby Listen To</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {exampleTiles.map((title, index) => (
             <Tile key={index} title={title} />
@@ -51,7 +55,7 @@ const HomeView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   header: {
     alignItems: 'center',
@@ -59,11 +63,12 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 24,
+    olor: COLORS.text,
     fontWeight: 'bold',
   },
   textDescription: {
     fontSize: 16,
-    color: '#666',
+    color: COLORS.text,
     marginTop: 10,
   },
   section: {
@@ -73,21 +78,27 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: COLORS.text,
     marginBottom: 15,
   },
   tile: {
     width: 150,
     height: 150,
     borderRadius: 15,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: COLORS.tabBar,
+    borderColor: COLORS.primary,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
+  rectangleTile: {
+    width: 300, // Twice the width of the original tiles
+  },
   tileText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.text,
   },
   // Add styles for tiles and scrollable elements here
 });

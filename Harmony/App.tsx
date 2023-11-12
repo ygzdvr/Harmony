@@ -44,7 +44,6 @@ function MyTabs() {
           // You can return any component that you like here!
           return <Icon name={iconName} size={size} color={color} />;
         },
-        headerShown: false,
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.text,
         tabBarStyle: {
@@ -69,7 +68,16 @@ function MyTabs() {
           marginRight: 10,
           marginBottom: 10,
         },
-        tabBarShowLabel: false, // Optional: Hide labels for a cleaner look
+        tabBarShowLabel: false,
+        headerStyle: {
+          backgroundColor: COLORS.tabBar,
+          borderBottomWidth: 0,
+          borderWidth: 0,
+          
+        },
+        headerTitleStyle: {
+          color: COLORS.text,
+        },
       })}>
       <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Messages" component={MessageView} />
