@@ -4,15 +4,13 @@ import axios from 'axios';
 
 import HomeStyles from '../../constants/styles/HomeStyles';
 
-const HomeView = () => {
+const SearchView = () => {
   return (
     <View style={HomeStyles.container}>
       <Text style={HomeStyles.textTitle}>Welcome to Harmony</Text>
-      <Text style={HomeStyles.textDescription}>
-        Your personalized experience begins now!
-      </Text>
+      <Text style={HomeStyles.textDescription}>View your searches here!</Text>
     </View>
   );
 };
 
-export default HomeView;
+export default SearchView;

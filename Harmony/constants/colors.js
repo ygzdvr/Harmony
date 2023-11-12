@@ -2,16 +2,18 @@ const COLORS = {
   white: '#FFFFFF',
   black: '#000000',
 
-  primary: '#764EBC',
-  secondary: '#1F1434',
+  primary: '#3C1B64',
+  secondary: '#1A0C2C',
   accent: '#7C55BE',
-  background: '#040307',
-  text: '#E2DAF1',
+  background: '#07030C',
+  text: '#E4D7F4',
 
   titlePurple: '#764EBC',
   titlePink: '#ED1C65',
 
   spotifyGreen: '#1DB954',
+  tabBar: '#0C0118',
+  tabBarBorder: '#120128'
 };
 
 export default COLORS;

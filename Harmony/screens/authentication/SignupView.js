@@ -102,12 +102,12 @@ const SignupView = ({navigation}) => {
       console.log('access_token', access_token);
       SPOTIFY(access_token).then(data => {
         console.log('data', JSON.stringify(data));
-        textify(data).then(textResponse => {
-          console.log('textResponse', textResponse);
-          vectorEmbedding(textResponse).then(vectorResponse => {
-            console.log('vectorResponse', vectorResponse);
-          });
-        });
+        // textify(data).then(textResponse => {
+        //   console.log('textResponse', textResponse);
+        //   vectorEmbedding(textResponse).then(vectorResponse => {
+        //     console.log('vectorResponse', vectorResponse);
+        //   });
+        // });
       });
       put('@access_token', access_token);
       navigation.navigate('HomeView', {screen: 'HomeView'});
