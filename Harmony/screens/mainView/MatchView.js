@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 30,
     padding: 20,
-    width: '100%', // This ensures the swiper takes full width
+    width: '100%',
   },
   card: {
     borderRadius: 20,
     height: 200,
-    backgroundColor: COLORS.text, // Ensure this is the color you want for the card
+    backgroundColor: COLORS.text,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignSelf: 'flex-start',
-    width: '100%', // This ensures button container takes full width
+    width: '100%',
   },
   button: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: COLORS.primary, // Ensure this is the color you want for the buttons
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
