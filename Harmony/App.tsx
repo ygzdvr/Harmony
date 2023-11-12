@@ -18,6 +18,7 @@ import MessageView from './screens/mainView/MessageView';
 import EventView from './screens/mainView/EventView';
 import SearchView from './screens/mainView/SearchView';
 import COLORS from './constants/colors';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,7 +26,24 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = 'home';
+          } else if (route.name === 'Messages') {
+            iconName = 'feather';
+          } else if (route.name === 'Search') {
+            iconName = 'search';
+          } else if (route.name === 'Events') {
+            iconName = 'map';
+          }
+          // ... Add more conditions for other tabs
+
+          // You can return any component that you like here!
+          return <Icon name={iconName} size={size} color={color} />;
+        },
         headerShown: false,
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.text,
@@ -52,7 +70,7 @@ function MyTabs() {
           marginBottom: 10,
         },
         tabBarShowLabel: false, // Optional: Hide labels for a cleaner look
-      }}>
+      })}>
       <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Messages" component={MessageView} />
       <Tab.Screen name="Search" component={SearchView} />
