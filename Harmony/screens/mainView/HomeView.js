@@ -40,7 +40,7 @@ const HomeView = () => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>New & Fresh</Text>
+        <Text style={styles.sectionTitle}>People Nearby Listen</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {exampleTiles.map((title, index) => (
             <Tile key={index} title={title} />

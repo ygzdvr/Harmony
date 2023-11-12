@@ -2,7 +2,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeView from '../../screens/mainView/HomeView';
-import MessageView from '../../screens/mainView/MessageView';
+import MatchView from '../../screens/mainView/MatchView';
 import EventView from '../../screens/mainView/EventView';
 import SearchView from '../../screens/mainView/SearchView';
 import COLORS from '../../constants/colors';
@@ -64,7 +64,7 @@ const CustomTabs = () => {
         headerShown: false,
       })}>
       <Tab.Screen name="Home" component={HomeView} />
-      <Tab.Screen name="Messages" component={MessageView} />
+      <Tab.Screen name="Messages" component={MatchView} />
       <Tab.Screen name="Search" component={SearchView} />
       <Tab.Screen name="Events" component={EventView} />
     </Tab.Navigator>
