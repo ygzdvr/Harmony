@@ -226,6 +226,14 @@ const SignupView = ({navigation}) => {
         return null;
     }
   };
+  const isValidEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPassword = () => {
+    return password.length >= 8;
+  };
 
   const validateStep = () => {
     switch (step) {
@@ -244,9 +252,9 @@ const SignupView = ({navigation}) => {
       case 7:
         return username.trim() !== ''; // Validate username
       case 8:
-        return password.trim() !== ''; // Validate password
+        return password.trim() !== '' && isValidPassword; // Validate password
       case 9:
-        return email.trim() !== ''; // Validate email
+        return email.trim() !== '' && isValidEmail(); // Validate email
       case 10:
         return (
           birthDay.trim() !== '' &&
@@ -268,7 +276,7 @@ const SignupView = ({navigation}) => {
   };
 
   const handleContinue = () => {
-    if (true) {
+    if (validateStep()) {
       if (step < totalSteps) {
         setStep(prevStep => prevStep + 1);
         switch (step) {
@@ -338,7 +346,9 @@ const SignupView = ({navigation}) => {
           setVerifyUsername('Please enter a valid username.');
           break;
         case 8:
-          setVerifyPassword('Please enter a valid password.');
+          setVerifyPassword(
+            'Please enter a valid password of at least 8 characters.',
+          );
           break;
         case 9:
           setVerifyEmail('Please enter a valid email.');
