@@ -28,8 +28,13 @@ import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
 import {textify} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
-import {APP_FIREBASE, AUTH_FIREBASE} from '../../api/firebase/firebase';
+import {
+  APP_FIREBASE,
+  AUTH_FIREBASE,
+  DB_FIREBASE,
+} from '../../api/firebase/firebase';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {collection, addDoc, setDoc, doc} from 'firebase/firestore';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -76,14 +81,31 @@ const SignupView = ({navigation}) => {
   };
   const SignupHandle = async () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
+      .then(async userCredential => {
         const user = userCredential.user;
         console.log('Registered with: ', user.email);
+        await DatabaseHandle(user.uid); // Call DatabaseHandle with user's UID
         navigation.navigate('HomeView');
       })
       .catch(error => {
         console.log('Error:', error);
       });
+  };
+  const DatabaseHandle = async userID => {
+    // Use setDoc to set the document with the user's UID
+    await setDoc(doc(DB_FIREBASE, 'users', userID), {
+      name: name,
+      username: username,
+      email: email,
+      password: password, // Storing plain text passwords is not recommended
+      gender: gender,
+      birthMonth: birthMonth,
+      birthDay: birthDay,
+      birthYear: birthYear,
+      mode: mode,
+      interest: interest,
+    });
+    console.log('User document created with ID: ', userID);
   };
 
   const [request, response, promptAsync] = useAuthRequest(
@@ -116,6 +138,7 @@ const SignupView = ({navigation}) => {
       SPOTIFY(access_token).then(data => {
         console.log('data', JSON.stringify(data));
         SignupHandle();
+        DatabaseHandle();
         // textify(data).then(textResponse => {
         //   console.log('textResponse', textResponse);
         //   vectorEmbedding(textResponse).then(vectorResponse => {
@@ -252,7 +275,7 @@ const SignupView = ({navigation}) => {
       case 7:
         return username.trim() !== ''; // Validate username
       case 8:
-        return password.trim() !== '' && isValidPassword; // Validate password
+        return password.trim() !== '' && isValidPassword(); // Validate password
       case 9:
         return email.trim() !== '' && isValidEmail(); // Validate email
       case 10:
