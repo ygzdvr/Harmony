@@ -98,7 +98,7 @@ const SignupStyles = StyleSheet.create({
   continueText: {
     color: COLORS.text,
     fontSize: 16,
-    fontWeight: 'medium',
+    fontWeight: 'bold',
   },
   finishText: {
     color: COLORS.background,

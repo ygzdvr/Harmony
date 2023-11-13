@@ -28,6 +28,8 @@ import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
 import {textify} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
+import {APP_FIREBASE, AUTH_FIREBASE} from '../../api/firebase/firebase';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -67,10 +69,21 @@ const SignupView = ({navigation}) => {
 
   const [interest, setInterest] = useState('');
   const [verifyInterest, setVerifyInterest] = useState('');
-
+  const auth = AUTH_FIREBASE;
   const discovery = {
     authorizationEndpoint: 'https://accounts.spotify.com/authorize',
     tokenEndpoint: 'https://accounts.spotify.com/api/token',
+  };
+  const SignupHandle = async () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        const user = userCredential.user;
+        console.log('Registered with: ', user.email);
+        navigation.navigate('HomeView');
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
   };
 
   const [request, response, promptAsync] = useAuthRequest(
@@ -102,6 +115,7 @@ const SignupView = ({navigation}) => {
       console.log('access_token', access_token);
       SPOTIFY(access_token).then(data => {
         console.log('data', JSON.stringify(data));
+        SignupHandle();
         // textify(data).then(textResponse => {
         //   console.log('textResponse', textResponse);
         //   vectorEmbedding(textResponse).then(vectorResponse => {
