@@ -49,8 +49,8 @@ function App(): JSX.Element {
     }
   });
   console.log(authenticated);
-
-  if (!authenticated) {
+  // !authenticated
+  if (true) {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="WelcomeView">

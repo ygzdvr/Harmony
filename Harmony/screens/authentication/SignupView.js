@@ -34,7 +34,14 @@ import {
   DB_FIREBASE,
 } from '../../api/firebase/firebase';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
-import {collection, addDoc, setDoc, doc} from 'firebase/firestore';
+import {
+  collection,
+  query,
+  getDocs,
+  setDoc,
+  doc,
+  where,
+} from 'firebase/firestore';
 
 const SignupView = ({navigation}) => {
   const [step, setStep] = useState(1);
@@ -75,6 +82,12 @@ const SignupView = ({navigation}) => {
   const [interest, setInterest] = useState('');
   const [verifyInterest, setVerifyInterest] = useState('');
   const auth = AUTH_FIREBASE;
+  const checkUserExists = async (field, value) => {
+    const querySnapshot = await getDocs(
+      query(collection(DB_FIREBASE, 'users'), where(field, '==', value)),
+    );
+    return !querySnapshot.empty;
+  };
   const discovery = {
     authorizationEndpoint: 'https://accounts.spotify.com/authorize',
     tokenEndpoint: 'https://accounts.spotify.com/api/token',
@@ -298,10 +311,10 @@ const SignupView = ({navigation}) => {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (validateStep()) {
+      let exists = false;
       if (step < totalSteps) {
-        setStep(prevStep => prevStep + 1);
         switch (step) {
           case 1:
             setVerifyPhone('');
@@ -319,12 +332,22 @@ const SignupView = ({navigation}) => {
             setVerifyName('');
             break;
           case 7:
+            exists = await checkUserExists('username', username);
+            if (exists) {
+              setVerifyUsername('Username already exists.');
+              return;
+            }
             setVerifyUsername('');
             break;
           case 8:
             setVerifyPassword('');
             break;
           case 9:
+            exists = await checkUserExists('email', email);
+            if (exists) {
+              setVerifyEmail('Email already exists.');
+              return;
+            }
             setVerifyEmail('');
             break;
           case 10:
@@ -344,6 +367,7 @@ const SignupView = ({navigation}) => {
           default:
             break;
         }
+        setStep(prevStep => prevStep + 1);
       } else {
         promptAsync();
       }

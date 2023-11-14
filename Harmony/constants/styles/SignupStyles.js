@@ -77,9 +77,9 @@ const SignupStyles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   continueButton: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     padding: 15,
-    borderRadius: 15,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
