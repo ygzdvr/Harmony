@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import {AUTH_FIREBASE, DB_FIREBASE} from '../../api/firebase/firebase';
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import SettingStyles from '../../constants/styles/SettingStyles';
 import {getDoc, doc} from 'firebase/firestore';
 import {get} from '../../api/util/get';
+import COLORS from '../../constants/colors';
 
-const SettingView = ({onLogout}) => {
+const SettingView = ({navigation}) => {
+  const route = useRoute();
+  const {onLogout} = route.params;
   const [userData, setUserData] = useState(null);
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,9 +34,14 @@ const SettingView = ({onLogout}) => {
   };
   return (
     <View style={SettingStyles.container}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={SettingStyles.backButton}>
+        <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
+      </TouchableOpacity>
       <Text style={SettingStyles.textTitle}>Settings</Text>
       {userData && (
-        <View>
+        <View style={SettingStyles.infoView}>
           <Text style={SettingStyles.textDescription}>
             Name: {userData.name}
           </Text>

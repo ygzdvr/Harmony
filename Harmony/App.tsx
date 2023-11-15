@@ -99,11 +99,10 @@ function App(): JSX.Element {
         />
         <Stack.Screen
           name="SettingView"
-          component={() => <SettingView onLogout={handleLogout} />}
+          component={SettingView}
+          initialParams={{onLogout: handleLogout}} // Pass the handleLogout function
           options={{
-            headerShown: true,
-
-            header: ({navigation}) => <CustomHeader navigation={navigation} />,
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

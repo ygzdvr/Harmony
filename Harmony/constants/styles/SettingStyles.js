@@ -9,6 +9,14 @@ const SettingStyles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 20,
   },
+  backButton: {
+    marginTop: 30,
+    padding: 7,
+    backgroundColor: COLORS.text,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 20,
+  },
   textTitle: {
     color: COLORS.text,
     fontSize: 28,
@@ -35,6 +43,18 @@ const SettingStyles = StyleSheet.create({
     color: COLORS.text,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  infoView: {
+    backgroundColor: COLORS.background,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+  },
+  infoContainer: {
+    backgroundColor: COLORS.text,
+    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
 });
 
