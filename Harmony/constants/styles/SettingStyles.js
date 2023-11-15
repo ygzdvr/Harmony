@@ -50,7 +50,7 @@ const SettingStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
   },
-  genderTile: {
+  Tile: {
     flex: 1,
     padding: 10,
     margin: 5,
@@ -59,19 +59,19 @@ const SettingStyles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLORS.background,
   },
-  genderTileSelected: {
+  TileSelected: {
     backgroundColor: COLORS.text,
   },
-  genderText: {
+  TileText: {
     color: COLORS.text,
   },
-  genderTextSelected: {
+  TileTextSelected: {
     color: COLORS.background,
   },
-  genderContainer: {
+  TileContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
 

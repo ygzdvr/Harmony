@@ -17,16 +17,43 @@ const SettingView = ({navigation}) => {
     const isSelected = userData.gender === gender;
     return (
       <View
-        style={[
-          SettingStyles.genderTile,
-          isSelected && SettingStyles.genderTileSelected,
-        ]}>
+        style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
         <Text
           style={[
-            SettingStyles.genderText,
-            isSelected && SettingStyles.genderTextSelected,
+            SettingStyles.TileText,
+            isSelected && SettingStyles.TileTextSelected,
           ]}>
           {gender}
+        </Text>
+      </View>
+    );
+  };
+  const renderModeTile = mode => {
+    const isSelected = userData.mode === mode;
+    return (
+      <View
+        style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
+        <Text
+          style={[
+            SettingStyles.TileText,
+            isSelected && SettingStyles.TileTextSelected,
+          ]}>
+          {mode}
+        </Text>
+      </View>
+    );
+  };
+  const renderInterestTile = interest => {
+    const isSelected = userData.interest === interest;
+    return (
+      <View
+        style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
+        <Text
+          style={[
+            SettingStyles.TileText,
+            isSelected && SettingStyles.TileTextSelected,
+          ]}>
+          {interest}
         </Text>
       </View>
     );
@@ -81,16 +108,24 @@ const SettingView = ({navigation}) => {
       </View>
 
       <Text style={SettingStyles.textDescription}>Gender</Text>
-      <View style={SettingStyles.genderContainer}>
+      <View style={SettingStyles.TileContainer}>
         {renderGenderTile('Man')}
         {renderGenderTile('Woman')}
         {renderGenderTile('Nonbinary')}
       </View>
 
-      <Text style={SettingStyles.textDescription}>Mode: {userData.mode}</Text>
-      <Text style={SettingStyles.textDescription}>
-        Interest: {userData.interest}
-      </Text>
+      <Text style={SettingStyles.textDescription}>Selected Mode</Text>
+      <View style={SettingStyles.TileContainer}>
+        {renderModeTile('Date')}
+        {renderModeTile('BFF')}
+        {renderGenderTile('Vibes')}
+      </View>
+      <Text style={SettingStyles.textDescription}>Selected Interest</Text>
+      <View style={SettingStyles.TileContainer}>
+        {renderInterestTile('Man')}
+        {renderInterestTile('Woman')}
+        {renderInterestTile('Everyone')}
+      </View>
       <TouchableOpacity
         style={SettingStyles.logoutButton}
         onPress={handleLogOut}>
