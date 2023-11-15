@@ -20,12 +20,23 @@ import {onAuthStateChanged} from 'firebase/auth';
 import {AUTH_FIREBASE} from './api/firebase/firebase';
 import {get} from './api/util/get';
 import {put} from './api/util/put';
+import {signOut} from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   const auth = AUTH_FIREBASE;
   const [authenticated, setAuthenticated] = useState(false);
+  const handleLogout = () => {
+    signOut(AUTH_FIREBASE)
+      .then(() => {
+        put('@authenticated', 'not authenticated');
+        setAuthenticated(false);
+      })
+      .catch(error => {
+        console.error('Logout error:', error);
+      });
+  };
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) {
@@ -50,70 +61,52 @@ function App(): JSX.Element {
     }
   });
   console.log(authenticated);
-  const AuthStack = () => (
-    <Stack.Navigator initialRouteName="WelcomeView">
-      <Stack.Screen
-        name="WelcomeView"
-        component={WelcomeView}
-        options={{headerShown: false, gestureEnabled: false}}
-      />
-      <Stack.Screen
-        name="LoginView"
-        component={LoginView}
-        options={{headerShown: false, gestureEnabled: false}}
-      />
-      <Stack.Screen
-        name="SignupView"
-        component={SignupView}
-        options={{headerShown: false, gestureEnabled: false}}
-      />
-      <Stack.Screen
-        name="HomeView"
-        component={CustomTabs}
-        options={{
-          headerShown: true,
-          gestureEnabled: false,
-          header: ({navigation}) => <CustomHeader navigation={navigation} />,
-        }}
-      />
-      <Stack.Screen
-        name="SettingView"
-        component={SettingView}
-        options={{
-          headerShown: true,
-          gestureEnabled: false,
-          header: ({navigation}) => <CustomHeader navigation={navigation} />,
-        }}
-      />
-    </Stack.Navigator>
-  );
-
-  const MainStack = () => (
-    <Stack.Navigator initialRouteName="HomeView">
-      <Stack.Screen
-        name="HomeView"
-        component={CustomTabs}
-        options={{
-          headerShown: true,
-          gestureEnabled: false,
-          header: ({navigation}) => <CustomHeader navigation={navigation} />,
-        }}
-      />
-      <Stack.Screen
-        name="SettingView"
-        component={SettingView}
-        options={{
-          headerShown: true,
-          gestureEnabled: false,
-          header: ({navigation}) => <CustomHeader navigation={navigation} />,
-        }}
-      />
-    </Stack.Navigator>
-  );
+  // !authenticated
+  if (!authenticated) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="WelcomeView">
+          <Stack.Screen
+            name="WelcomeView"
+            component={WelcomeView}
+            options={{headerShown: false, gestureEnabled: false}}
+          />
+          <Stack.Screen
+            name="LoginView"
+            component={LoginView}
+            options={{headerShown: false, gestureEnabled: false}}
+          />
+          <Stack.Screen
+            name="SignupView"
+            component={SignupView}
+            options={{headerShown: false, gestureEnabled: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 
   return (
     <NavigationContainer>
-      {authenticated ? <MainStack /> : <AuthStack />}
+      <Stack.Navigator initialRouteName="HomeView">
+        <Stack.Screen
+          name="HomeView"
+          component={CustomTabs}
+          options={{
+            headerShown: true,
+            header: ({navigation}) => <CustomHeader navigation={navigation} />,
+          }}
+        />
+        <Stack.Screen
+          name="SettingView"
+          component={() => <SettingView onLogout={handleLogout} />}
+          options={{
+            headerShown: true,
+
+            header: ({navigation}) => <CustomHeader navigation={navigation} />,
+          }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

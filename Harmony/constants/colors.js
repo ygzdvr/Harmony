@@ -13,7 +13,9 @@ const COLORS = {
 
   spotifyGreen: '#1DB954',
   tabBar: '#0C0118',
-  tabBarBorder: '#120128'
+  tabBarBorder: '#120128',
+
+  logOutButton: '#be1651',
 };
 
 export default COLORS;

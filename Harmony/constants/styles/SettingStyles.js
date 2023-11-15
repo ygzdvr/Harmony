@@ -7,7 +7,7 @@ const SettingStyles = StyleSheet.create({
     backgroundColor: COLORS.background,
     flex: 1,
     alignItems: 'flex-start',
-    paddingLeft: 20,
+    paddingHorizontal: 20,
   },
   textTitle: {
     color: COLORS.text,
@@ -22,16 +22,16 @@ const SettingStyles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
-  deleteButton: {
-    backgroundColor: COLORS.titlePink,
+  logoutButton: {
+    backgroundColor: COLORS.logOutButton,
     padding: 15,
-    borderRadius: 15,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '95%',
+    width: '100%',
     marginBottom: 20,
   },
-  deleteText: {
+  logoutText: {
     color: COLORS.text,
     fontSize: 16,
     fontWeight: 'bold',
