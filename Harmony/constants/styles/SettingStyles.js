@@ -9,6 +9,19 @@ const SettingStyles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 20,
   },
+  dataContainer: {
+    backgroundColor: COLORS.text,
+    padding: 15,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'left',
+    width: '100%',
+    marginBottom: 15,
+  },
+  dataText: {
+    color: COLORS.background,
+    fontSize: 15,
+  },
   backButton: {
     marginTop: 30,
     padding: 7,
@@ -17,18 +30,11 @@ const SettingStyles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 20,
   },
-  textTitle: {
-    color: COLORS.text,
-    fontSize: 28,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
   textDescription: {
     color: COLORS.text,
     fontSize: 15,
-    alignSelf: 'center',
-    marginBottom: 20,
+    alignSelf: 'left',
+    marginBottom: 5,
   },
   logoutButton: {
     backgroundColor: COLORS.logOutButton,
@@ -41,20 +47,8 @@ const SettingStyles = StyleSheet.create({
   },
   logoutText: {
     color: COLORS.text,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-  },
-  infoView: {
-    backgroundColor: COLORS.background,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-  },
-  infoContainer: {
-    backgroundColor: COLORS.text,
-    alignSelf: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-    marginBottom: 20,
   },
 });
 

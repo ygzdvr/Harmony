@@ -39,33 +39,36 @@ const SettingView = ({navigation}) => {
         style={SettingStyles.backButton}>
         <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
       </TouchableOpacity>
-      <Text style={SettingStyles.textTitle}>Settings</Text>
-      {userData && (
-        <View style={SettingStyles.infoView}>
-          <Text style={SettingStyles.textDescription}>
-            Name: {userData.name}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Username: {userData.username}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Email: {userData.email}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Gender: {userData.gender}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Birthday: {userData.birthMonth}/{userData.birthDay}/
-            {userData.birthYear}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Mode: {userData.mode}
-          </Text>
-          <Text style={SettingStyles.textDescription}>
-            Interest: {userData.interest}
-          </Text>
-        </View>
-      )}
+      <Text style={SettingStyles.textDescription}>Full Name</Text>
+      <View style={SettingStyles.dataContainer}>
+        <Text style={SettingStyles.dataText}>{userData.name}</Text>
+      </View>
+
+      <Text style={SettingStyles.textDescription}>Displayed Username</Text>
+      <View style={SettingStyles.dataContainer}>
+        <Text style={SettingStyles.dataText}>{userData.username}</Text>
+      </View>
+
+      <Text style={SettingStyles.textDescription}>Email Used</Text>
+      <View style={SettingStyles.dataContainer}>
+        <Text style={SettingStyles.dataText}>{userData.email}</Text>
+      </View>
+
+      <Text style={SettingStyles.textDescription}>Birthday</Text>
+      <View style={SettingStyles.dataContainer}>
+        <Text style={SettingStyles.dataText}>
+          {userData.birthMonth}/{userData.birthDay}/{userData.birthYear}
+        </Text>
+      </View>
+
+
+      <Text style={SettingStyles.textDescription}>
+        Gender: {userData.gender}
+      </Text>
+      <Text style={SettingStyles.textDescription}>Mode: {userData.mode}</Text>
+      <Text style={SettingStyles.textDescription}>
+        Interest: {userData.interest}
+      </Text>
       <TouchableOpacity
         style={SettingStyles.logoutButton}
         onPress={handleLogOut}>
