@@ -12,6 +12,25 @@ const SettingView = ({navigation}) => {
   const route = useRoute();
   const {onLogout} = route.params;
   const [userData, setUserData] = useState(null);
+
+  const renderGenderTile = gender => {
+    const isSelected = userData.gender === gender;
+    return (
+      <View
+        style={[
+          SettingStyles.genderTile,
+          isSelected && SettingStyles.genderTileSelected,
+        ]}>
+        <Text
+          style={[
+            SettingStyles.genderText,
+            isSelected && SettingStyles.genderTextSelected,
+          ]}>
+          {gender}
+        </Text>
+      </View>
+    );
+  };
   useEffect(() => {
     const fetchUserData = async () => {
       const useruid = await get('@user_id');
@@ -61,10 +80,13 @@ const SettingView = ({navigation}) => {
         </Text>
       </View>
 
+      <Text style={SettingStyles.textDescription}>Gender</Text>
+      <View style={SettingStyles.genderContainer}>
+        {renderGenderTile('Man')}
+        {renderGenderTile('Woman')}
+        {renderGenderTile('Nonbinary')}
+      </View>
 
-      <Text style={SettingStyles.textDescription}>
-        Gender: {userData.gender}
-      </Text>
       <Text style={SettingStyles.textDescription}>Mode: {userData.mode}</Text>
       <Text style={SettingStyles.textDescription}>
         Interest: {userData.interest}

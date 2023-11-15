@@ -50,6 +50,29 @@ const SettingStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
   },
+  genderTile: {
+    flex: 1,
+    padding: 10,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    backgroundColor: COLORS.background,
+  },
+  genderTileSelected: {
+    backgroundColor: COLORS.text,
+  },
+  genderText: {
+    color: COLORS.text,
+  },
+  genderTextSelected: {
+    color: COLORS.background,
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
 });
 
 export default SettingStyles;
