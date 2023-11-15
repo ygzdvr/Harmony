@@ -98,6 +98,7 @@ const SignupView = ({navigation}) => {
         const user = userCredential.user;
         console.log('Registered with: ', user.email);
         await DatabaseHandle(user.uid); // Call DatabaseHandle with user's UID
+        put('@user_id', user.uid);
         navigation.navigate('HomeView');
       })
       .catch(error => {

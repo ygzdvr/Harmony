@@ -1,18 +1,62 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import {AUTH_FIREBASE, DB_FIREBASE} from '../../api/firebase/firebase';
 
 import SettingStyles from '../../constants/styles/SettingStyles';
+import {getDoc, doc} from 'firebase/firestore';
+import {get} from '../../api/util/get';
 
 const SettingView = ({onLogout}) => {
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const useruid = await get('@user_id');
+      if (useruid) {
+        const users = doc(DB_FIREBASE, 'users', useruid);
+        const docSnap = await getDoc(users);
+        if (docSnap.exists) {
+          setUserData(docSnap.data());
+          console.log('Document data:', docSnap.data());
+        }
+      } else {
+        console.log('No such document!');
+      }
+    };
+    fetchUserData();
+  }, []);
+
   const handleLogOut = () => {
     onLogout();
   };
   return (
     <View style={SettingStyles.container}>
       <Text style={SettingStyles.textTitle}>Settings</Text>
-      <Text style={SettingStyles.textDescription}>
-        View your settings here!
-      </Text>
+      {userData && (
+        <View>
+          <Text style={SettingStyles.textDescription}>
+            Name: {userData.name}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Username: {userData.username}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Email: {userData.email}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Gender: {userData.gender}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Birthday: {userData.birthMonth}/{userData.birthDay}/
+            {userData.birthYear}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Mode: {userData.mode}
+          </Text>
+          <Text style={SettingStyles.textDescription}>
+            Interest: {userData.interest}
+          </Text>
+        </View>
+      )}
       <TouchableOpacity
         style={SettingStyles.logoutButton}
         onPress={handleLogOut}>

@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LoginStyles from '../../constants/styles/LoginStyles';
 import {AUTH_FIREBASE} from '../../api/firebase/firebase';
 import {signInWithEmailAndPassword} from 'firebase/auth';
+import {put} from '../../api/util/put';
 
 const LoginView = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -24,6 +25,7 @@ const LoginView = ({navigation}) => {
         // Signed in
         const user = userCredential.user;
         // Navigate to the HomeView or another screen as needed
+        put('@user_id', user.uid);
         navigation.navigate('HomeView');
       })
       .catch(error => {
