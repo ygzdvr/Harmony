@@ -13,6 +13,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WelcomeView from './screens/authentication/WelcomeView';
 import LoginView from './screens/authentication/LoginView';
 import SignupView from './screens/authentication/SignupView';
+import SettingView from './screens/mainView/SettingView';
 import CustomHeader from './partials/home/CustomHeader';
 import CustomTabs from './partials/home/CustomTabs';
 import {onAuthStateChanged} from 'firebase/auth';
@@ -74,6 +75,11 @@ function App(): JSX.Element {
             component={CustomTabs}
             options={{headerShown: true, header: () => <CustomHeader />}}
           />
+          <Stack.Screen
+            name="SettingView"
+            component={SettingView}
+            options={{headerShown: true, header: () => <CustomHeader />}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -85,6 +91,11 @@ function App(): JSX.Element {
         <Stack.Screen
           name="HomeView"
           component={CustomTabs}
+          options={{headerShown: true, header: () => <CustomHeader />}}
+        />
+        <Stack.Screen
+          name="SettingView"
+          component={SettingView}
           options={{headerShown: true, header: () => <CustomHeader />}}
         />
       </Stack.Navigator>
