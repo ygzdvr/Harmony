@@ -50,71 +50,70 @@ function App(): JSX.Element {
     }
   });
   console.log(authenticated);
-  // !authenticated
-  if (!authenticated) {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="WelcomeView">
-          <Stack.Screen
-            name="WelcomeView"
-            component={WelcomeView}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="LoginView"
-            component={LoginView}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="SignupView"
-            component={SignupView}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="HomeView"
-            component={CustomTabs}
-            options={{
-              headerShown: true,
-              header: ({navigation}) => (
-                <CustomHeader navigation={navigation} />
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="SettingView"
-            component={SettingView}
-            options={{
-              headerShown: true,
-              header: ({navigation}) => (
-                <CustomHeader navigation={navigation} />
-              ),
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+  const AuthStack = () => (
+    <Stack.Navigator initialRouteName="WelcomeView">
+      <Stack.Screen
+        name="WelcomeView"
+        component={WelcomeView}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="LoginView"
+        component={LoginView}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="SignupView"
+        component={SignupView}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="HomeView"
+        component={CustomTabs}
+        options={{
+          headerShown: true,
+          gestureEnabled: false,
+          header: ({navigation}) => <CustomHeader navigation={navigation} />,
+        }}
+      />
+      <Stack.Screen
+        name="SettingView"
+        component={SettingView}
+        options={{
+          headerShown: true,
+          gestureEnabled: false,
+          header: ({navigation}) => <CustomHeader navigation={navigation} />,
+        }}
+      />
+    </Stack.Navigator>
+  );
+
+  const MainStack = () => (
+    <Stack.Navigator initialRouteName="HomeView">
+      <Stack.Screen
+        name="HomeView"
+        component={CustomTabs}
+        options={{
+          headerShown: true,
+          gestureEnabled: false,
+          header: ({navigation}) => <CustomHeader navigation={navigation} />,
+        }}
+      />
+      <Stack.Screen
+        name="SettingView"
+        component={SettingView}
+        options={{
+          headerShown: true,
+          gestureEnabled: false,
+          header: ({navigation}) => <CustomHeader navigation={navigation} />,
+        }}
+      />
+    </Stack.Navigator>
+  );
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeView">
-        <Stack.Screen
-          name="HomeView"
-          component={CustomTabs}
-          options={{
-            headerShown: true,
-            header: ({navigation}) => <CustomHeader navigation={navigation} />,
-          }}
-        />
-        <Stack.Screen
-          name="SettingView"
-          component={SettingView}
-          options={{
-            headerShown: true,
-            header: ({navigation}) => <CustomHeader navigation={navigation} />,
-          }}
-        />
-      </Stack.Navigator>
+      {authenticated ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }

@@ -6,8 +6,8 @@ const SettingStyles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.background,
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 20,
   },
   textTitle: {
     color: COLORS.text,
@@ -21,6 +21,20 @@ const SettingStyles = StyleSheet.create({
     fontSize: 15,
     alignSelf: 'center',
     marginBottom: 20,
+  },
+  deleteButton: {
+    backgroundColor: COLORS.titlePink,
+    padding: 15,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '95%',
+    marginBottom: 20,
+  },
+  deleteText: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
