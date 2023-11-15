@@ -3153,6 +3153,21 @@
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.9.10.tgz"
   integrity sha512-3Gnx08Ns1sEoCrWssEgTSJs/rsT2vhGP+Ja9cnnk9k4ALxinORlQneLXFeFKOTJMOeZUFD1s7w+w2AphTpvzZw==
 
+"@types/react-native-vector-icons@^6.4.17":
+  version "6.4.17"
+  resolved "https://registry.npmjs.org/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.17.tgz"
+  integrity sha512-pE5vmuKA9BgbrWmri+LVLYmhwLCJ1gKerpXU6qrXFehLqY/sJv1VdvkUul9UaVseKJ3XhhG2LWg3kF1xQD2EGA==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "^0.70"
+
+"@types/react-native@^0.70":
+  version "0.70.17"
+  resolved "https://registry.npmjs.org/@types/react-native/-/react-native-0.70.17.tgz"
+  integrity sha512-cCOHvk/KB0e+d8p8qaw27/Fuz3+NiIqDYhIkF0tFGO/OEOt700LXg1AX9jRlmtlY95hozJ+WjDJ0xw0a4O6z/Q==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-test-renderer@^18.0.0":
   version "18.0.6"
   resolved "https://registry.npmjs.org/@types/react-test-renderer/-/react-test-renderer-18.0.6.tgz"

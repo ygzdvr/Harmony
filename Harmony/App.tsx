@@ -51,7 +51,7 @@ function App(): JSX.Element {
   });
   console.log(authenticated);
   // !authenticated
-  if (true) {
+  if (!authenticated) {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="WelcomeView">
@@ -73,12 +73,22 @@ function App(): JSX.Element {
           <Stack.Screen
             name="HomeView"
             component={CustomTabs}
-            options={{headerShown: true, header: () => <CustomHeader />}}
+            options={{
+              headerShown: true,
+              header: ({navigation}) => (
+                <CustomHeader navigation={navigation} />
+              ),
+            }}
           />
           <Stack.Screen
             name="SettingView"
             component={SettingView}
-            options={{headerShown: true, header: () => <CustomHeader />}}
+            options={{
+              headerShown: true,
+              header: ({navigation}) => (
+                <CustomHeader navigation={navigation} />
+              ),
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -91,12 +101,18 @@ function App(): JSX.Element {
         <Stack.Screen
           name="HomeView"
           component={CustomTabs}
-          options={{headerShown: true, header: () => <CustomHeader />}}
+          options={{
+            headerShown: true,
+            header: ({navigation}) => <CustomHeader navigation={navigation} />,
+          }}
         />
         <Stack.Screen
           name="SettingView"
           component={SettingView}
-          options={{headerShown: true, header: () => <CustomHeader />}}
+          options={{
+            headerShown: true,
+            header: ({navigation}) => <CustomHeader navigation={navigation} />,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
