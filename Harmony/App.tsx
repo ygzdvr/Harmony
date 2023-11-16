@@ -1,13 +1,4 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react-hooks/exhaustive-deps */
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import React, {useEffect, useState} from 'react';
-
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WelcomeView from './screens/authentication/WelcomeView';
@@ -16,29 +7,37 @@ import SignupView from './screens/authentication/SignupView';
 import SettingView from './screens/mainView/SettingView';
 import CustomHeader from './partials/home/CustomHeader';
 import CustomTabs from './partials/home/CustomTabs';
-import {onAuthStateChanged} from 'firebase/auth';
+import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {AUTH_FIREBASE} from './api/firebase/firebase';
 import {get} from './api/util/get';
 import {put} from './api/util/put';
-import {signOut} from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
-  const auth = AUTH_FIREBASE;
   const [authenticated, setAuthenticated] = useState(false);
-  const handleLogout = () => {
-    signOut(AUTH_FIREBASE)
-      .then(() => {
-        put('@authenticated', 'not authenticated');
-        setAuthenticated(false);
-      })
-      .catch(error => {
-        console.error('Logout error:', error);
-      });
+
+  const handleLogout = async () => {
+    try {
+      await signOut(AUTH_FIREBASE);
+      put('@authenticated', 'not authenticated');
+      setAuthenticated(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
+
+  const handleSign = async () => {
+    try {
+      put('@authenticated', 'authenticated');
+      setAuthenticated(true);
+    } catch (error) {
+      console.error('Signup Error:', error);
+    }
+  };
+
   useEffect(() => {
-    onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(AUTH_FIREBASE, user => {
       if (user) {
         setAuthenticated(true);
         put('@authenticated', 'authenticated');
@@ -47,21 +46,16 @@ function App(): JSX.Element {
         put('@authenticated', 'not authenticated');
       }
     });
+
+    return () => unsubscribe(); // Cleanup subscription
+  }, []);
+
+  useEffect(() => {
     get('@authenticated').then(res => {
-      if (res === 'authenticated') {
-        setAuthenticated(true);
-        put('@authenticated', 'authenticated');
-        console.log('changed');
-      }
+      setAuthenticated(res === 'authenticated');
     });
   }, []);
-  get('@authenticated').then(res => {
-    if (res === 'authenticated') {
-      setAuthenticated(true);
-    }
-  });
-  console.log(authenticated);
-  // !authenticated
+
   if (!authenticated) {
     return (
       <NavigationContainer>
@@ -74,30 +68,14 @@ function App(): JSX.Element {
           <Stack.Screen
             name="LoginView"
             component={LoginView}
+            initialParams={{onSignIn: handleSign}}
             options={{headerShown: false, gestureEnabled: false}}
           />
           <Stack.Screen
             name="SignupView"
             component={SignupView}
+            initialParams={{onSignUp: handleSign}}
             options={{headerShown: false, gestureEnabled: false}}
-          />
-          <Stack.Screen
-            name="HomeView"
-            component={CustomTabs}
-            options={{
-              headerShown: true,
-              header: ({navigation}) => (
-                <CustomHeader navigation={navigation} />
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="SettingView"
-            component={SettingView}
-            initialParams={{onLogout: handleLogout}} // Pass the handleLogout function
-            options={{
-              headerShown: false,
-            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -118,13 +96,12 @@ function App(): JSX.Element {
         <Stack.Screen
           name="SettingView"
           component={SettingView}
-          initialParams={{onLogout: handleLogout}} // Pass the handleLogout function
-          options={{
-            headerShown: false,
-          }}
+          initialParams={{onLogout: handleLogout}}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 export default App;

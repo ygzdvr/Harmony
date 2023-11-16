@@ -8,6 +8,7 @@ import * as Progress from 'react-native-progress';
 
 import {ResponseType, useAuthRequest} from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useRoute} from '@react-navigation/native';
 
 import PhoneNumberInput from '../../partials/authentication/signup/Phone';
 import PhoneVerificationInput from '../../partials/authentication/signup/PhoneVerification';
@@ -44,6 +45,8 @@ import {
 } from 'firebase/firestore';
 
 const SignupView = ({navigation}) => {
+  const route = useRoute();
+  const {onSignUp} = route.params;
   const [step, setStep] = useState(1);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -97,21 +100,20 @@ const SignupView = ({navigation}) => {
       .then(async userCredential => {
         const user = userCredential.user;
         console.log('Registered with: ', user.email);
-        await DatabaseHandle(user.uid); // Call DatabaseHandle with user's UID
+        await DatabaseHandle(user.uid);
         put('@user_id', user.uid);
-        navigation.navigate('HomeView');
+        onSignUp();
       })
       .catch(error => {
         console.log('Error:', error);
       });
   };
   const DatabaseHandle = async userID => {
-    // Use setDoc to set the document with the user's UID
     await setDoc(doc(DB_FIREBASE, 'users', userID), {
       name: name,
       username: username,
       email: email,
-      password: password, // Storing plain text passwords is not recommended
+      password: password,
       gender: gender,
       birthMonth: birthMonth,
       birthDay: birthDay,
@@ -161,7 +163,7 @@ const SignupView = ({navigation}) => {
         // });
       });
       put('@access_token', access_token);
-      navigation.navigate('HomeView', {screen: 'HomeView'});
+      onSignUp();
     }
   }, [response]);
 

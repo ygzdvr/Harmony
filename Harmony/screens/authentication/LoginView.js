@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState} from 'react';
+import {useRoute} from '@react-navigation/native';
 import COLORS from '../../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LoginStyles from '../../constants/styles/LoginStyles';
@@ -15,6 +16,8 @@ import {signInWithEmailAndPassword} from 'firebase/auth';
 import {put} from '../../api/util/put';
 
 const LoginView = ({navigation}) => {
+  const route = useRoute();
+  const {onSignIn} = route.params;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -26,6 +29,7 @@ const LoginView = ({navigation}) => {
         const user = userCredential.user;
         // Navigate to the HomeView or another screen as needed
         put('@user_id', user.uid);
+        onSignIn();
         navigation.navigate('HomeView');
       })
       .catch(error => {
