@@ -6,7 +6,6 @@ const SettingStyles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.background,
     flex: 1,
-    alignItems: 'flex-start',
     paddingHorizontal: 20,
   },
   dataContainer: {

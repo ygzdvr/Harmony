@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {AUTH_FIREBASE, DB_FIREBASE} from '../../api/firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -102,7 +102,7 @@ const SettingView = ({navigation}) => {
     onLogout();
   };
   return (
-    <View style={SettingStyles.container}>
+    <ScrollView style={SettingStyles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={SettingStyles.backButton}>
@@ -137,7 +137,7 @@ const SettingView = ({navigation}) => {
       <View style={SettingStyles.TileContainer}>
         {renderModeTile('Date')}
         {renderModeTile('BFF')}
-        {renderGenderTile('Vibes')}
+        {renderModeTile('Vibes')}
       </View>
       <Text style={SettingStyles.textDescription}>Selected Interest</Text>
       <View style={SettingStyles.TileContainer}>
@@ -150,7 +150,7 @@ const SettingView = ({navigation}) => {
         onPress={handleLogOut}>
         <Text style={SettingStyles.logoutText}>Log Out</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
