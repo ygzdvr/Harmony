@@ -12,9 +12,18 @@ const SettingView = ({navigation}) => {
   const route = useRoute();
   const {onLogout} = route.params;
   const [userData, setUserData] = useState(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [genderSnap, setGender] = useState('');
+  const [modeSnap, setMode] = useState('');
+  const [interestSnap, setInterest] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthDay, setBirthDay] = useState('');
+  const [birthYear, setBirthYear] = useState('');
+  const [userName, setUserName] = useState('');
 
   const renderGenderTile = gender => {
-    const isSelected = userData.gender === gender;
+    const isSelected = genderSnap === gender;
     return (
       <View
         style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
@@ -29,7 +38,7 @@ const SettingView = ({navigation}) => {
     );
   };
   const renderModeTile = mode => {
-    const isSelected = userData.mode === mode;
+    const isSelected = modeSnap === mode;
     return (
       <View
         style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
@@ -44,7 +53,7 @@ const SettingView = ({navigation}) => {
     );
   };
   const renderInterestTile = interest => {
-    const isSelected = userData.interest === interest;
+    const isSelected = interestSnap === interest;
     return (
       <View
         style={[SettingStyles.Tile, isSelected && SettingStyles.TileSelected]}>
@@ -61,11 +70,25 @@ const SettingView = ({navigation}) => {
   useEffect(() => {
     const fetchUserData = async () => {
       const useruid = await get('@user_id');
+      console.log('useruid', useruid);
       if (useruid) {
+        console.log('useruid', useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
+        console.log('users', users);
         const docSnap = await getDoc(users);
+        console.log('docSnap', docSnap);
         if (docSnap.exists) {
           setUserData(docSnap.data());
+          const userDataSnapshot = docSnap.data();
+          setName(userDataSnapshot.name);
+          setEmail(userDataSnapshot.email);
+          setGender(userDataSnapshot.gender);
+          setMode(userDataSnapshot.mode);
+          setInterest(userDataSnapshot.interest);
+          setBirthMonth(userDataSnapshot.birthMonth);
+          setBirthDay(userDataSnapshot.birthDay);
+          setBirthYear(userDataSnapshot.birthYear);
+          setUserName(userDataSnapshot.username);
           console.log('Document data:', docSnap.data());
         }
       } else {
@@ -86,34 +109,30 @@ const SettingView = ({navigation}) => {
         <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
       </TouchableOpacity>
       <Text style={SettingStyles.textDescription}>Full Name</Text>
-      <View style={SettingStyles.dataContainer}>
-        <Text style={SettingStyles.dataText}>{userData.name}</Text>
-      </View>
 
+      <View style={SettingStyles.dataContainer}>
+        <Text style={SettingStyles.dataText}>{name}</Text>
+      </View>
       <Text style={SettingStyles.textDescription}>Displayed Username</Text>
       <View style={SettingStyles.dataContainer}>
-        <Text style={SettingStyles.dataText}>{userData.username}</Text>
+        <Text style={SettingStyles.dataText}>{userName}</Text>
       </View>
-
       <Text style={SettingStyles.textDescription}>Email Used</Text>
       <View style={SettingStyles.dataContainer}>
-        <Text style={SettingStyles.dataText}>{userData.email}</Text>
+        <Text style={SettingStyles.dataText}>{email}</Text>
       </View>
-
       <Text style={SettingStyles.textDescription}>Birthday</Text>
       <View style={SettingStyles.dataContainer}>
         <Text style={SettingStyles.dataText}>
-          {userData.birthMonth}/{userData.birthDay}/{userData.birthYear}
+          {birthMonth}/{birthDay}/{birthYear}
         </Text>
       </View>
-
       <Text style={SettingStyles.textDescription}>Gender</Text>
       <View style={SettingStyles.TileContainer}>
         {renderGenderTile('Man')}
         {renderGenderTile('Woman')}
         {renderGenderTile('Nonbinary')}
       </View>
-
       <Text style={SettingStyles.textDescription}>Selected Mode</Text>
       <View style={SettingStyles.TileContainer}>
         {renderModeTile('Date')}

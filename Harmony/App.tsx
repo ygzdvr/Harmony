@@ -81,6 +81,24 @@ function App(): JSX.Element {
             component={SignupView}
             options={{headerShown: false, gestureEnabled: false}}
           />
+          <Stack.Screen
+            name="HomeView"
+            component={CustomTabs}
+            options={{
+              headerShown: true,
+              header: ({navigation}) => (
+                <CustomHeader navigation={navigation} />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="SettingView"
+            component={SettingView}
+            initialParams={{onLogout: handleLogout}} // Pass the handleLogout function
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
