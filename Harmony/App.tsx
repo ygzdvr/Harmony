@@ -14,13 +14,14 @@ import {put} from './api/util/put';
 
 const Stack = createNativeStackNavigator();
 
-function App(): JSX.Element {
+function App(): JSX.Element { 
   const [authenticated, setAuthenticated] = useState(false);
 
   const handleLogout = async () => {
     try {
       await signOut(AUTH_FIREBASE);
       put('@authenticated', 'not authenticated');
+      put('@user_id', '');
       setAuthenticated(false);
     } catch (error) {
       console.error('Logout error:', error);

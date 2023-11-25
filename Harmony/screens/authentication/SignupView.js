@@ -27,6 +27,7 @@ import Spotify from '../../partials/authentication/signup/Spotify';
 
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {put} from '../../api/util/put';
+import {get} from '../../api/util/get';
 import {textify} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
 import {
@@ -47,7 +48,7 @@ import {
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(14);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
@@ -84,6 +85,9 @@ const SignupView = ({navigation}) => {
 
   const [interest, setInterest] = useState('');
   const [verifyInterest, setVerifyInterest] = useState('');
+
+  const [access_token, setAccessToken] = useState('');
+  const [refresh_token, setRefreshToken] = useState(''); 
   const auth = AUTH_FIREBASE;
   const checkUserExists = async (field, value) => {
     const querySnapshot = await getDocs(
@@ -126,7 +130,7 @@ const SignupView = ({navigation}) => {
 
   const [request, response, promptAsync] = useAuthRequest(
     {
-      responseType: ResponseType.Token,
+      usePKCE: false,
       clientId: '00a67ca369d24a7ebbdd01ea2f4ae4f8',
       clientSecret: 'a80201d5ed70494094a90756f6f8cc52',
       scopes: [
@@ -147,10 +151,47 @@ const SignupView = ({navigation}) => {
     },
     discovery,
   );
-  useEffect(() => {
+  useEffect(async () => {
     if (response?.type === 'success') {
-      const {access_token} = response.params;
-      console.log('access_token', access_token);
+
+      const { code } = response.params;
+      try {
+        const credsB64 = 'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
+        const res = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${credsB64}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=authorization_code&code=${code}&redirect_uri=exp://127.0.0.1:19000/`,
+        })
+        if (!res.ok) {
+            console.log('ERROR')
+        } else {
+            const resJson = await res.json();
+            const {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                expires_in: expiresIn,
+            } = resJson;
+            const expTime = new Date().getTime() + expiresIn * 1000;
+            //do a function for async storate try and catch errors
+            await put('@access_token', accessToken);
+            console.log('accessToken');
+            console.log(accessToken);
+            setAccessToken(accessToken);
+            await put('@refresh_token', refreshToken);
+            console.log('refreshToken');
+            console.log(refreshToken);
+            setRefreshToken(refreshToken);
+            await put('@expirationToken', expTime.toString());
+            console.log('expTime');
+            console.log(expTime);
+        }
+      } catch (err) {
+          console.log(err)
+      }
+      await
       SPOTIFY(access_token).then(data => {
         console.log('data', JSON.stringify(data));
         SignupHandle();
@@ -162,8 +203,6 @@ const SignupView = ({navigation}) => {
         //   });
         // });
       });
-      put('@access_token', access_token);
-      onSignUp();
     }
   }, [response]);
 
