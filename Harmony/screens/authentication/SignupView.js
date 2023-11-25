@@ -50,44 +50,46 @@ const SignupView = ({navigation}) => {
   const {onSignUp} = route.params;
   const [step, setStep] = useState(14);
   // States for form data
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('6093754501');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
 
-  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationCode, setVerificationCode] = useState('asdf');
   const [verifyCode, setVerifyCode] = useState(''); // [TODO
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState('Yagiz Devre');
   const [verifyName, setVerifyName] = useState(''); // [TODO
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('Devre');
   const [verifyUsername, setVerifyUsername] = useState(''); // [TODO
 
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('asdfasdf');
   const [verifyPassword, setVerifyPassword] = useState(''); // [TODO
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('hd0216@princeton.edu');
   const [verifyEmail, setVerifyEmail] = useState(''); // [TODO
 
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState('Man');
   const [verifyGender, setVerifyGender] = useState(''); // [TODO
 
-  const [birthMonth, setBirthMonth] = useState('');
+  const [birthMonth, setBirthMonth] = useState('12');
   const [verifyMonth, setVerifyMonth] = useState('');
 
-  const [birthDay, setBirthDay] = useState('');
+  const [birthDay, setBirthDay] = useState('12');
   const [verifyDay, setVerifyDay] = useState('');
 
-  const [birthYear, setBirthYear] = useState('');
+  const [birthYear, setBirthYear] = useState('2003');
   const [verifyYear, setVerifyYear] = useState('');
 
-  const [mode, setMode] = useState('');
+  const [mode, setMode] = useState('Date');
   const [verifyMode, setVerifyMode] = useState('');
 
-  const [interest, setInterest] = useState('');
+  const [interest, setInterest] = useState('Women');
   const [verifyInterest, setVerifyInterest] = useState('');
 
   const [access_token, setAccessToken] = useState('');
-  const [refresh_token, setRefreshToken] = useState(''); 
+  const [refresh_token, setRefreshToken] = useState('');
+  const [expirationToken, setExpirationToken] = useState('');
+
   const auth = AUTH_FIREBASE;
   const checkUserExists = async (field, value) => {
     const querySnapshot = await getDocs(
@@ -128,6 +130,46 @@ const SignupView = ({navigation}) => {
     console.log('User document created with ID: ', userID);
   };
 
+  const getToken = async (authCode) => {
+    try {
+      const credsB64 = 'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
+        const res = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${credsB64}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=authorization_code&code=${authCode}&redirect_uri=exp://127.0.0.1:19000/`,
+        })
+        if (!res.ok) {
+            console.log('ERROR')
+        } else {
+            const resJson = await res.json()
+            const {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                expires_in: expiresIn,
+            } = resJson;
+            const expTime = new Date().getTime() + expiresIn * 1000
+            await put('@access_token', accessToken);
+            console.log('accessToken');
+            console.log(accessToken);
+            setAccessToken(accessToken);
+            await put('@refresh_token', refreshToken);
+            console.log('refreshToken');
+            console.log(refreshToken);
+            setRefreshToken(refreshToken);
+            await put('@expirationToken', expTime.toString());
+            console.log('expTime');
+            console.log(expTime);
+            setExpirationToken(expTime.toString());
+        }
+    } 
+      catch (err) {
+          console.log(err)
+      }
+  }
+
   const [request, response, promptAsync] = useAuthRequest(
     {
       usePKCE: false,
@@ -146,65 +188,42 @@ const SignupView = ({navigation}) => {
         'user-read-email',
         'user-read-private',
       ],
-      usePKCE: false,
       redirectUri: 'exp://127.0.0.1:19000/',
     },
     discovery,
   );
-  useEffect(async () => {
+  useEffect(() => {
     if (response?.type === 'success') {
-
-      const { code } = response.params;
-      try {
-        const credsB64 = 'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
-        const res = await fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
-            headers: {
-                Authorization: `Basic ${credsB64}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `grant_type=authorization_code&code=${code}&redirect_uri=exp://127.0.0.1:19000/`,
-        })
-        if (!res.ok) {
-            console.log('ERROR')
-        } else {
-            const resJson = await res.json();
-            const {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                expires_in: expiresIn,
-            } = resJson;
-            const expTime = new Date().getTime() + expiresIn * 1000;
-            //do a function for async storate try and catch errors
-            await put('@access_token', accessToken);
-            console.log('accessToken');
-            console.log(accessToken);
-            setAccessToken(accessToken);
-            await put('@refresh_token', refreshToken);
-            console.log('refreshToken');
-            console.log(refreshToken);
-            setRefreshToken(refreshToken);
-            await put('@expirationToken', expTime.toString());
-            console.log('expTime');
-            console.log(expTime);
-        }
-      } catch (err) {
-          console.log(err)
-      }
-      await
-      SPOTIFY(access_token).then(data => {
-        console.log('data', JSON.stringify(data));
-        SignupHandle();
-        DatabaseHandle();
-        // textify(data).then(textResponse => {
-        //   console.log('textResponse', textResponse);
-        //   vectorEmbedding(textResponse).then(vectorResponse => {
-        //     console.log('vectorResponse', vectorResponse);
-        //   });
-        // });
+      const {code} = response.params;
+      console.log('code', code);
+      getToken(code).then(() => {
+        console.log('getToken finished');
+        get('@access_token').then(data1 => {
+          console.log('data', data1);
+          setAccessToken(data1);
+          token = data1;
+          try {
+            SPOTIFY(token).then(data => {
+              console.log('data', JSON.stringify(data));
+              console.log('signup handle');
+              SignupHandle();
+              console.log('signup handle finished');
+              // textify(data).then(textResponse => {
+              //   console.log('textResponse', textResponse);
+              //   vectorEmbedding(textResponse).then(vectorResponse => {
+              //     console.log('vectorResponse', vectorResponse);
+              //   });
+              // });
+            });
+          }
+          catch (err) {
+            console.log(err);
+          }
+        });
       });
     }
   }, [response]);
+
 
   const totalSteps = 14;
   const progress = step / totalSteps;
@@ -354,7 +373,7 @@ const SignupView = ({navigation}) => {
   };
 
   const handleContinue = async () => {
-    if (validateStep()) {
+    if (true) {
       let exists = false;
       if (step < totalSteps) {
         switch (step) {
