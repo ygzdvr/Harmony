@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import COLORS from '../../constants/colors';
 import SignupStyles from '../../constants/styles/SignupStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -92,6 +92,9 @@ const SignupView = ({navigation}) => {
   const [refresh_token, setRefreshToken] = useState('');
   const [expirationToken, setExpirationToken] = useState('');
 
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [photos, setPhotos] = useState(Array(6).fill(null));
+
   const auth = AUTH_FIREBASE;
   const checkUserExists = async (field, value) => {
     const querySnapshot = await getDocs(
@@ -128,6 +131,8 @@ const SignupView = ({navigation}) => {
       birthYear: birthYear,
       mode: mode,
       interest: interest,
+      profilePhoto: profilePhoto,
+      photos: photos,
     });
     console.log('User document created with ID: ', userID);
   };
@@ -318,9 +323,14 @@ const SignupView = ({navigation}) => {
           />
         );
       case 14:
-        return <ProfilePhotoInput />;
+        return (
+          <ProfilePhotoInput
+            profilePhoto={profilePhoto}
+            setProfilePhoto={setProfilePhoto}
+          />
+        );
       case 15:
-        return <PhotosInput />;
+        return <PhotosInput photos={photos} setPhotos={setPhotos} />;
       case 16:
         return <Spotify />;
       default:
@@ -369,6 +379,10 @@ const SignupView = ({navigation}) => {
       case 13:
         return interest.trim() !== '';
       case 14:
+        return profilePhoto !== null;
+      case 15:
+        return photos.every(photo => photo !== null);
+      case 16:
         return true;
 
       default:
@@ -429,6 +443,12 @@ const SignupView = ({navigation}) => {
           case 13:
             setVerifyInterest('');
             break;
+          case 14:
+            break;
+          case 15:
+            break;
+          case 16:
+            break;
           default:
             break;
         }
@@ -478,6 +498,20 @@ const SignupView = ({navigation}) => {
           break;
         case 13:
           setVerifyInterest('Please select one of the options.');
+          break;
+        case 14:
+          Alert.alert(
+            'Profile photo required',
+            'Please select a profile photo to continue.',
+          );
+          break;
+        case 15:
+          Alert.alert(
+            'Photos required',
+            'Please upload all six photos to continue.',
+          );
+          break;
+        case 16:
           break;
         default:
           break;

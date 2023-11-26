@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 import COLORS from '../../../constants/colors';
-const ProfilePhotoInput = () => {
+const ProfilePhotoInput = ({profilePhoto, setProfilePhoto}) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const pickImage = async () => {
@@ -20,6 +20,7 @@ const ProfilePhotoInput = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+      setProfilePhoto(result.assets[0].uri);
       console.log(result.assets[0].uri);
     }
   };
@@ -36,6 +37,11 @@ const ProfilePhotoInput = () => {
         {selectedImage ? (
           <Image
             source={{uri: selectedImage}}
+            style={SignupStyles.profileImage}
+          />
+        ) : profilePhoto ? (
+          <Image
+            source={{uri: profilePhoto}}
             style={SignupStyles.profileImage}
           />
         ) : (

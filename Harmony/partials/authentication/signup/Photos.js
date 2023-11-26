@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 import COLORS from '../../../constants/colors';
 
-const PhotosInput = () => {
+const PhotosInput = ({photos, setPhotos}) => {
   const [images, setImages] = useState(Array(6).fill(null));
 
   const pickImage = async index => {
@@ -18,7 +18,8 @@ const PhotosInput = () => {
 
     if (!result.canceled) {
       const newImages = [...images];
-      newImages[index] = result.uri;
+      newImages[index] = result.assets[0].uri;
+      setPhotos(newImages);
       setImages(newImages);
     }
   };
@@ -39,8 +40,13 @@ const PhotosInput = () => {
             onPress={() => pickImage(index)}>
             {img ? (
               <Image source={{uri: img}} style={SignupStyles.profileImage} />
+            ) : photos[index] ? (
+              <Image
+                source={{uri: photos[index]}}
+                style={SignupStyles.profileImage}
+              />
             ) : (
-              <Ionicons name="add" size={30} color={COLORS.primary} />
+              <Ionicons name="add" size={40} color={COLORS.primary} />
             )}
           </TouchableOpacity>
         ))}
