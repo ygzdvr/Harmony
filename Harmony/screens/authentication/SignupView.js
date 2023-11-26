@@ -50,7 +50,7 @@ import {
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
-  const [step, setStep] = useState(14);
+  const [step, setStep] = useState(1);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
@@ -288,6 +288,15 @@ const SignupView = ({navigation}) => {
         );
       case 10:
         return (
+          <ProfilePhotoInput
+            profilePhoto={profilePhoto}
+            setProfilePhoto={setProfilePhoto}
+          />
+        );
+      case 11:
+        return <PhotosInput photos={photos} setPhotos={setPhotos} />;
+      case 12:
+        return (
           <BirthdayInput
             birthMonth={birthMonth}
             setBirthMonth={setBirthMonth}
@@ -300,7 +309,7 @@ const SignupView = ({navigation}) => {
             verifyYear={verifyYear}
           />
         );
-      case 11:
+      case 13:
         return (
           <GenderInput
             gender={gender}
@@ -309,12 +318,12 @@ const SignupView = ({navigation}) => {
           />
         );
 
-      case 12:
+      case 14:
         return (
           <ModeInput mode={mode} setMode={setMode} verifyMode={verifyMode} />
         );
 
-      case 13:
+      case 15:
         return (
           <InterestedInput
             interest={interest}
@@ -322,15 +331,6 @@ const SignupView = ({navigation}) => {
             verifyInterest={verifyInterest}
           />
         );
-      case 14:
-        return (
-          <ProfilePhotoInput
-            profilePhoto={profilePhoto}
-            setProfilePhoto={setProfilePhoto}
-          />
-        );
-      case 15:
-        return <PhotosInput photos={photos} setPhotos={setPhotos} />;
       case 16:
         return <Spotify />;
       default:
@@ -367,21 +367,21 @@ const SignupView = ({navigation}) => {
       case 9:
         return email.trim() !== '' && isValidEmail(); // Validate email
       case 10:
+        return profilePhoto !== null;
+      case 11:
+        return photos.every(photo => photo !== null);
+      case 12:
         return (
           birthDay.trim() !== '' &&
           birthMonth.trim() !== '' &&
           birthYear.trim() !== ''
         ); // Validate birthday
-      case 11:
-        return gender.trim() !== '';
-      case 12:
-        return mode.trim() !== '';
       case 13:
-        return interest.trim() !== '';
+        return gender.trim() !== '';
       case 14:
-        return profilePhoto !== null;
+        return mode.trim() !== '';
       case 15:
-        return photos.every(photo => photo !== null);
+        return interest.trim() !== '';
       case 16:
         return true;
 
@@ -430,22 +430,22 @@ const SignupView = ({navigation}) => {
             setVerifyEmail('');
             break;
           case 10:
+            break;
+          case 11:
+            break;
+          case 12:
             setVerifyMonth('');
             setVerifyDay('');
             setVerifyYear('');
             break;
-          case 11:
+          case 13:
             setVerifyGender('');
             break;
-          case 12:
+          case 14:
             setVerifyMode('');
             break;
-          case 13:
-            setVerifyInterest('');
-            break;
-          case 14:
-            break;
           case 15:
+            setVerifyInterest('');
             break;
           case 16:
             break;
@@ -486,30 +486,30 @@ const SignupView = ({navigation}) => {
           setVerifyEmail('Please enter a valid email.');
           break;
         case 10:
-          setVerifyMonth('Please enter a valid month.');
-          setVerifyDay('Please enter a valid day.');
-          setVerifyYear('Please enter a valid year.');
-          break;
-        case 11:
-          setVerifyGender('Please select one of the options.');
-          break;
-        case 12:
-          setVerifyMode('Please select one of the options.');
-          break;
-        case 13:
-          setVerifyInterest('Please select one of the options.');
-          break;
-        case 14:
           Alert.alert(
             'Profile photo required',
             'Please select a profile photo to continue.',
           );
           break;
-        case 15:
+        case 11:
           Alert.alert(
             'Photos required',
             'Please upload all six photos to continue.',
           );
+          break;
+        case 12:
+          setVerifyMonth('Please enter a valid month.');
+          setVerifyDay('Please enter a valid day.');
+          setVerifyYear('Please enter a valid year.');
+          break;
+        case 13:
+          setVerifyGender('Please select one of the options.');
+          break;
+        case 14:
+          setVerifyMode('Please select one of the options.');
+          break;
+        case 15:
+          setVerifyInterest('Please select one of the options.');
           break;
         case 16:
           break;
