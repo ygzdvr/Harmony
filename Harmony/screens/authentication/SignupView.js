@@ -19,6 +19,8 @@ import NameInput from '../../partials/authentication/signup/Name';
 import UsernameInput from '../../partials/authentication/signup/Username';
 import PasswordInput from '../../partials/authentication/signup/Password';
 import EmailInput from '../../partials/authentication/signup/Email';
+import ProfilePhotoInput from '../../partials/authentication/signup/ProfilePhoto';
+import PhotosInput from '../../partials/authentication/signup/Photos';
 import GenderInput from '../../partials/authentication/signup/Gender';
 import BirthdayInput from '../../partials/authentication/signup/Birthday';
 import ModeInput from '../../partials/authentication/signup/Modes';
@@ -50,40 +52,40 @@ const SignupView = ({navigation}) => {
   const {onSignUp} = route.params;
   const [step, setStep] = useState(14);
   // States for form data
-  const [phoneNumber, setPhoneNumber] = useState('6093754501');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
 
-  const [verificationCode, setVerificationCode] = useState('asdf');
+  const [verificationCode, setVerificationCode] = useState('');
   const [verifyCode, setVerifyCode] = useState(''); // [TODO
 
-  const [name, setName] = useState('Yagiz Devre');
+  const [name, setName] = useState('');
   const [verifyName, setVerifyName] = useState(''); // [TODO
 
-  const [username, setUsername] = useState('Devre');
+  const [username, setUsername] = useState('');
   const [verifyUsername, setVerifyUsername] = useState(''); // [TODO
 
-  const [password, setPassword] = useState('asdfasdf');
+  const [password, setPassword] = useState('');
   const [verifyPassword, setVerifyPassword] = useState(''); // [TODO
 
-  const [email, setEmail] = useState('hd0216@princeton.edu');
+  const [email, setEmail] = useState('');
   const [verifyEmail, setVerifyEmail] = useState(''); // [TODO
 
-  const [gender, setGender] = useState('Man');
+  const [gender, setGender] = useState('');
   const [verifyGender, setVerifyGender] = useState(''); // [TODO
 
-  const [birthMonth, setBirthMonth] = useState('12');
+  const [birthMonth, setBirthMonth] = useState('');
   const [verifyMonth, setVerifyMonth] = useState('');
 
-  const [birthDay, setBirthDay] = useState('12');
+  const [birthDay, setBirthDay] = useState('');
   const [verifyDay, setVerifyDay] = useState('');
 
-  const [birthYear, setBirthYear] = useState('2003');
+  const [birthYear, setBirthYear] = useState('');
   const [verifyYear, setVerifyYear] = useState('');
 
-  const [mode, setMode] = useState('Date');
+  const [mode, setMode] = useState('');
   const [verifyMode, setVerifyMode] = useState('');
 
-  const [interest, setInterest] = useState('Women');
+  const [interest, setInterest] = useState('');
   const [verifyInterest, setVerifyInterest] = useState('');
 
   const [access_token, setAccessToken] = useState('');
@@ -130,45 +132,45 @@ const SignupView = ({navigation}) => {
     console.log('User document created with ID: ', userID);
   };
 
-  const getToken = async (authCode) => {
+  const getToken = async authCode => {
     try {
-      const credsB64 = 'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
-        const res = await fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
-            headers: {
-                Authorization: `Basic ${credsB64}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `grant_type=authorization_code&code=${authCode}&redirect_uri=exp://127.0.0.1:19000/`,
-        })
-        if (!res.ok) {
-            console.log('ERROR')
-        } else {
-            const resJson = await res.json()
-            const {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                expires_in: expiresIn,
-            } = resJson;
-            const expTime = new Date().getTime() + expiresIn * 1000
-            await put('@access_token', accessToken);
-            console.log('accessToken');
-            console.log(accessToken);
-            setAccessToken(accessToken);
-            await put('@refresh_token', refreshToken);
-            console.log('refreshToken');
-            console.log(refreshToken);
-            setRefreshToken(refreshToken);
-            await put('@expirationToken', expTime.toString());
-            console.log('expTime');
-            console.log(expTime);
-            setExpirationToken(expTime.toString());
-        }
-    } 
-      catch (err) {
-          console.log(err)
+      const credsB64 =
+        'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
+      const res = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${credsB64}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `grant_type=authorization_code&code=${authCode}&redirect_uri=exp://127.0.0.1:19000/`,
+      });
+      if (!res.ok) {
+        console.log('ERROR');
+      } else {
+        const resJson = await res.json();
+        const {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_in: expiresIn,
+        } = resJson;
+        const expTime = new Date().getTime() + expiresIn * 1000;
+        await put('@access_token', accessToken);
+        console.log('accessToken');
+        console.log(accessToken);
+        setAccessToken(accessToken);
+        await put('@refresh_token', refreshToken);
+        console.log('refreshToken');
+        console.log(refreshToken);
+        setRefreshToken(refreshToken);
+        await put('@expirationToken', expTime.toString());
+        console.log('expTime');
+        console.log(expTime);
+        setExpirationToken(expTime.toString());
       }
-  }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -215,8 +217,7 @@ const SignupView = ({navigation}) => {
               //   });
               // });
             });
-          }
-          catch (err) {
+          } catch (err) {
             console.log(err);
           }
         });
@@ -224,8 +225,7 @@ const SignupView = ({navigation}) => {
     }
   }, [response]);
 
-
-  const totalSteps = 14;
+  const totalSteps = 16;
   const progress = step / totalSteps;
 
   const renderStep = () => {
@@ -318,6 +318,10 @@ const SignupView = ({navigation}) => {
           />
         );
       case 14:
+        return <ProfilePhotoInput />;
+      case 15:
+        return <PhotosInput />;
+      case 16:
         return <Spotify />;
       default:
         return null;
@@ -373,7 +377,7 @@ const SignupView = ({navigation}) => {
   };
 
   const handleContinue = async () => {
-    if (true) {
+    if (validateStep()) {
       let exists = false;
       if (step < totalSteps) {
         switch (step) {

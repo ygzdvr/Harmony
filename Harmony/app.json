@@ -1,4 +1,16 @@
 {
   "name": "Harmony",
-  "displayName": "Harmony"
+  "displayName": "Harmony",
+  "expo": {
+    "expo": {
+      "ios": {
+        "infoPlist": {
+          "NSPhotoLibraryUsageDescription": "This app requires access to the photo library."
+        }
+      },
+      "android": {
+        "permissions": ["READ_EXTERNAL_STORAGE"]
+      }
+    }
+  }
 }

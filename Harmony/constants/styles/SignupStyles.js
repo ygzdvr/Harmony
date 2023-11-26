@@ -195,6 +195,22 @@ const SignupStyles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.background,
   },
+  imagePicker: {
+    height: 150, // Set the height
+    width: 150, // Set the width
+    borderRadius: 20, // Rounded corners
+    backgroundColor: COLORS.text, // White background
+    justifyContent: 'center', // Center content vertically
+    alignItems: 'center', // Center content horizontally
+    alignSelf: 'center', // Center the container
+    marginTop: 20, // Add some margin at the top
+    overflow: 'hidden', // Ensures the image does not bleed outside the border radius
+  },
+
+  profileImage: {
+    height: '100%', // Full height of the container
+    width: '100%', // Full width of the container
+  },
 });
 
 export default SignupStyles;
