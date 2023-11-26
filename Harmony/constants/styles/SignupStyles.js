@@ -196,20 +196,45 @@ const SignupStyles = StyleSheet.create({
     color: COLORS.background,
   },
   imagePicker: {
-    height: 150, // Set the height
-    width: 150, // Set the width
-    borderRadius: 20, // Rounded corners
-    backgroundColor: COLORS.text, // White background
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center', // Center content horizontally
-    alignSelf: 'center', // Center the container
-    marginTop: 20, // Add some margin at the top
-    overflow: 'hidden', // Ensures the image does not bleed outside the border radius
+    height: 200,
+    width: 200,
+    borderRadius: 30,
+    backgroundColor: COLORS.text,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    overflow: 'hidden',
   },
 
   profileImage: {
     height: '100%', // Full height of the container
     width: '100%', // Full width of the container
+    borderRadius: 15,
+    borderWidth: 0,
+    borderColor: COLORS.text,
+  },
+
+  imageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  imagePicker6: {
+    width: 100,
+    height: 100,
+    borderRadius: 17,
+    borderWidth: 0.5,
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.text,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 15,
   },
 });
 

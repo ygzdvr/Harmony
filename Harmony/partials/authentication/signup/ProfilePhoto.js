@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupStyles from '../../../constants/styles/SignupStyles';
-
+import COLORS from '../../../constants/colors';
 const ProfilePhotoInput = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -39,7 +39,7 @@ const ProfilePhotoInput = () => {
             style={SignupStyles.profileImage}
           />
         ) : (
-          <Ionicons name="add" size={30} color="grey" />
+          <Ionicons name="add" size={40} color={COLORS.primary} />
         )}
       </TouchableOpacity>
 
