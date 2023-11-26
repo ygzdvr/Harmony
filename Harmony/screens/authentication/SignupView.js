@@ -36,8 +36,10 @@ import {
   APP_FIREBASE,
   AUTH_FIREBASE,
   DB_FIREBASE,
+  STORAGE,
 } from '../../api/firebase/firebase';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {
   collection,
   query,
@@ -106,6 +108,30 @@ const SignupView = ({navigation}) => {
     authorizationEndpoint: 'https://accounts.spotify.com/authorize',
     tokenEndpoint: 'https://accounts.spotify.com/api/token',
   };
+  const uploadImage = async (imageUri, path) => {
+    console.log('uploadImage');
+    await fetch(imageUri).then(response => {
+      console.log('response');
+      console.log(response);
+      response.blob().then(blob => {
+        console.log('blob');
+        console.log(blob);
+        const storage = STORAGE;
+        const storageRef = ref(storage, path);
+        console.log('storageRef');
+        console.log(storageRef);
+
+        uploadBytes(storageRef, blob).then(snapshot => {
+          console.log('Uploaded a blob or file!');
+          getDownloadURL(storageRef).then(url => {
+            console.log('url');
+            console.log(url);
+            return url;
+          });
+        });
+      });
+    });
+  };
   const SignupHandle = async () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
@@ -120,21 +146,35 @@ const SignupView = ({navigation}) => {
       });
   };
   const DatabaseHandle = async userID => {
-    await setDoc(doc(DB_FIREBASE, 'users', userID), {
-      name: name,
-      username: username,
-      email: email,
-      password: password,
-      gender: gender,
-      birthMonth: birthMonth,
-      birthDay: birthDay,
-      birthYear: birthYear,
-      mode: mode,
-      interest: interest,
-      profilePhoto: profilePhoto,
-      photos: photos,
+    uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
+      console.log('url');
+      console.log(url);
+      const profilePhotoUrl = url;
+      Promise.all(
+        photos.map((photo, index) =>
+          photo
+            ? uploadImage(photo, `userPhotos/${userID}/${index}`)
+            : Promise.resolve(null),
+        ),
+      ).then(photoUrls => {
+        console.log('photoUrls');
+        console.log(photoUrls);
+        setDoc(doc(DB_FIREBASE, 'users', userID), {
+          name: name,
+          username: username,
+          email: email,
+          password: password,
+          gender: gender,
+          birthMonth: birthMonth,
+          birthDay: birthDay,
+          birthYear: birthYear,
+          mode: mode,
+          interest: interest,
+        }).then(() => {
+          console.log('Document successfully written!');
+        });
+      });
     });
-    console.log('User document created with ID: ', userID);
   };
 
   const getToken = async authCode => {
