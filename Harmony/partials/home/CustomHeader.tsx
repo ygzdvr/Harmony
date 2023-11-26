@@ -14,7 +14,7 @@ const CustomHeader = ({navigation}) => {
         alignItems: 'center',
         backgroundColor: COLORS.background, // Set background color
         paddingHorizontal: 15,
-        paddingVertical: 30,
+        paddingVertical: 15,
       }}>
       <Text
         style={{

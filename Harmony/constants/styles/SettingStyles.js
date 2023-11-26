@@ -27,7 +27,6 @@ const SettingStyles = StyleSheet.create({
     backgroundColor: COLORS.text,
     borderRadius: 8,
     alignSelf: 'flex-start',
-    marginBottom: 20,
   },
   textDescription: {
     color: COLORS.text,
@@ -71,6 +70,18 @@ const SettingStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
+  },
+  profilePhotoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  profilePhoto: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 3,
+    borderColor: COLORS.primary,
   },
 });
 

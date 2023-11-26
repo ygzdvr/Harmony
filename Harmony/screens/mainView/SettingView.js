@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
+import {View, ScrollView, Text, TouchableOpacity, Image} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {AUTH_FIREBASE, DB_FIREBASE} from '../../api/firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,6 +7,7 @@ import SettingStyles from '../../constants/styles/SettingStyles';
 import {getDoc, doc} from 'firebase/firestore';
 import {get} from '../../api/util/get';
 import COLORS from '../../constants/colors';
+import {getStorage, ref, getDownloadURL} from 'firebase/storage';
 
 const SettingView = ({navigation}) => {
   const route = useRoute();
@@ -21,6 +22,19 @@ const SettingView = ({navigation}) => {
   const [birthDay, setBirthDay] = useState('');
   const [birthYear, setBirthYear] = useState('');
   const [userName, setUserName] = useState('');
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
+
+  const fetchProfilePhoto = async userId => {
+    const storage = getStorage();
+    const photoRef = ref(storage, `profilePhotos/${userId}`);
+
+    try {
+      const url = await getDownloadURL(photoRef);
+      setProfilePhotoUrl(url);
+    } catch (error) {
+      console.error('Error fetching profile photo:', error);
+    }
+  };
 
   const renderGenderTile = gender => {
     const isSelected = genderSnap === gender;
@@ -72,6 +86,7 @@ const SettingView = ({navigation}) => {
       const useruid = await get('@user_id');
       console.log('useruid', useruid);
       if (useruid) {
+        fetchProfilePhoto(useruid);
         console.log('useruid', useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
         console.log('users', users);
@@ -108,6 +123,14 @@ const SettingView = ({navigation}) => {
         style={SettingStyles.backButton}>
         <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
       </TouchableOpacity>
+      {profilePhotoUrl && (
+        <View style={SettingStyles.profilePhotoContainer}>
+          <Image
+            source={{uri: profilePhotoUrl}}
+            style={SettingStyles.profilePhoto}
+          />
+        </View>
+      )}
       <Text style={SettingStyles.textDescription}>Full Name</Text>
 
       <View style={SettingStyles.dataContainer}>

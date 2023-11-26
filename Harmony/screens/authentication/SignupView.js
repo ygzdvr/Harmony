@@ -149,7 +149,6 @@ const SignupView = ({navigation}) => {
     uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
       console.log('url');
       console.log(url);
-      const profilePhotoUrl = url;
       Promise.all(
         photos.map((photo, index) =>
           photo
@@ -170,6 +169,8 @@ const SignupView = ({navigation}) => {
           birthYear: birthYear,
           mode: mode,
           interest: interest,
+          campus: 'Princeton University',
+          location: 'Princeton, NJ',
         }).then(() => {
           console.log('Document successfully written!');
         });

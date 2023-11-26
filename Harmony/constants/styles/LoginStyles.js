@@ -47,7 +47,7 @@ const LoginStyles = StyleSheet.create({
     width: '95%',
   },
   signInButton: {
-    backgroundColor: COLORS.titlePurple,
+    backgroundColor: COLORS.primary,
     padding: 15,
     borderRadius: 15,
     justifyContent: 'center',

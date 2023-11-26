@@ -234,7 +234,7 @@ const SignupStyles = StyleSheet.create({
     backgroundColor: COLORS.text,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 15,
+    margin: 5,
   },
 });
 
