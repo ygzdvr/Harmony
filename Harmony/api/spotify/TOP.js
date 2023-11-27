@@ -11,12 +11,6 @@ import {
   TopTracksLongTerm,
 } from './TopTracks';
 import {History} from './History';
-import {SavedAlbums} from './Saved/SavedAlbums';
-import {SavedTracks} from './Saved/SavedTracks';
-import {SavedShows} from './Saved/SavedShows';
-import {SavedEpisodes} from './Saved/SavedEpisodes';
-import {TopTracksArtist} from './TopTracksArtist';
-import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
 
 const extractInfo = data => {
   const extractedInfo = {
@@ -85,24 +79,16 @@ const extractInfo = data => {
 
 export const SPOTIFY = async access_token => {
   console.log('access_token', access_token);
-  const profile = await fetchProfile(access_token);
-  const playlists = await Playlists(access_token);
-  const topArtistsShortTerm = await TopArtistsShortTerm(access_token, 10);
-  const topArtistsMediumTerm = await TopArtistsMediumTerm(access_token, 10);
-  const topArtistsLongTerm = await TopArtistsLongTerm(access_token, 10);
-  const topTracksShortTerm = await TopTracksShortTerm(access_token, 10);
-  const topTracksMediumTerm = await TopTracksMediumTerm(access_token, 10);
-  const topTracksLongTerm = await TopTracksLongTerm(access_token, 10);
-  const history = await History(access_token, 10);
-  const savedAlbums = await SavedAlbums(access_token, 10);
-  const savedTracks = await SavedTracks(access_token, 10);
-  const savedShows = await SavedShows(access_token);
-  const savedEpisodes = await SavedEpisodes(access_token);
+  const topArtistsShortTerm = await TopArtistsShortTerm(access_token, 1);
+  const topArtistsMediumTerm = await TopArtistsMediumTerm(access_token, 1);
+  const topArtistsLongTerm = await TopArtistsLongTerm(access_token, 1);
+  const topTracksShortTerm = await TopTracksShortTerm(access_token, 1);
+  const topTracksMediumTerm = await TopTracksMediumTerm(access_token, 1);
+  const topTracksLongTerm = await TopTracksLongTerm(access_token, 1);
+  const history = await History(access_token, 1);
 
   const data = {
     access_token,
-    profile,
-    playlists,
     topArtistsShortTerm,
     topArtistsMediumTerm,
     topArtistsLongTerm,
@@ -110,12 +96,8 @@ export const SPOTIFY = async access_token => {
     topTracksMediumTerm,
     topTracksLongTerm,
     history,
-    savedAlbums,
-    savedTracks,
-    savedShows,
-    savedEpisodes,
   };
-  const extractedInfo = extractInfo(data);
+  const fetchTopInfo = extractInfo(data);
 
   return extractedInfo;
 };

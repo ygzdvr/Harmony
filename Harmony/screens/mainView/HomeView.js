@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  FlatList,
+  TextInput,
 } from 'react-native';
 import COLORS from '../../constants/colors';
 import {
@@ -92,13 +94,55 @@ const Tile = ({
 };
 
 const HomeView = () => {
-  const exampleTiles = ['Tile 1', 'Tile 2', 'Tile 3', 'Tile 4', 'Tile 5'];
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
   const [songs, setSongs] = useState([]);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [featuredSongs, setFeaturedSongs] = useState([]);
   const [campus, setCampus] = useState('');
   const [nearbySongs, setNearbySongs] = useState([]);
+
+  useEffect(() => {
+    if (searchQuery.trim() !== '') {
+      const performSearch = async () => {
+        const usersRef = collection(DB_FIREBASE, 'users');
+        const q = query(
+          usersRef,
+          where('username', '>=', searchQuery),
+          where('username', '<=', searchQuery + '\uf8ff'),
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          const results = [];
+          querySnapshot.forEach(document => {
+            results.push({id: document.id, ...document.data()});
+          });
+          setSearchResults(results);
+
+          console.log('Search results:', results); // Log the results
+        } catch (error) {
+          console.error('Error during search:', error);
+        }
+      };
+
+      performSearch();
+    }
+  }, [searchQuery]);
+  const renderSearchResults = () => {
+    if (searchResults.length > 0) {
+      return (
+        <View style={styles.searchResultsOverlay}>
+          {searchResults.map((user, index) => (
+            <TouchableOpacity key={index} style={styles.searchResultItem}>
+              <Text style={styles.searchResultText}>{user.username}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    }
+    return null;
+  };
 
   const fetchUserFeaturedSongs = async userId => {
     const userDocRef = doc(DB_FIREBASE, 'users', userId);
@@ -180,6 +224,15 @@ const HomeView = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search profiles..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+      {renderSearchResults()}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Popular Tracks</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -270,7 +323,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   section: {
-    marginTop: 20,
+    marginTop: 10,
     paddingHorizontal: 15,
   },
   sectionTitle: {
@@ -343,6 +396,37 @@ const styles = StyleSheet.create({
     padding: 6,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchContainer: {
+    paddingHorizontal: 15,
+  },
+  searchInput: {
+    backgroundColor: COLORS.text,
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 12,
+    color: COLORS.background,
+  },
+  searchResultsContainer: {
+    padding: 10,
+  },
+  searchResultText: {
+    color: COLORS.text,
+    fontSize: 12,
+  },
+  searchResultsOverlay: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 10,
+    zIndex: 1,
+  },
+  searchResultItem: {
+    backgroundColor: 'transparent',
+    padding: 10,
+    marginBottom: 5,
   },
 });
 

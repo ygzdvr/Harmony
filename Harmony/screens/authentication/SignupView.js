@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import COLORS from '../../constants/colors';
@@ -28,6 +27,7 @@ import InterestedInput from '../../partials/authentication/signup/Interested';
 import Spotify from '../../partials/authentication/signup/Spotify';
 
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
+import {SONGS} from '../../api/spotify/SONGS';
 import {put} from '../../api/util/put';
 import {get} from '../../api/util/get';
 import {textify} from '../../api/openai/textify';
@@ -52,7 +52,7 @@ import {
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(16);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
@@ -146,6 +146,7 @@ const SignupView = ({navigation}) => {
       });
   };
   const DatabaseHandle = async userID => {
+    console.log('DatabaseHandle');
     uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
       console.log('url');
       console.log(url);
@@ -171,11 +172,32 @@ const SignupView = ({navigation}) => {
           interest: interest,
           campus: 'Princeton University',
           location: 'Princeton, NJ',
+          currentlyListening: '2nWr7OCpu9HFmycqdKdw',
+          genre: 'Pop',
+          listening: 'Kanye West',
+          song: 'Stronger',
+          featuredSongs: ['QonWn5I4gVDZmCKuTj3N', 'wMUEDAuGCurP1Hkz6Ita'],
+          followers: 0,
+          following: 0,
+          access_token: access_token,
+          refresh_token: refresh_token,
+          expirationToken: expirationToken,
         }).then(() => {
           console.log('Document successfully written!');
         });
       });
     });
+  };
+
+  const SongsDatabase = async extractedSongs => {
+    console.log('SongsDatabase');
+    console.log('extractedSongs', extractedSongs);
+    //const songsRef = collection(DB_FIREBASE, 'songs');
+    //extractedSongs.forEach(async song => {
+    //  if (song.trackID) {
+    //    await setDoc(doc(songsRef, song.trackID), song);
+    //  }
+    //});
   };
 
   const getToken = async authCode => {
@@ -252,16 +274,21 @@ const SignupView = ({navigation}) => {
           token = data1;
           try {
             SPOTIFY(token).then(data => {
-              console.log('data', JSON.stringify(data));
-              console.log('signup handle');
-              SignupHandle();
-              console.log('signup handle finished');
-              // textify(data).then(textResponse => {
-              //   console.log('textResponse', textResponse);
-              //   vectorEmbedding(textResponse).then(vectorResponse => {
-              //     console.log('vectorResponse', vectorResponse);
-              //   });
-              // });
+              console.log('SONGS handle');
+              SONGS(token).then(data2 => {
+                SongsDatabase(data2).then(() => {
+                  console.log('SONGS handle finished');
+                  console.log('signup handle');
+                  // SignupHandle();
+                  console.log('signup handle finished');
+                  // textify(data).then(textResponse => {
+                  //   console.log('textResponse', textResponse);
+                  //   vectorEmbedding(textResponse).then(vectorResponse => {
+                  //     console.log('vectorResponse', vectorResponse);
+                  //   });
+                  // });
+                });
+              });
             });
           } catch (err) {
             console.log(err);
