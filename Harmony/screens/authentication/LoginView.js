@@ -14,7 +14,44 @@ import LoginStyles from '../../constants/styles/LoginStyles';
 import {AUTH_FIREBASE} from '../../api/firebase/firebase';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import {put} from '../../api/util/put';
+import {DB_FIREBASE} from '../../api/firebase/firebase';
+import {
+  collection,
+  query,
+  getDocs,
+  orderBy,
+  limit,
+  setDoc,
+  doc,
+} from 'firebase/firestore';
 
+const updatePopularSongs = async () => {
+  try {
+    // Define the songs collection reference
+    const songsRef = collection(DB_FIREBASE, 'songs');
+
+    // Create a query to fetch top 10 popular songs
+    const q = query(songsRef, orderBy('popularity', 'desc'), limit(10));
+
+    // Fetch the songs
+    const querySnapshot = await getDocs(q);
+    const popularSongs = [];
+
+    // Iterate over each song and prepare the data for popularSongs collection
+    querySnapshot.forEach(doc => {
+      popularSongs.push({id: doc.id, ...doc.data()});
+    });
+
+    // Add each song to the popularSongs collection
+    for (const song of popularSongs) {
+      await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
+    }
+
+    console.log('Popular songs updated successfully');
+  } catch (error) {
+    console.error('Error updating popular songs:', error);
+  }
+};
 const LoginView = ({navigation}) => {
   const route = useRoute();
   const {onSignIn} = route.params;
@@ -30,6 +67,7 @@ const LoginView = ({navigation}) => {
         // Navigate to the HomeView or another screen as needed
         put('@user_id', user.uid);
         onSignIn();
+        updatePopularSongs();
         navigation.navigate('HomeView');
       })
       .catch(error => {

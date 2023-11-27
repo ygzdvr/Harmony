@@ -167,8 +167,8 @@ const HomeView = () => {
     const songIds = [];
 
     querySnapshot.forEach(document => {
-      if (document.data().currentlyListening) {
-        songIds.push(document.data().currentlyListening);
+      if (document.data().mostRecentlyPlayedSong) {
+        songIds.push(document.data().mostRecentlyPlayedSong);
       }
     });
 
@@ -241,8 +241,8 @@ const HomeView = () => {
               key={song.id}
               title={song.name}
               artist={song.artist}
-              album={song.album}
-              imageUrl={song.imageurl}
+              album={song.albumName}
+              imageUrl={song.albumImage}
               previewURL={song.previewURL}
               isRectangle={true}
               currentSound={currentSound}
@@ -262,8 +262,8 @@ const HomeView = () => {
               key={song.id}
               title={song.name}
               artist={song.artist}
-              album={song.album}
-              imageUrl={song.imageurl}
+              album={song.albumName}
+              imageUrl={song.albumImage}
               previewURL={song.previewURL}
               currentSound={currentSound}
               setCurrentSound={setCurrentSound}
@@ -289,8 +289,8 @@ const HomeView = () => {
               key={song.id}
               title={song.name}
               artist={song.artist}
-              album={song.album}
-              imageUrl={song.imageurl}
+              album={song.albumName}
+              imageUrl={song.albumImage}
               previewURL={song.previewURL}
               currentSound={currentSound}
               setCurrentSound={setCurrentSound}

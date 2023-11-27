@@ -28,6 +28,7 @@ import Spotify from '../../partials/authentication/signup/Spotify';
 
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import {SONGS} from '../../api/spotify/SONGS';
+import {TOP} from '../../api/spotify/TOP';
 import {put} from '../../api/util/put';
 import {get} from '../../api/util/get';
 import {textify} from '../../api/openai/textify';
@@ -52,7 +53,7 @@ import {
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
-  const [step, setStep] = useState(16);
+  const [step, setStep] = useState(1);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
@@ -132,12 +133,12 @@ const SignupView = ({navigation}) => {
       });
     });
   };
-  const SignupHandle = async () => {
+  const SignupHandle = async topInfo => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
         const user = userCredential.user;
         console.log('Registered with: ', user.email);
-        await DatabaseHandle(user.uid);
+        await DatabaseHandle(user.uid, topInfo);
         put('@user_id', user.uid);
         onSignUp();
       })
@@ -145,7 +146,7 @@ const SignupView = ({navigation}) => {
         console.log('Error:', error);
       });
   };
-  const DatabaseHandle = async userID => {
+  const DatabaseHandle = async (userID, topInfo) => {
     console.log('DatabaseHandle');
     uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
       console.log('url');
@@ -172,11 +173,18 @@ const SignupView = ({navigation}) => {
           interest: interest,
           campus: 'Princeton University',
           location: 'Princeton, NJ',
-          currentlyListening: '2nWr7OCpu9HFmycqdKdw',
-          genre: 'Pop',
-          listening: 'Kanye West',
-          song: 'Stronger',
           featuredSongs: ['QonWn5I4gVDZmCKuTj3N', 'wMUEDAuGCurP1Hkz6Ita'],
+          topArtistShortTerm: topInfo.topArtistShortTerm.name,
+          topArtistShortTermGenres: topInfo.topArtistShortTerm.genres,
+          topArtistMediumTerm: topInfo.topArtistMediumTerm.name,
+          topArtistMediumTermGenres: topInfo.topArtistMediumTerm.genres,
+          topArtistLongTerm: topInfo.topArtistLongTerm.name,
+          topArtistLongTermGenres: topInfo.topArtistLongTerm.genres,
+          topTrackShortTerm: topInfo.topTrackShortTerm,
+          topTrackMediumTerm: topInfo.topTrackMediumTerm,
+          topTrackLongTerm: topInfo.topTrackLongTerm,
+          mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
+          recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
           followers: 0,
           following: 0,
           access_token: access_token,
@@ -277,16 +285,21 @@ const SignupView = ({navigation}) => {
               console.log('SONGS handle');
               SONGS(token).then(data2 => {
                 SongsDatabase(data2).then(() => {
-                  console.log('SONGS handle finished');
-                  console.log('signup handle');
-                  // SignupHandle();
-                  console.log('signup handle finished');
-                  // textify(data).then(textResponse => {
-                  //   console.log('textResponse', textResponse);
-                  //   vectorEmbedding(textResponse).then(vectorResponse => {
-                  //     console.log('vectorResponse', vectorResponse);
-                  //   });
-                  // });
+                  TOP(token).then(data3 => {
+                    console.log('TOP handle');
+                    console.log('data3', data3);
+                    console.log('SONGS handle finished');
+                    console.log('signup handle');
+                    SignupHandle(data3);
+                    console.log('signup handle finished');
+                    // textify(data).then(textResponse => {
+                    //   console.log('textResponse', textResponse);
+                    //   vectorEmbedding(textResponse).then(vectorResponse => {
+                    //     console.log('vectorResponse', vectorResponse);
+                    //   });
+                    // });
+                    console.log('TOP handle finished');
+                  });
                 });
               });
             });
