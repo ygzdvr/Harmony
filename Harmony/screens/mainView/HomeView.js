@@ -8,7 +8,14 @@ import {
   Image,
 } from 'react-native';
 import COLORS from '../../constants/colors';
-import {doc, getDoc, getDocs, collection} from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+} from 'firebase/firestore';
 import {DB_FIREBASE} from '../../api/firebase/firebase';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
@@ -90,6 +97,8 @@ const HomeView = () => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [featuredSongs, setFeaturedSongs] = useState([]);
+  const [campus, setCampus] = useState('');
+  const [nearbySongs, setNearbySongs] = useState([]);
 
   const fetchUserFeaturedSongs = async userId => {
     const userDocRef = doc(DB_FIREBASE, 'users', userId);
@@ -97,11 +106,31 @@ const HomeView = () => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
+      setCampus(userData.campus);
+      const campus = userData.campus;
+      await fetchNearbySongs(campus);
       return userData.featuredSongs || [];
     } else {
       console.log('No such document!');
       return [];
     }
+  };
+
+  const fetchNearbySongs = async campus => {
+    const usersRef = collection(DB_FIREBASE, 'users');
+    const q = query(usersRef, where('campus', '==', campus));
+    const querySnapshot = await getDocs(q);
+    const songIds = [];
+
+    querySnapshot.forEach(document => {
+      if (document.data().currentlyListening) {
+        songIds.push(document.data().currentlyListening);
+      }
+    });
+
+    const uniqueSongIds = [...new Set(songIds)];
+    const songs = await fetchSongsDetails(uniqueSongIds);
+    setNearbySongs(songs);
   };
 
   const fetchSongsDetails = async songIds => {
@@ -116,6 +145,7 @@ const HomeView = () => {
     }
     return songs;
   };
+
   useEffect(() => {
     const fetchFeaturedSongs = async () => {
       const userId = await get('@user_id');
@@ -193,12 +223,29 @@ const HomeView = () => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>People Nearby Listen</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {exampleTiles.map((title, index) => (
-            <Tile key={index} title={title} />
+        <Text style={styles.sectionTitle}>Vibes at {campus}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            paddingHorizontal: 8,
+          }}>
+          {nearbySongs.map((song, index) => (
+            <Tile
+              key={song.id}
+              title={song.name}
+              artist={song.artist}
+              album={song.album}
+              imageUrl={song.imageurl}
+              previewURL={song.previewURL}
+              currentSound={currentSound}
+              setCurrentSound={setCurrentSound}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+            />
           ))}
-        </ScrollView>
+        </View>
       </View>
     </ScrollView>
   );
@@ -240,9 +287,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
+    marginBottom: 10,
   },
   rectangleTile: {
     width: 300,
+    marginVertical: 0,
   },
   tileText: {
     fontSize: 16,
