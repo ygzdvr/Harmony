@@ -15,7 +15,7 @@ const CustomTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+        tabBarIcon: ({color, size}) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -40,18 +40,18 @@ const CustomTabs = () => {
           height: 60,
           position: 'absolute',
           borderTopWidth: 1,
-          borderTopColor: COLORS.primary,
+          borderTopColor: COLORS.background,
           elevation: 20,
           shadowOpacity: 100,
           shadowOffset: {
             width: 0,
             height: 0,
           },
-          borderColor: COLORS.primary,
+          borderColor: COLORS.background,
           borderWidth: 1,
-          marginLeft: 20,
-          marginRight: 20,
-          marginBottom: 10,
+          marginLeft: 10,
+          marginRight: 10,
+          marginBottom: 5,
         },
         tabBarShowLabel: false,
         headerStyle: {
