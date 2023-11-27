@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity, Image} from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {AUTH_FIREBASE, DB_FIREBASE} from '../../api/firebase/firebase';
+import {AUTH_FIREBASE, DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SettingStyles from '../../constants/styles/SettingStyles';
 import {getDoc, doc} from 'firebase/firestore';
 import {get} from '../../api/util/get';
 import COLORS from '../../constants/colors';
 import {getStorage, ref, getDownloadURL} from 'firebase/storage';
+import * as ImagePicker from 'expo-image-picker';
+import {uploadBytes} from 'firebase/storage';
 
 const SettingView = ({navigation}) => {
   const route = useRoute();
@@ -24,9 +26,40 @@ const SettingView = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
 
+  const uploadImage = async (imageUri, path) => {
+    return new Promise((resolve, reject) => {
+      fetch(imageUri)
+        .then(response => {
+          response
+            .blob()
+            .then(blob => {
+              const storageRef = ref(STORAGE, path);
+              uploadBytes(storageRef, blob)
+                .then(snapshot => {
+                  getDownloadURL(storageRef)
+                    .then(url => {
+                      resolve(url);
+                    })
+                    .catch(error => {
+                      reject(error);
+                    });
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            })
+            .catch(error => {
+              reject(error);
+            });
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+
   const fetchProfilePhoto = async userId => {
-    const storage = getStorage();
-    const photoRef = ref(storage, `profilePhotos/${userId}`);
+    const photoRef = ref(STORAGE, `profilePhotos/${userId}`);
 
     try {
       const url = await getDownloadURL(photoRef);
@@ -34,6 +67,35 @@ const SettingView = ({navigation}) => {
     } catch (error) {
       console.error('Error fetching profile photo:', error);
     }
+  };
+  const uploadProfilePhoto = uri => {
+    get('@user_id').then(userId => {
+      const path = `profilePhotos/${userId}`;
+      uploadImage(uri, path)
+        .then(url => {
+          setProfilePhotoUrl(url);
+        })
+        .catch(error => {
+          console.error('Error uploading profile photo:', error);
+        });
+    });
+  };
+
+  const handleProfilePhotoChange = () => {
+    ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    }).then(result => {
+      if (!result.canceled) {
+        console.log('result');
+        console.log(result);
+        uploadProfilePhoto(result.assets[0].uri).then(() => {
+          console.log('Profile photo updated!');
+        });
+      }
+    });
   };
 
   const renderGenderTile = gender => {
@@ -84,10 +146,8 @@ const SettingView = ({navigation}) => {
   useEffect(() => {
     const fetchUserData = async () => {
       const useruid = await get('@user_id');
-      console.log('useruid', useruid);
       if (useruid) {
         fetchProfilePhoto(useruid);
-        console.log('useruid', useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
         console.log('users', users);
         const docSnap = await getDoc(users);
@@ -124,13 +184,16 @@ const SettingView = ({navigation}) => {
         <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
       </TouchableOpacity>
       {profilePhotoUrl && (
-        <View style={SettingStyles.profilePhotoContainer}>
-          <Image
-            source={{uri: profilePhotoUrl}}
-            style={SettingStyles.profilePhoto}
-          />
-        </View>
+        <TouchableOpacity>
+          <View style={SettingStyles.profilePhotoContainer}>
+            <Image
+              source={{uri: profilePhotoUrl}}
+              style={SettingStyles.profilePhoto}
+            />
+          </View>
+        </TouchableOpacity>
       )}
+
       <Text style={SettingStyles.textDescription}>Full Name</Text>
 
       <View style={SettingStyles.dataContainer}>

@@ -21,8 +21,6 @@ const CustomTabs = () => {
             iconName = 'home';
           } else if (route.name === 'Messages') {
             iconName = 'heart';
-          } else if (route.name === 'Search') {
-            iconName = 'search';
           } else if (route.name === 'Events') {
             iconName = 'map';
           }
@@ -51,8 +49,8 @@ const CustomTabs = () => {
           },
           borderColor: COLORS.primary,
           borderWidth: 1,
-          marginLeft: 10,
-          marginRight: 10,
+          marginLeft: 20,
+          marginRight: 20,
           marginBottom: 10,
         },
         tabBarShowLabel: false,
@@ -65,8 +63,8 @@ const CustomTabs = () => {
       })}>
       <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Messages" component={MatchView} />
-      <Tab.Screen name="Search" component={SearchView} />
       <Tab.Screen name="Events" component={EventView} />
+      <Tab.Screen name="Profile" component={SearchView} />
     </Tab.Navigator>
   );
 };

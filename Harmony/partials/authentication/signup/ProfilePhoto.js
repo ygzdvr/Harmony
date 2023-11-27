@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupStyles from '../../../constants/styles/SignupStyles';
 import COLORS from '../../../constants/colors';
+
 const ProfilePhotoInput = ({profilePhoto, setProfilePhoto}) => {
   const [selectedImage, setSelectedImage] = useState(null);
 

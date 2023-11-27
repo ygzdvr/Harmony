@@ -42,6 +42,7 @@ const SettingStyles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginBottom: 20,
+    marginTop: 20,
   },
   logoutText: {
     color: COLORS.text,
@@ -50,7 +51,7 @@ const SettingStyles = StyleSheet.create({
   },
   Tile: {
     flex: 1,
-    padding: 10,
+    padding: 15,
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
