@@ -6,6 +6,7 @@ import {get} from '../../api/util/get';
 import ProfileStyles from '../../constants/styles/ProfileStyles';
 import {STORAGE} from '../../api/firebase/firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
+import GradientText from '../../components/GradientText';
 
 const ProfileView = () => {
   const [name, setName] = useState('');
@@ -120,45 +121,61 @@ const ProfileView = () => {
       </View>
     );
   };
+  const renderAdditionalInfo = () => {
+    return (
+      <View style={ProfileStyles.additionalInfoContainer}>
+        <GradientText style={ProfileStyles.infoText}>@{userName}</GradientText>
+      </View>
+    );
+  };
+  const renderTopSection = () => {
+    return (
+      <View style={ProfileStyles.cardContainer}>
+        {profilePhotoUrl && (
+          <Image
+            source={{uri: profilePhotoUrl}}
+            style={ProfileStyles.profilePhoto}
+          />
+        )}
+
+        <Text style={ProfileStyles.nameText}>{name}</Text>
+
+        {renderAdditionalInfo()}
+
+        <View style={ProfileStyles.musicPreferences}>
+          <View style={ProfileStyles.musicPreferenceTile}>
+            <Text style={ProfileStyles.musicPreferenceLabel}>Top Genre</Text>
+            <Text style={ProfileStyles.musicPreferenceText}>{genre}</Text>
+          </View>
+
+          <View style={ProfileStyles.musicPreferenceTile}>
+            <Text style={ProfileStyles.musicPreferenceLabel}>Top Artist</Text>
+            <Text style={ProfileStyles.musicPreferenceText}>{topArtist}</Text>
+          </View>
+
+          <View style={ProfileStyles.musicPreferenceTile}>
+            <Text style={ProfileStyles.musicPreferenceLabel}>Top Song</Text>
+            <Text style={ProfileStyles.musicPreferenceText}>{topSong}</Text>
+          </View>
+        </View>
+
+        <View style={ProfileStyles.socialInfo}>
+          <View style={ProfileStyles.socialInfoColumn}>
+            <Text style={ProfileStyles.socialInfoNumber}>{followers}</Text>
+            <Text style={ProfileStyles.socialInfoTitle}>Followers</Text>
+          </View>
+
+          <View style={ProfileStyles.socialInfoColumn}>
+            <Text style={ProfileStyles.socialInfoNumber}>{following}</Text>
+            <Text style={ProfileStyles.socialInfoTitle}>Following</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
   return (
     <ScrollView style={ProfileStyles.container}>
-      {profilePhotoUrl && (
-        <Image
-          source={{uri: profilePhotoUrl}}
-          style={ProfileStyles.profilePhoto}
-        />
-      )}
-
-      <Text style={ProfileStyles.nameText}>{name}</Text>
-
-      <View style={ProfileStyles.musicPreferences}>
-        <View style={ProfileStyles.musicPreferenceTile}>
-          <Text style={ProfileStyles.musicPreferenceLabel}>Top Genre</Text>
-          <Text style={ProfileStyles.musicPreferenceText}>{genre}</Text>
-        </View>
-
-        <View style={ProfileStyles.musicPreferenceTile}>
-          <Text style={ProfileStyles.musicPreferenceLabel}>Top Artist</Text>
-          <Text style={ProfileStyles.musicPreferenceText}>{topArtist}</Text>
-        </View>
-
-        <View style={ProfileStyles.musicPreferenceTile}>
-          <Text style={ProfileStyles.musicPreferenceLabel}>Top Song</Text>
-          <Text style={ProfileStyles.musicPreferenceText}>{topSong}</Text>
-        </View>
-      </View>
-
-      <View style={ProfileStyles.socialInfo}>
-        <View style={ProfileStyles.socialInfoColumn}>
-          <Text style={ProfileStyles.socialInfoNumber}>{followers}</Text>
-          <Text style={ProfileStyles.socialInfoTitle}>Followers</Text>
-        </View>
-
-        <View style={ProfileStyles.socialInfoColumn}>
-          <Text style={ProfileStyles.socialInfoNumber}>{following}</Text>
-          <Text style={ProfileStyles.socialInfoTitle}>Following</Text>
-        </View>
-      </View>
+      {renderTopSection()}
       {renderUserPhotos()}
     </ScrollView>
   );
