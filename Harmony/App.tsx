@@ -5,6 +5,7 @@ import WelcomeView from './screens/authentication/WelcomeView';
 import LoginView from './screens/authentication/LoginView';
 import SignupView from './screens/authentication/SignupView';
 import SettingView from './screens/mainView/SettingView';
+import ProfileView from './screens/mainView/ProfileView';
 import CustomHeader from './partials/home/CustomHeader';
 import CustomTabs from './partials/home/CustomTabs';
 import {onAuthStateChanged, signOut} from 'firebase/auth';

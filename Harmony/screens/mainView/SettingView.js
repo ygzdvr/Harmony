@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity, Image} from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {AUTH_FIREBASE, DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
+import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SettingStyles from '../../constants/styles/SettingStyles';
 import {getDoc, doc} from 'firebase/firestore';
 import {get} from '../../api/util/get';
 import COLORS from '../../constants/colors';
-import {getStorage, ref, getDownloadURL} from 'firebase/storage';
+import {ref, getDownloadURL} from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import {uploadBytes} from 'firebase/storage';
 

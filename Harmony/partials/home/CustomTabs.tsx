@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeView from '../../screens/mainView/HomeView';
 import MatchView from '../../screens/mainView/MatchView';
 import EventView from '../../screens/mainView/EventView';
+import ProfileView from '../../screens/mainView/ProfileView';
 import SearchView from '../../screens/mainView/SearchView';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Feather';
@@ -23,26 +24,25 @@ const CustomTabs = () => {
             iconName = 'heart';
           } else if (route.name === 'Events') {
             iconName = 'map';
+          } else if (route.name === 'Profile') {
+            iconName = 'user';
           }
-          // ... Add more conditions for other tabs
-
-          // You can return any component that you like here!
           return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.text,
         tabBarStyle: {
           backgroundColor: COLORS.tabBar,
-          borderTopLeftRadius: 23, // Rounded corners on the left
-          borderTopRightRadius: 23, // Rounded corners on the right
-          borderBottomLeftRadius: 23, // Rounded corners on the left
-          borderBottomRightRadius: 23, // Rounded corners on the right
-          height: 60, // Adjust the height as needed
-          position: 'absolute', // Needed to show the rounded corners
-          borderTopWidth: 1, // Remove default border
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+          height: 60,
+          position: 'absolute',
+          borderTopWidth: 1,
           borderTopColor: COLORS.primary,
-          elevation: 20, // Remove shadow on Android
-          shadowOpacity: 100, // Remove shadow on iOS
+          elevation: 20,
+          shadowOpacity: 100,
           shadowOffset: {
             width: 0,
             height: 0,
@@ -64,7 +64,7 @@ const CustomTabs = () => {
       <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Messages" component={MatchView} />
       <Tab.Screen name="Events" component={EventView} />
-      <Tab.Screen name="Profile" component={SearchView} />
+      <Tab.Screen name="Profile" component={ProfileView} />
     </Tab.Navigator>
   );
 };
