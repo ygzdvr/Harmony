@@ -8,11 +8,12 @@ import {
   Image,
 } from 'react-native';
 import COLORS from '../../constants/colors';
-import {getDocs, collection} from 'firebase/firestore';
+import {doc, getDoc, getDocs, collection} from 'firebase/firestore';
 import {DB_FIREBASE} from '../../api/firebase/firebase';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {get} from '../../api/util/get';
 
 const Tile = ({
   title,
@@ -88,14 +89,53 @@ const HomeView = () => {
   const [songs, setSongs] = useState([]);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [featuredSongs, setFeaturedSongs] = useState([]);
+
+  const fetchUserFeaturedSongs = async userId => {
+    const userDocRef = doc(DB_FIREBASE, 'users', userId);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData.featuredSongs || [];
+    } else {
+      console.log('No such document!');
+      return [];
+    }
+  };
+
+  const fetchSongsDetails = async songIds => {
+    const songs = [];
+    for (const id of songIds) {
+      const songDocRef = doc(DB_FIREBASE, 'songs', id);
+      const songDoc = await getDoc(songDocRef);
+
+      if (songDoc.exists()) {
+        songs.push({id: songDoc.id, ...songDoc.data()});
+      }
+    }
+    return songs;
+  };
+  useEffect(() => {
+    const fetchFeaturedSongs = async () => {
+      const userId = await get('@user_id');
+      const featuredSongIds = await fetchUserFeaturedSongs(userId);
+      const featuredSongsClone = await fetchSongsDetails(featuredSongIds);
+      setFeaturedSongs(featuredSongsClone);
+    };
+
+    fetchFeaturedSongs();
+  }, []);
 
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const querySnapshot = await getDocs(collection(DB_FIREBASE, 'songs'));
+        const querySnapshot = await getDocs(
+          collection(DB_FIREBASE, 'popularSongs'),
+        );
         const songsSnapshot = [];
-        querySnapshot.forEach(doc => {
-          songsSnapshot.push({id: doc.id, ...doc.data()});
+        querySnapshot.forEach(document => {
+          songsSnapshot.push({id: document.id, ...document.data()});
         });
         setSongs(songsSnapshot);
       } catch (error) {
@@ -134,8 +174,20 @@ const HomeView = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Featured for You</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {exampleTiles.map((title, index) => (
-            <Tile key={index} title={title} isRectangle={true}/>
+          {featuredSongs.map((song, index) => (
+            <Tile
+              key={song.id}
+              title={song.name}
+              artist={song.artist}
+              album={song.album}
+              imageUrl={song.imageurl}
+              previewURL={song.previewURL}
+              currentSound={currentSound}
+              setCurrentSound={setCurrentSound}
+              isRectangle={true}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+            />
           ))}
         </ScrollView>
       </View>
