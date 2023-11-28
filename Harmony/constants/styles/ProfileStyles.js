@@ -114,7 +114,7 @@ const ProfileStyles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cardContainer: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.tabBar,
     borderRadius: 30,
     padding: 15,
     marginHorizontal: 10,
@@ -125,7 +125,7 @@ const ProfileStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     borderWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: COLORS.primary,
   },
   separator: {
     height: 10,

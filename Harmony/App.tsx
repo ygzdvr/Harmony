@@ -5,6 +5,7 @@ import WelcomeView from './screens/authentication/WelcomeView';
 import LoginView from './screens/authentication/LoginView';
 import SignupView from './screens/authentication/SignupView';
 import SettingView from './screens/mainView/SettingView';
+import DetailView from './screens/mainView/DetailView';
 import ProfileView from './screens/mainView/ProfileView';
 import CustomHeader from './partials/home/CustomHeader';
 import CustomTabs from './partials/home/CustomTabs';
@@ -99,6 +100,11 @@ function App(): JSX.Element {
           name="SettingView"
           component={SettingView}
           initialParams={{onLogout: handleLogout}}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="DetailView"
+          component={DetailView}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

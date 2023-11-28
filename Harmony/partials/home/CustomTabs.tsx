@@ -5,10 +5,8 @@ import HomeView from '../../screens/mainView/HomeView';
 import MatchView from '../../screens/mainView/MatchView';
 import EventView from '../../screens/mainView/EventView';
 import ProfileView from '../../screens/mainView/ProfileView';
-import SearchView from '../../screens/mainView/SearchView';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Feather';
-
 const Tab = createBottomTabNavigator();
 
 const CustomTabs = () => {

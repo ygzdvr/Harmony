@@ -18,7 +18,8 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import {DB_FIREBASE} from '../../api/firebase/firebase';
+import {ref, getDownloadURL} from 'firebase/storage';
+import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -38,12 +39,14 @@ const Tile = ({
 }) => {
   const playSound = () => {
     if (currentSound && isPlaying) {
+      // If a sound is playing, stop it
       currentSound.stop(() => {
         currentSound.release();
         setCurrentSound(null);
         setIsPlaying(false);
       });
     } else {
+      // No sound is playing, start a new one
       const sound = new Sound(previewURL, null, error => {
         if (error) {
           console.log('Failed to load the sound', error);
@@ -91,7 +94,7 @@ const Tile = ({
   );
 };
 
-const HomeView = () => {
+const HomeView = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [songs, setSongs] = useState([]);
@@ -102,7 +105,7 @@ const HomeView = () => {
   const [nearbySongs, setNearbySongs] = useState([]);
 
   useEffect(() => {
-    if (searchQuery.trim() !== '') {
+    if (searchQuery.trim().length > 3) {
       const performSearch = async () => {
         const usersRef = collection(DB_FIREBASE, 'users');
         const q = query(
@@ -112,12 +115,14 @@ const HomeView = () => {
         );
         try {
           const querySnapshot = await getDocs(q);
-          const results = [];
-          querySnapshot.forEach(document => {
-            results.push({id: document.id, ...document.data()});
+          const resultsPromises = querySnapshot.docs.map(async document => {
+            const userData = document.data();
+            const profilePhotoUrl = await fetchProfilePhotoUrl(document.id);
+            return {id: document.id, profilePhotoUrl, ...userData};
           });
-          setSearchResults(results);
 
+          const results = await Promise.all(resultsPromises);
+          setSearchResults(results);
           console.log('Search results:', results); // Log the results
         } catch (error) {
           console.error('Error during search:', error);
@@ -132,8 +137,21 @@ const HomeView = () => {
       return (
         <View style={styles.searchResultsOverlay}>
           {searchResults.map((user, index) => (
-            <TouchableOpacity key={index} style={styles.searchResultItem}>
-              <Text style={styles.searchResultText}>{user.username}</Text>
+            <TouchableOpacity
+              key={index}
+              style={styles.searchResultItem}
+              onPress={() => navigation.navigate('DetailView')}>
+              {user.profilePhotoUrl && (
+                <Image
+                  source={{uri: user.profilePhotoUrl}}
+                  style={styles.searchProfileImage}
+                  resizeMode="cover"
+                />
+              )}
+              <View style={styles.searchResultTextContainer}>
+                <Text style={styles.searchResultText}>{user.username}</Text>
+                <Text style={styles.searchResultSubtext}>{user.name}</Text>
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -196,6 +214,16 @@ const HomeView = () => {
     }
     return songs;
   };
+  const fetchProfilePhotoUrl = async userId => {
+    const photoRef = ref(STORAGE, `profilePhotos/${userId}`);
+    try {
+      const url = await getDownloadURL(photoRef);
+      return url;
+    } catch (error) {
+      console.error('Error fetching profile photo:', error);
+      return '';
+    }
+  };
 
   useEffect(() => {
     const fetchFeaturedSongs = async () => {
@@ -210,6 +238,7 @@ const HomeView = () => {
 
   useEffect(() => {
     const fetchSongs = async () => {
+      console.log('Fetching songs...');
       try {
         const querySnapshot = await getDocs(
           collection(DB_FIREBASE, 'popularSongs'),
@@ -226,8 +255,6 @@ const HomeView = () => {
 
     fetchSongs();
   }, []);
-
-  console.log(songs);
 
   return (
     <ScrollView style={styles.container}>
@@ -397,7 +424,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: COLORS.text,
+    backgroundColor: 'rgba(228, 215, 244, 1)',
     borderRadius: 5,
     padding: 5,
     alignItems: 'center',
@@ -407,7 +434,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: COLORS.text,
+    backgroundColor: 'rgba(228, 215, 244, 1)',
     borderRadius: 5,
     padding: 6,
     alignItems: 'center',
@@ -419,23 +446,19 @@ const styles = StyleSheet.create({
   searchResultsContainer: {
     padding: 10,
   },
-  searchResultText: {
-    color: COLORS.text,
-    fontSize: 12,
-  },
   searchResultsOverlay: {
     position: 'absolute',
-    top: 50,
+    top: 40,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(7, 3, 12, 0.9)',
     padding: 10,
+    marginHorizontal: 15,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     zIndex: 1,
-  },
-  searchResultItem: {
-    backgroundColor: 'transparent',
-    padding: 10,
-    marginBottom: 5,
   },
   searchBar: {
     flexDirection: 'row',
@@ -451,6 +474,33 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginLeft: 10,
+  },
+  searchProfileImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: COLORS.text,
+  },
+  searchResultItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 10,
+    marginBottom: 5,
+  },
+  searchResultTextContainer: {
+    flexDirection: 'column',
+  },
+  searchResultText: {
+    color: COLORS.text,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  searchResultSubtext: {
+    color: COLORS.text,
+    fontSize: 12,
   },
 });
 
