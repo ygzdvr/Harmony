@@ -42,7 +42,7 @@ export const TOP = async access_token => {
   const topTracksShortTerm = await TopTracksShortTerm(access_token, 1);
   const topTracksMediumTerm = await TopTracksMediumTerm(access_token, 1);
   const topTracksLongTerm = await TopTracksLongTerm(access_token, 1);
-  const history = await History(access_token, 5);
+  const history = await History(access_token, 10);
 
   const data = {
     access_token,

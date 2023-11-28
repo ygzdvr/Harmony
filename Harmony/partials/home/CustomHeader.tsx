@@ -46,7 +46,7 @@ const CustomHeader = ({navigation}) => {
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {}}>
-          <Icon name="feather" size={24} color={COLORS.text} />
+          <Icon name="send" size={24} color={COLORS.text} />
         </TouchableOpacity>
       </View>
     </View>

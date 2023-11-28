@@ -144,7 +144,11 @@ const DetailView = ({navigation}) => {
           tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Harmony');
-      } else if (!currentUserData.friends.includes(viewedUserUid)) {
+      } else if (
+        !currentUserData.friends.includes(viewedUserUid) &&
+        !viewedUserData.friends.includes(currentUserUid) &&
+        friendRequestStatus !== 'Harmony'
+      ) {
         transaction.update(currentUserRef, {
           requestedFriends: arrayUnion({
             userId: viewedUserUid,
@@ -160,6 +164,8 @@ const DetailView = ({navigation}) => {
           tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Request Sent');
+      } else if (friendRequestStatus === 'Harmony') {
+        console.log('Already friends!');
       }
     });
   };

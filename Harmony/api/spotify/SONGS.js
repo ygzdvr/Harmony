@@ -18,25 +18,43 @@ import {SavedEpisodes} from './Saved/SavedEpisodes';
 import {TopTracksArtist} from './TopTracksArtist';
 import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
 
-const extractSongInfo = data => {
-  const extractTrackInfo = track => ({
-    name: track.name,
-    artist: track.artists.map(artist => artist.name).join(', '),
-    artistID: track.artists.map(artist => artist.id).join(', '),
-    albumName: track.album.name,
-    albumImage: track.album.images[0]?.url,
-    popularity: track.popularity,
-    previewURL: track.preview_url,
-    trackID: track.id,
-  });
+const extractSongInfo = async data => {
+  console.log('extractSongInfo');
+  const extractTrackInfo = async track => {
+    console.log('extractTrackInfo');
+    const audioFeatures = await TrackAudioFeatures(data.access_token, track.id);
+    console.log('audioFeatures', audioFeatures);
+    return {
+      name: track.name,
+      artist: track.artists.map(artist => artist.name).join(', '),
+      artistID: track.artists.map(artist => artist.id).join(', '),
+      albumName: track.album.name,
+      albumImage: track.album.images[0]?.url,
+      popularity: track.popularity,
+      previewURL: track.preview_url,
+      trackID: track.id,
+      // Add the audio features
+      acousticness: audioFeatures.acousticness,
+      danceability: audioFeatures.danceability,
+      energy: audioFeatures.energy,
+      instrumentalness: audioFeatures.instrumentalness,
+      liveness: audioFeatures.liveness,
+      loudness: audioFeatures.loudness,
+      speechiness: audioFeatures.speechiness,
+      tempo: audioFeatures.tempo,
+      valence: audioFeatures.valence,
+    };
+  };
 
-  const combinedTracks = [
+  const combinedTracksPromises = [
     ...data.topTracksShortTerm.items.map(extractTrackInfo),
     ...data.topTracksMediumTerm.items.map(extractTrackInfo),
     ...data.topTracksLongTerm.items.map(extractTrackInfo),
     ...data.history.items.map(item => extractTrackInfo(item.track)),
     ...data.savedTracks.items.map(item => extractTrackInfo(item.track)),
   ];
+
+  const combinedTracks = await Promise.all(combinedTracksPromises);
 
   const trackSet = new Set();
   const uniqueTracks = combinedTracks.filter(track => {

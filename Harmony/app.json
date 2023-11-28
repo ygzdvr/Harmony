@@ -2,6 +2,7 @@
   "name": "Harmony",
   "displayName": "Harmony",
   "expo": {
+    "scheme": "harmony",
     "expo": {
       "ios": {
         "infoPlist": {

@@ -27,22 +27,13 @@ import {
 
 const updatePopularSongs = async () => {
   try {
-    // Define the songs collection reference
     const songsRef = collection(DB_FIREBASE, 'songs');
-
-    // Create a query to fetch top 10 popular songs
-    const q = query(songsRef, orderBy('popularity', 'desc'), limit(10));
-
-    // Fetch the songs
+    const q = query(songsRef, orderBy('popularity', 'desc'), limit(20));
     const querySnapshot = await getDocs(q);
     const popularSongs = [];
-
-    // Iterate over each song and prepare the data for popularSongs collection
     querySnapshot.forEach(doc => {
       popularSongs.push({id: doc.id, ...doc.data()});
     });
-
-    // Add each song to the popularSongs collection
     for (const song of popularSongs) {
       await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
     }
@@ -62,9 +53,7 @@ const LoginView = ({navigation}) => {
     const auth = AUTH_FIREBASE;
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        // Signed in
         const user = userCredential.user;
-        // Navigate to the HomeView or another screen as needed
         put('@user_id', user.uid);
         onSignIn();
         updatePopularSongs();
@@ -73,7 +62,6 @@ const LoginView = ({navigation}) => {
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // Handle errors here, for example, show an alert
         Alert.alert('Failed to Log In', 'Please try again or Sign Up.');
       });
   };

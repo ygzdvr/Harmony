@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Progress from 'react-native-progress';
 
 import {ResponseType, useAuthRequest} from 'expo-auth-session';
+import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRoute} from '@react-navigation/native';
 
@@ -160,42 +161,49 @@ const SignupView = ({navigation}) => {
       ).then(photoUrls => {
         console.log('photoUrls');
         console.log(photoUrls);
-        setDoc(doc(DB_FIREBASE, 'users', userID), {
-          name: name,
-          username: username,
-          email: email,
-          password: password,
-          gender: gender,
-          birthMonth: birthMonth,
-          birthDay: birthDay,
-          birthYear: birthYear,
-          mode: mode,
-          interest: interest,
-          campus: 'Princeton University',
-          location: 'Princeton, NJ',
-          featuredSongs: ['QonWn5I4gVDZmCKuTj3N', 'wMUEDAuGCurP1Hkz6Ita'],
-          topArtistShortTerm: topInfo.topArtistShortTerm.name,
-          topArtistShortTermGenres: topInfo.topArtistShortTerm.genres,
-          topArtistMediumTerm: topInfo.topArtistMediumTerm.name,
-          topArtistMediumTermGenres: topInfo.topArtistMediumTerm.genres,
-          topArtistLongTerm: topInfo.topArtistLongTerm.name,
-          topArtistLongTermGenres: topInfo.topArtistLongTerm.genres,
-          topTrackShortTerm: topInfo.topTrackShortTerm,
-          topTrackMediumTerm: topInfo.topTrackMediumTerm,
-          topTrackLongTerm: topInfo.topTrackLongTerm,
-          mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
-          recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
-          followers: 0,
-          following: 0,
-          friendCount: 0,
-          friends: [userID],
-          pendingFriends: [],
-          requestedFriends: [],
-          access_token: access_token,
-          refresh_token: refresh_token,
-          expirationToken: expirationToken,
-        }).then(() => {
-          console.log('Document successfully written!');
+        get('@access_token').then(data1 => {
+          console.log('data', data1);
+          get('@refresh_token').then(data2 => {
+            console.log('data', data2);
+            get('@expirationToken').then(data3 => {
+              console.log('data', data3);
+              setDoc(doc(DB_FIREBASE, 'users', userID), {
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                gender: gender,
+                birthMonth: birthMonth,
+                birthDay: birthDay,
+                birthYear: birthYear,
+                mode: mode,
+                interest: interest,
+                campus: 'Princeton University',
+                location: 'Princeton, NJ',
+                featuredSongs: [],
+                topArtistShortTerm: topInfo.topArtistShortTerm.name,
+                topArtistShortTermGenres: topInfo.topArtistShortTerm.genres,
+                topArtistMediumTerm: topInfo.topArtistMediumTerm.name,
+                topArtistMediumTermGenres: topInfo.topArtistMediumTerm.genres,
+                topArtistLongTerm: topInfo.topArtistLongTerm.name,
+                topArtistLongTermGenres: topInfo.topArtistLongTerm.genres,
+                topTrackShortTerm: topInfo.topTrackShortTerm,
+                topTrackMediumTerm: topInfo.topTrackMediumTerm,
+                topTrackLongTerm: topInfo.topTrackLongTerm,
+                mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
+                recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
+                friendCount: 0,
+                friends: [userID],
+                pendingFriends: [],
+                requestedFriends: [],
+                access_token: data1,
+                refresh_token: data2,
+                expirationToken: data3,
+              }).then(() => {
+                console.log('Document successfully written!');
+              });
+            });
+          });
         });
       });
     });
@@ -204,15 +212,16 @@ const SignupView = ({navigation}) => {
   const SongsDatabase = async extractedSongs => {
     console.log('SongsDatabase');
     console.log('extractedSongs', extractedSongs);
-    //const songsRef = collection(DB_FIREBASE, 'songs');
-    //extractedSongs.forEach(async song => {
-    //  if (song.trackID) {
-    //    await setDoc(doc(songsRef, song.trackID), song);
-    //  }
-    //});
+    const songsRef = collection(DB_FIREBASE, 'songs');
+    extractedSongs.forEach(async song => {
+      if (song.trackID) {
+        await setDoc(doc(songsRef, song.trackID), song);
+      }
+    });
   };
 
   const getToken = async authCode => {
+    console.log(AuthSession.makeRedirectUri());
     try {
       const credsB64 =
         'MDBhNjdjYTM2OWQyNGE3ZWJiZGQwMWVhMmY0YWU0Zjg6YTgwMjAxZDVlZDcwNDk0MDk0YTkwNzU2ZjZmOGNjNTI=';
@@ -289,10 +298,11 @@ const SignupView = ({navigation}) => {
               console.log('SONGS handle');
               SONGS(token).then(data2 => {
                 SongsDatabase(data2).then(() => {
+                  console.log('SONGS handle finished');
+                  console.log('data2', data2);
                   TOP(token).then(data3 => {
                     console.log('TOP handle');
                     console.log('data3', data3);
-                    console.log('SONGS handle finished');
                     console.log('signup handle');
                     SignupHandle(data3);
                     console.log('signup handle finished');

@@ -17,6 +17,8 @@ import {
   collection,
   query,
   where,
+  updateDoc,
+  setDoc,
 } from 'firebase/firestore';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
@@ -24,7 +26,10 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {get} from '../../api/util/get';
-
+import {refreshTokens} from '../../api/spotify/refreshTokens';
+import {TOP} from '../../api/spotify/TOP';
+import {SONGS} from '../../api/spotify/SONGS';
+import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 const Tile = ({
   title,
   artist,
@@ -101,6 +106,7 @@ const HomeView = ({navigation}) => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [featuredSongs, setFeaturedSongs] = useState([]);
+  const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
   const [campus, setCampus] = useState('');
   const [nearbySongs, setNearbySongs] = useState([]);
 
@@ -182,6 +188,18 @@ const HomeView = ({navigation}) => {
     }
   };
 
+  const fetchUserRecentlyPlayedSongs = async userId => {
+    const userDocRef = doc(DB_FIREBASE, 'users', userId);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData.recentlyPlayedSongs;
+    } else {
+      console.log('No such document!');
+      return [];
+    }
+  };
+
   const fetchNearbySongs = async campus => {
     const usersRef = collection(DB_FIREBASE, 'users');
     const q = query(usersRef, where('campus', '==', campus));
@@ -243,6 +261,18 @@ const HomeView = ({navigation}) => {
   }, []);
 
   useEffect(() => {
+    const fetchRecentSongs = async () => {
+      const userId = await get('@user_id');
+      const recentlyPlayedIDs = await fetchUserRecentlyPlayedSongs(userId);
+      console.log('recentlyPlayedIDs', recentlyPlayedIDs);
+      const recentlyPlayed = await fetchSongsDetails(recentlyPlayedIDs);
+      setRecentlyPlayedSongs(recentlyPlayed);
+    };
+
+    fetchRecentSongs();
+  }, []);
+
+  useEffect(() => {
     const fetchSongs = async () => {
       console.log('Fetching songs...');
       try {
@@ -261,6 +291,84 @@ const HomeView = ({navigation}) => {
 
     fetchSongs();
   }, []);
+  const refreshAccessToken = async () => {
+    try {
+      const newAccessToken = await refreshTokens();
+      if (newAccessToken) {
+        const userId = await get('@user_id');
+        const userRef = doc(DB_FIREBASE, 'users', userId);
+        await updateDoc(userRef, {access_token: newAccessToken});
+        console.log('Access token refreshed successfully');
+        console.log('new access token:', newAccessToken);
+        return newAccessToken;
+      }
+    } catch (error) {
+      console.error('Error refreshing access token:', error);
+    }
+  };
+  const refreshRecentlyPlayed = async topInfo => {
+    try {
+      const userId = await get('@user_id');
+      const userRef = doc(DB_FIREBASE, 'users', userId);
+      console.log('Updating user recently played songs');
+      console.log('topInfo', topInfo);
+      console.log('userRef', userRef);
+      console.log(
+        'topInfo.mostRecentlyPlayedSong',
+        topInfo.mostRecentlyPlayedSong,
+      );
+      console.log('topInfo.recentlyPlayedSongs', topInfo.recentlyPlayedSongs);
+      await updateDoc(userRef, {
+        mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
+        recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
+      });
+      console.log('Updated successfully');
+    } catch (error) {
+      console.error('Error refreshing access token:', error);
+    }
+  };
+  useEffect(() => {
+    const initializeData = async () => {
+      const newAccessToken = await refreshAccessToken();
+      if (newAccessToken) {
+        console.log('Initializing data...');
+        try {
+          console.log('Checking Songs For User');
+          SONGS(newAccessToken).then(songsFetched => {
+            console.log('SONGS handle started');
+            console.log('songsFetched', songsFetched);
+            console.log('Add songs to database');
+            SongsDatabase(songsFetched).then(() => {
+              console.log('Added songs to database');
+              console.log('Fetching Top Songs');
+              TOP(newAccessToken).then(topSongs => {
+                console.log('Top songs fetched');
+                console.log('topSongs', topSongs);
+                console.log('Updating user top songs');
+                refreshRecentlyPlayed(topSongs).then(() => {
+                  console.log('Updated user top songs');
+                });
+              });
+            });
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+
+    initializeData();
+  }, []);
+  const SongsDatabase = async extractedSongs => {
+    console.log('SongsDatabase Update');
+    console.log('extractedSongs', extractedSongs);
+    const songsRef = collection(DB_FIREBASE, 'songs');
+    extractedSongs.forEach(async song => {
+      if (song.trackID) {
+        await setDoc(doc(songsRef, song.trackID), song);
+      }
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -307,6 +415,27 @@ const HomeView = ({navigation}) => {
         <Text style={styles.sectionTitle}>Featured for You</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {featuredSongs.map((song, index) => (
+            <Tile
+              key={song.id}
+              title={song.name}
+              artist={song.artist}
+              album={song.albumName}
+              imageUrl={song.albumImage}
+              previewURL={song.previewURL}
+              currentSound={currentSound}
+              setCurrentSound={setCurrentSound}
+              isRectangle={true}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+            />
+          ))}
+        </ScrollView>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Continue Listening</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {recentlyPlayedSongs.map((song, index) => (
             <Tile
               key={song.id}
               title={song.name}
