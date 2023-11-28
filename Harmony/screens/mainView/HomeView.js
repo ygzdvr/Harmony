@@ -38,14 +38,12 @@ const Tile = ({
 }) => {
   const playSound = () => {
     if (currentSound && isPlaying) {
-      // If a sound is playing, stop it
       currentSound.stop(() => {
         currentSound.release();
         setCurrentSound(null);
         setIsPlaying(false);
       });
     } else {
-      // No sound is playing, start a new one
       const sound = new Sound(previewURL, null, error => {
         if (error) {
           console.log('Failed to load the sound', error);
@@ -170,6 +168,15 @@ const HomeView = () => {
       if (document.data().mostRecentlyPlayedSong) {
         songIds.push(document.data().mostRecentlyPlayedSong);
       }
+      if (document.data().topTrackShortTerm) {
+        songIds.push(document.data().topTrackShortTerm);
+      }
+      if (document.data().topTrackLongTerm) {
+        songIds.push(document.data().topTrackLongTerm);
+      }
+      if (document.data().topTrackMediumTerm) {
+        songIds.push(document.data().topTrackMediumTerm);
+      }
     });
 
     const uniqueSongIds = [...new Set(songIds)];
@@ -225,12 +232,21 @@ const HomeView = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search profiles..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
+        <View style={styles.searchBar}>
+          <Icon
+            name="search"
+            size={20}
+            color={COLORS.background}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search for profiles..."
+            placeholderTextColor={COLORS.background}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
       </View>
       {renderSearchResults()}
       <View style={styles.section}>
@@ -400,13 +416,6 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 15,
   },
-  searchInput: {
-    backgroundColor: COLORS.text,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 12,
-    color: COLORS.background,
-  },
   searchResultsContainer: {
     padding: 10,
   },
@@ -427,6 +436,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     padding: 10,
     marginBottom: 5,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.text,
+    borderRadius: 10,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 12,
+    fontSize: 12,
+    color: COLORS.background,
+  },
+  searchIcon: {
+    marginLeft: 10,
   },
 });
 

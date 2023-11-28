@@ -78,7 +78,14 @@ const ProfileView = () => {
           setFollowing(userDataSnapshot.following);
           setGenre(userDataSnapshot.topArtistMediumTermGenres[0]);
           setTopArtist(userDataSnapshot.topArtistMediumTerm);
-          setTopSong(userDataSnapshot.song);
+          const topMediumTimeTrackID = userDataSnapshot.topTrackMediumTerm;
+          if (topMediumTimeTrackID) {
+            const songDocRef = doc(DB_FIREBASE, 'songs', topMediumTimeTrackID);
+            const songDocSnap = await getDoc(songDocRef);
+            if (songDocSnap.exists()) {
+              setTopSong(songDocSnap.data().name);
+            }
+          }
           setLocation(userDataSnapshot.location);
           console.log('Document data:', docSnap.data());
         }

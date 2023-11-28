@@ -23,7 +23,7 @@ const ProfileStyles = StyleSheet.create({
   profilePhoto: {
     width: 100,
     height: 100,
-    borderRadius: 50,
+    borderRadius: 25,
     alignSelf: 'center',
     marginBottom: 10,
   },

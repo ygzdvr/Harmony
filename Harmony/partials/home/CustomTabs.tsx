@@ -20,27 +20,27 @@ const CustomTabs = () => {
 
           if (route.name === 'Home') {
             iconName = 'home';
-          } else if (route.name === 'Messages') {
+          } else if (route.name === 'Matches') {
             iconName = 'heart';
           } else if (route.name === 'Events') {
             iconName = 'map';
           } else if (route.name === 'Profile') {
             iconName = 'user';
           }
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={22} color={color} />;
         },
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.text,
         tabBarStyle: {
           backgroundColor: COLORS.tabBar,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
           height: 60,
           position: 'absolute',
-          borderTopWidth: 1,
-          borderTopColor: COLORS.primary,
+          borderTopWidth: 0,
+          borderTopColor: COLORS.text,
           elevation: 20,
           shadowOpacity: 100,
           shadowOffset: {
@@ -48,10 +48,10 @@ const CustomTabs = () => {
             height: 0,
           },
           borderColor: COLORS.primary,
-          borderWidth: 1,
-          marginLeft: 10,
-          marginRight: 10,
-          marginBottom: 5,
+          borderWidth: 0,
+          marginLeft: 0,
+          marginRight: 0,
+          marginBottom: 0,
         },
         tabBarShowLabel: false,
         headerStyle: {
@@ -62,7 +62,7 @@ const CustomTabs = () => {
         headerShown: false,
       })}>
       <Tab.Screen name="Home" component={HomeView} />
-      <Tab.Screen name="Messages" component={MatchView} />
+      <Tab.Screen name="Matches" component={MatchView} />
       <Tab.Screen name="Events" component={EventView} />
       <Tab.Screen name="Profile" component={ProfileView} />
     </Tab.Navigator>
