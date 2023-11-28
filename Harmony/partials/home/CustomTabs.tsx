@@ -21,7 +21,7 @@ const CustomTabs = () => {
           } else if (route.name === 'Matches') {
             iconName = 'heart';
           } else if (route.name === 'Events') {
-            iconName = 'map';
+            iconName = 'navigation';
           } else if (route.name === 'Profile') {
             iconName = 'user';
           }

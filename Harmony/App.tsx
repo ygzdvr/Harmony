@@ -7,6 +7,7 @@ import SignupView from './screens/authentication/SignupView';
 import SettingView from './screens/mainView/SettingView';
 import DetailView from './screens/mainView/DetailView';
 import ProfileView from './screens/mainView/ProfileView';
+import NotificationView from './screens/mainView/NotificationView';
 import CustomHeader from './partials/home/CustomHeader';
 import CustomTabs from './partials/home/CustomTabs';
 import {onAuthStateChanged, signOut} from 'firebase/auth';
@@ -100,6 +101,11 @@ function App(): JSX.Element {
           name="SettingView"
           component={SettingView}
           initialParams={{onLogout: handleLogout}}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="NotificationView"
+          component={NotificationView}
           options={{headerShown: false}}
         />
         <Stack.Screen

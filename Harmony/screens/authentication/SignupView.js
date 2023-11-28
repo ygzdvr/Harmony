@@ -188,7 +188,7 @@ const SignupView = ({navigation}) => {
           followers: 0,
           following: 0,
           friendCount: 0,
-          friends: [],
+          friends: [userID],
           pendingFriends: [],
           requestedFriends: [],
           access_token: access_token,

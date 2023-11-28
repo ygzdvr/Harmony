@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, Alert} from 'react-native';
 import axios from 'axios';
 import COLORS from '../../constants/colors';
 import DetailStyles from '../../constants/styles/DetailStyles';
@@ -17,9 +17,12 @@ import {
   collection,
   query,
   where,
+  deleteField,
   arrayUnion,
   arrayRemove,
   updateDoc,
+  serverTimestamp,
+  runTransaction,
 } from 'firebase/firestore';
 const DetailView = ({navigation}) => {
   const route = useRoute();
@@ -81,7 +84,16 @@ const DetailView = ({navigation}) => {
   };
 
   const handleMessagePress = () => {
-    console.log('Message button pressed');
+    if (friendRequestStatus !== 'Harmony') {
+      Alert.alert(
+        "Can't Send Message",
+        'You need to be friends with this user to send a message.',
+        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        {cancelable: false},
+      );
+    } else {
+      console.log('Navigate to messaging screen or handle message sending');
+    }
   };
 
   const handleAddFriendPress = async () => {
@@ -91,35 +103,65 @@ const DetailView = ({navigation}) => {
     const currentUserRef = doc(DB_FIREBASE, 'users', currentUserUid);
     const viewedUserRef = doc(DB_FIREBASE, 'users', viewedUserUid);
 
-    const currentUserDoc = await getDoc(currentUserRef);
-    const viewedUserDoc = await getDoc(viewedUserRef);
+    await updateDoc(currentUserRef, {tempTimestamp: serverTimestamp()});
+    await updateDoc(viewedUserRef, {tempTimestamp: serverTimestamp()});
 
-    if (currentUserDoc.exists() && viewedUserDoc.exists()) {
+    await runTransaction(DB_FIREBASE, async transaction => {
+      const currentUserDoc = await transaction.get(currentUserRef);
+      const viewedUserDoc = await transaction.get(viewedUserRef);
+
+      if (!currentUserDoc.exists() || !viewedUserDoc.exists()) {
+        console.log('One of the users does not exist!');
+        return;
+      }
       const currentUserData = currentUserDoc.data();
       const viewedUserData = viewedUserDoc.data();
 
+      const timestamp = currentUserData.tempTimestamp;
       if (friendRequestStatus === 'Accept Request') {
-        // Accept the friend request
-        await updateDoc(currentUserRef, {
-          friends: arrayUnion(viewedUserUid),
-          pendingFriends: arrayRemove(viewedUserUid),
+        const updatedPendingFriends = currentUserData.pendingFriends.filter(
+          item => item.userId !== viewedUserUid,
+        );
+        const updatedRequestedFriends = viewedUserData.requestedFriends.filter(
+          item => item.userId !== currentUserUid,
+        );
+        transaction.update(currentUserRef, {
+          friends: arrayUnion({
+            userId: viewedUserUid,
+            timestamp: timestamp,
+          }),
+          pendingFriends: updatedPendingFriends,
+          friendCount: currentUserData.friendCount + 1,
+          tempTimestamp: deleteField(),
         });
-        await updateDoc(viewedUserRef, {
-          friends: arrayUnion(currentUserUid),
-          requestedFriends: arrayRemove(currentUserUid),
+        transaction.update(viewedUserRef, {
+          friends: arrayUnion({
+            userId: currentUserUid,
+            timestamp: timestamp,
+          }),
+          requestedFriends: updatedRequestedFriends,
+          friendCount: viewedUserData.friendCount + 1,
+          tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Harmony');
       } else if (!currentUserData.friends.includes(viewedUserUid)) {
-        // Send a new friend request
-        await updateDoc(currentUserRef, {
-          requestedFriends: arrayUnion(viewedUserUid),
+        transaction.update(currentUserRef, {
+          requestedFriends: arrayUnion({
+            userId: viewedUserUid,
+            timestamp: timestamp,
+          }),
+          tempTimestamp: deleteField(),
         });
-        await updateDoc(viewedUserRef, {
-          pendingFriends: arrayUnion(currentUserUid),
+        transaction.update(viewedUserRef, {
+          pendingFriends: arrayUnion({
+            userId: currentUserUid,
+            timestamp: timestamp,
+          }),
+          tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Request Sent');
       }
-    }
+    });
   };
 
   const handleFriendRequestStatus = async () => {
@@ -134,13 +176,16 @@ const DetailView = ({navigation}) => {
     if (currentUserDoc.exists() && viewedUserDoc.exists()) {
       const currentUserData = currentUserDoc.data();
       const viewedUserData = viewedUserDoc.data();
-      if (currentUserData.friends.includes(viewedUserUid)) {
+      const isInArray = (array, userId) =>
+        array.some(item => item.userId === userId);
+
+      if (isInArray(currentUserData.friends, viewedUserUid)) {
         setFriendRequestStatus('Harmony');
         return 'Harmony';
-      } else if (currentUserData.pendingFriends.includes(viewedUserUid)) {
+      } else if (isInArray(currentUserData.pendingFriends, viewedUserUid)) {
         setFriendRequestStatus('Accept Request');
         return 'Accept Request';
-      } else if (currentUserData.requestedFriends.includes(viewedUserUid)) {
+      } else if (isInArray(currentUserData.requestedFriends, viewedUserUid)) {
         setFriendRequestStatus('Request Sent');
         return 'Request Sent';
       } else {

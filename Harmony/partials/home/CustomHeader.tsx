@@ -28,6 +28,15 @@ const CustomHeader = ({navigation}) => {
       </Text>
       {/* Increase text size and change color */}
       <View style={{flexDirection: 'row', marginTop: 20, paddingBottom: 5}}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('NotificationView')}>
+          <Icon
+            name="bell"
+            size={24}
+            color={COLORS.text}
+            style={{marginRight: 20}}
+          />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('SettingView')}>
           <Icon
             name="settings"

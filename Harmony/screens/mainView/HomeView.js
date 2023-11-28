@@ -139,7 +139,7 @@ const HomeView = ({navigation}) => {
     });
   };
   const renderSearchResults = () => {
-    if (searchResults.length > 0) {
+    if (searchResults.length > 0 && searchQuery.trim().length > 3) {
       return (
         <View style={styles.searchResultsOverlay}>
           {searchResults.map((user, index) => (
