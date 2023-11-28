@@ -23,7 +23,7 @@ const ProfileStyles = StyleSheet.create({
   profilePhoto: {
     width: 100,
     height: 100,
-    borderRadius: 25,
+    borderRadius: 10,
     alignSelf: 'center',
     marginBottom: 10,
   },
@@ -43,7 +43,7 @@ const ProfileStyles = StyleSheet.create({
   },
   musicPreferenceTile: {
     backgroundColor: COLORS.text,
-    borderRadius: 10,
+    borderRadius: 6,
     paddingVertical: 10,
     alignItems: 'center',
     width: '30%',
@@ -115,7 +115,7 @@ const ProfileStyles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: COLORS.tabBar,
-    borderRadius: 30,
+    borderRadius: 20,
     padding: 15,
     marginHorizontal: 10,
     marginTop: 10,

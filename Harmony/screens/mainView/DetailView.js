@@ -9,6 +9,7 @@ import {useRoute} from '@react-navigation/native';
 import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import GradientText from '../../components/GradientText';
 import {get} from '../../api/util/get';
+import {ref, getDownloadURL} from 'firebase/storage';
 import {
   doc,
   getDoc,
@@ -16,21 +17,109 @@ import {
   collection,
   query,
   where,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
 } from 'firebase/firestore';
 const DetailView = ({navigation}) => {
   const route = useRoute();
   const {userId, profilePhoto} = route.params;
   const [userData, setUserData] = useState(null);
   const [topSong, setTopSong] = useState('');
+  const [userPhotos, setUserPhotos] = useState([]);
   const [friendRequestStatus, setFriendRequestStatus] =
     useState('Send Request');
+
+  const fetchUserPhotos = async () => {
+    console.log('fetchUserPhotos');
+    const photoUrls = [];
+    for (let i = 0; i < 6; i++) {
+      const photoRef = ref(STORAGE, `userPhotos/${userId}/${i}`);
+      try {
+        const url = await getDownloadURL(photoRef);
+        photoUrls.push(url);
+      } catch (error) {
+        console.error(`Error fetching photo ${i}:`, error);
+      }
+    }
+    setUserPhotos(photoUrls);
+    console.log('userPhotos2', userPhotos);
+  };
+  const renderUserPhotos = () => {
+    console.log('userPhotos', userPhotos);
+    return (
+      <View style={DetailStyles.userPhotosContainer}>
+        <View style={DetailStyles.column}>
+          {userPhotos.slice(0, 3).map((url, index) => (
+            <Image
+              key={`left-${index}`}
+              source={{uri: url}}
+              style={
+                index === 1
+                  ? DetailStyles.verticalRectangle
+                  : DetailStyles.square
+              }
+            />
+          ))}
+        </View>
+
+        <View style={DetailStyles.column}>
+          <Image
+            source={{uri: userPhotos[3]}}
+            style={DetailStyles.verticalRectangle}
+          />
+          {userPhotos.slice(4, 6).map((url, index) => (
+            <Image
+              key={`right-${index}`}
+              source={{uri: url}}
+              style={DetailStyles.square}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  };
 
   const handleMessagePress = () => {
     console.log('Message button pressed');
   };
 
-  const handleAddFriendPress = () => {
-    console.log('Add Friend button pressed');
+  const handleAddFriendPress = async () => {
+    const currentUserUid = await get('@user_id');
+    const viewedUserUid = route.params.userId;
+
+    const currentUserRef = doc(DB_FIREBASE, 'users', currentUserUid);
+    const viewedUserRef = doc(DB_FIREBASE, 'users', viewedUserUid);
+
+    const currentUserDoc = await getDoc(currentUserRef);
+    const viewedUserDoc = await getDoc(viewedUserRef);
+
+    if (currentUserDoc.exists() && viewedUserDoc.exists()) {
+      const currentUserData = currentUserDoc.data();
+      const viewedUserData = viewedUserDoc.data();
+
+      if (friendRequestStatus === 'Accept Request') {
+        // Accept the friend request
+        await updateDoc(currentUserRef, {
+          friends: arrayUnion(viewedUserUid),
+          pendingFriends: arrayRemove(viewedUserUid),
+        });
+        await updateDoc(viewedUserRef, {
+          friends: arrayUnion(currentUserUid),
+          requestedFriends: arrayRemove(currentUserUid),
+        });
+        setFriendRequestStatus('Harmony');
+      } else if (!currentUserData.friends.includes(viewedUserUid)) {
+        // Send a new friend request
+        await updateDoc(currentUserRef, {
+          requestedFriends: arrayUnion(viewedUserUid),
+        });
+        await updateDoc(viewedUserRef, {
+          pendingFriends: arrayUnion(currentUserUid),
+        });
+        setFriendRequestStatus('Request Sent');
+      }
+    }
   };
 
   const handleFriendRequestStatus = async () => {
@@ -47,19 +136,28 @@ const DetailView = ({navigation}) => {
       const viewedUserData = viewedUserDoc.data();
       if (currentUserData.friends.includes(viewedUserUid)) {
         setFriendRequestStatus('Harmony');
+        return 'Harmony';
       } else if (currentUserData.pendingFriends.includes(viewedUserUid)) {
-        setFriendRequestStatus('Request Pending');
+        setFriendRequestStatus('Accept Request');
+        return 'Accept Request';
       } else if (currentUserData.requestedFriends.includes(viewedUserUid)) {
         setFriendRequestStatus('Request Sent');
+        return 'Request Sent';
       } else {
         setFriendRequestStatus('Send Request');
+        return 'Send Request';
       }
     }
   };
 
   useEffect(() => {
-    handleFriendRequestStatus();
-  }, []);
+    handleFriendRequestStatus().then(status => {
+      setFriendRequestStatus(status);
+      if (status === 'Harmony') {
+        fetchUserPhotos();
+      }
+    });
+  }, [userId]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -126,7 +224,7 @@ const DetailView = ({navigation}) => {
           <TouchableOpacity
             style={DetailStyles.messageButton}
             onPress={handleMessagePress}>
-            <Text style={DetailStyles.buttonText}>Message</Text>
+            <Text style={DetailStyles.buttonTextWhite}>Message</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -136,6 +234,7 @@ const DetailView = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+      {friendRequestStatus === 'Harmony' && renderUserPhotos()}
     </ScrollView>
   );
 };

@@ -14,6 +14,7 @@ const ProfileView = () => {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
+  const [friendCount, setFriendCount] = useState(0);
   const [genre, setGenre] = useState('');
   const [topArtist, setTopArtist] = useState('');
   const [topSong, setTopSong] = useState('');
@@ -61,6 +62,7 @@ const ProfileView = () => {
           setFollowing(userDataSnapshot.following);
           setGenre(userDataSnapshot.topArtistMediumTermGenres[0]);
           setTopArtist(userDataSnapshot.topArtistMediumTerm);
+          setFriendCount(userDataSnapshot.friendCount);
           const topMediumTimeTrackID = userDataSnapshot.topTrackMediumTerm;
           if (topMediumTimeTrackID) {
             const songDocRef = doc(DB_FIREBASE, 'songs', topMediumTimeTrackID);
@@ -113,7 +115,9 @@ const ProfileView = () => {
   const renderAdditionalInfo = () => {
     return (
       <View style={ProfileStyles.additionalInfoContainer}>
-        <GradientText style={ProfileStyles.infoText}>@{userName}</GradientText>
+        <GradientText style={ProfileStyles.infoText}>
+          @{userName} | {friendCount} Friends
+        </GradientText>
       </View>
     );
   };
@@ -145,18 +149,6 @@ const ProfileView = () => {
           <View style={ProfileStyles.musicPreferenceTile}>
             <Text style={ProfileStyles.musicPreferenceLabel}>Top Song</Text>
             <Text style={ProfileStyles.musicPreferenceText}>{topSong}</Text>
-          </View>
-        </View>
-
-        <View style={ProfileStyles.socialInfo}>
-          <View style={ProfileStyles.socialInfoColumn}>
-            <Text style={ProfileStyles.socialInfoNumber}>{followers}</Text>
-            <Text style={ProfileStyles.socialInfoTitle}>Followers</Text>
-          </View>
-
-          <View style={ProfileStyles.socialInfoColumn}>
-            <Text style={ProfileStyles.socialInfoNumber}>{following}</Text>
-            <Text style={ProfileStyles.socialInfoTitle}>Following</Text>
           </View>
         </View>
       </View>

@@ -6,7 +6,7 @@ const DetailStyles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.background,
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   backButton: {
     marginTop: 30,
@@ -52,7 +52,7 @@ const DetailStyles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: COLORS.tabBar,
-    borderRadius: 30,
+    borderRadius: 20,
     padding: 15,
     marginTop: 10,
     shadowColor: '#000',
@@ -73,7 +73,7 @@ const DetailStyles = StyleSheet.create({
   profilePhoto: {
     width: 100,
     height: 100,
-    borderRadius: 25,
+    borderRadius: 10,
     alignSelf: 'center',
     marginBottom: 10,
   },
@@ -104,7 +104,7 @@ const DetailStyles = StyleSheet.create({
   },
   musicPreferenceTile: {
     backgroundColor: COLORS.text,
-    borderRadius: 10,
+    borderRadius: 6,
     paddingVertical: 10,
     alignItems: 'center',
     width: '30%',
@@ -175,12 +175,12 @@ const DetailStyles = StyleSheet.create({
     marginBottom: 15,
   },
   messageButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.text,
     padding: 10,
     width: 130,
     alignItems: 'center',
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: 6,
+    borderWidth: 0,
     borderColor: COLORS.titlePurple,
   },
   addFriendButton: {
@@ -188,12 +188,17 @@ const DetailStyles = StyleSheet.create({
     padding: 10,
     width: 130,
     alignItems: 'center',
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: 6,
+    borderWidth: 0,
     borderColor: COLORS.titlePurple,
   },
   buttonText: {
     color: COLORS.text,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  buttonTextWhite: {
+    color: COLORS.primary,
     fontSize: 12,
     fontWeight: 'bold',
   },
