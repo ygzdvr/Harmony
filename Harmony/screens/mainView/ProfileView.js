@@ -10,22 +10,13 @@ import GradientText from '../../components/GradientText';
 
 const ProfileView = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [genderSnap, setGender] = useState('');
-  const [modeSnap, setMode] = useState('');
-  const [interestSnap, setInterest] = useState('');
-  const [birthMonth, setBirthMonth] = useState('');
-  const [birthDay, setBirthDay] = useState('');
-  const [birthYear, setBirthYear] = useState('');
   const [userName, setUserName] = useState('');
   const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
-  const [campus, setCampus] = useState('');
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
   const [genre, setGenre] = useState('');
   const [topArtist, setTopArtist] = useState('');
   const [topSong, setTopSong] = useState('');
-  const [location, setLocation] = useState('');
   const [userPhotos, setUserPhotos] = useState([]);
 
   const fetchProfilePhoto = async userId => {
@@ -65,15 +56,7 @@ const ProfileView = () => {
         if (docSnap.exists) {
           const userDataSnapshot = docSnap.data();
           setName(userDataSnapshot.name);
-          setEmail(userDataSnapshot.email);
-          setGender(userDataSnapshot.gender);
-          setMode(userDataSnapshot.mode);
-          setInterest(userDataSnapshot.interest);
-          setBirthMonth(userDataSnapshot.birthMonth);
-          setBirthDay(userDataSnapshot.birthDay);
-          setBirthYear(userDataSnapshot.birthYear);
           setUserName(userDataSnapshot.username);
-          setCampus(userDataSnapshot.campus);
           setFollowers(userDataSnapshot.followers);
           setFollowing(userDataSnapshot.following);
           setGenre(userDataSnapshot.topArtistMediumTermGenres[0]);
@@ -86,7 +69,6 @@ const ProfileView = () => {
               setTopSong(songDocSnap.data().name);
             }
           }
-          setLocation(userDataSnapshot.location);
           console.log('Document data:', docSnap.data());
         }
       } else {

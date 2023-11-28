@@ -132,6 +132,12 @@ const HomeView = ({navigation}) => {
       performSearch();
     }
   }, [searchQuery]);
+  const handleSelectUser = user => {
+    navigation.navigate('DetailView', {
+      userId: user.id,
+      profilePhoto: user.profilePhotoUrl,
+    });
+  };
   const renderSearchResults = () => {
     if (searchResults.length > 0) {
       return (
@@ -140,7 +146,7 @@ const HomeView = ({navigation}) => {
             <TouchableOpacity
               key={index}
               style={styles.searchResultItem}
-              onPress={() => navigation.navigate('DetailView')}>
+              onPress={() => handleSelectUser(user)}>
               {user.profilePhotoUrl && (
                 <Image
                   source={{uri: user.profilePhotoUrl}}
