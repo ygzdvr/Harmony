@@ -89,8 +89,6 @@ const SettingView = ({navigation}) => {
       quality: 1,
     }).then(result => {
       if (!result.canceled) {
-        console.log('result');
-        console.log(result);
         uploadProfilePhoto(result.assets[0].uri).then(() => {
           console.log('Profile photo updated!');
         });
@@ -149,9 +147,7 @@ const SettingView = ({navigation}) => {
       if (useruid) {
         fetchProfilePhoto(useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
-        console.log('users', users);
         const docSnap = await getDoc(users);
-        console.log('docSnap', docSnap);
         if (docSnap.exists) {
           setUserData(docSnap.data());
           const userDataSnapshot = docSnap.data();
@@ -164,7 +160,6 @@ const SettingView = ({navigation}) => {
           setBirthDay(userDataSnapshot.birthDay);
           setBirthYear(userDataSnapshot.birthYear);
           setUserName(userDataSnapshot.username);
-          console.log('Document data:', docSnap.data());
         }
       } else {
         console.log('No such document!');

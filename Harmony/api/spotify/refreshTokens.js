@@ -18,8 +18,12 @@ export const refreshTokens = async () => {
     });
     const responseJson = await response.json();
     if (responseJson.error) {
+      console.log('error refreshing tokens');
       console.error(responseJson.error);
+      console.log(response);
     } else {
+      console.log('tokens refreshed successfully');
+      console.log(response);
       const {
         access_token: newAccessToken,
         refresh_token: newRefreshToken,

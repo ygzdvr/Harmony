@@ -18,7 +18,6 @@ const NotificationView = ({navigation}) => {
     });
   };
   const goBack = () => {
-    console.log('go back');
     navigation.goBack();
   };
   useEffect(() => {
@@ -34,15 +33,15 @@ const NotificationView = ({navigation}) => {
             const senderRef = doc(DB_FIREBASE, 'users', request.userId);
             const senderSnap = await getDoc(senderRef);
             const senderData = senderSnap.exists() ? senderSnap.data() : {};
-            const senderProfilePhoto = await getDownloadURL(
-              ref(STORAGE, `profilePhotos/${request.userId}`),
-            );
+            //const senderProfilePhoto = await getDownloadURL(
+            //  ref(STORAGE, `profilePhotos/${request.userId}`),
+            //);
 
             return {
               ...request,
               senderName: senderData.name,
               senderUsername: senderData.username,
-              senderProfilePhoto,
+              //senderProfilePhoto,
             };
           }),
         );
@@ -78,7 +77,20 @@ const NotificationView = ({navigation}) => {
   };
   const renderRequests = () => {
     const requests = categorizeRequests();
-
+    if (
+      requests.today.length === 0 &&
+      requests.week.length === 0 &&
+      requests.month.length === 0 &&
+      requests.older.length === 0
+    ) {
+      return (
+        <View style={NotificationStyles.sectionNoRequests}>
+          <Text style={NotificationStyles.noRequests}>
+            You have no pending requests!
+          </Text>
+        </View>
+      );
+    }
     return (
       <View>
         {renderRequestSection('Today', requests.today)}

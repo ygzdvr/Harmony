@@ -19,11 +19,9 @@ import {TopTracksArtist} from './TopTracksArtist';
 import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
 
 const extractSongInfo = async data => {
-  console.log('extractSongInfo');
   const extractTrackInfo = async track => {
-    console.log('extractTrackInfo');
-    const audioFeatures = await TrackAudioFeatures(data.access_token, track.id);
-    console.log('audioFeatures', audioFeatures);
+    //const audioFeatures = await TrackAudioFeatures(data.access_token, track.id);
+    //console.log('audioFeatures', audioFeatures);
     return {
       name: track.name,
       artist: track.artists.map(artist => artist.name).join(', '),
@@ -34,15 +32,15 @@ const extractSongInfo = async data => {
       previewURL: track.preview_url,
       trackID: track.id,
       // Add the audio features
-      acousticness: audioFeatures.acousticness,
-      danceability: audioFeatures.danceability,
-      energy: audioFeatures.energy,
-      instrumentalness: audioFeatures.instrumentalness,
-      liveness: audioFeatures.liveness,
-      loudness: audioFeatures.loudness,
-      speechiness: audioFeatures.speechiness,
-      tempo: audioFeatures.tempo,
-      valence: audioFeatures.valence,
+      //acousticness: audioFeatures.acousticness,
+      //danceability: audioFeatures.danceability,
+      //energy: audioFeatures.energy,
+      //instrumentalness: audioFeatures.instrumentalness,
+      //liveness: audioFeatures.liveness,
+      //loudness: audioFeatures.loudness,
+      //speechiness: audioFeatures.speechiness,
+      //tempo: audioFeatures.tempo,
+      //valence: audioFeatures.valence,
     };
   };
 

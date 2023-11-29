@@ -51,9 +51,7 @@ const ProfileView = () => {
         fetchProfilePhoto(useruid);
         fetchUserPhotos(useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
-        console.log('users', users);
         const docSnap = await getDoc(users);
-        console.log('docSnap', docSnap);
         if (docSnap.exists) {
           const userDataSnapshot = docSnap.data();
           setName(userDataSnapshot.name);
@@ -71,7 +69,6 @@ const ProfileView = () => {
               setTopSong(songDocSnap.data().name);
             }
           }
-          console.log('Document data:', docSnap.data());
         }
       } else {
         console.log('No such document!');

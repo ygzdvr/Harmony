@@ -49,6 +49,8 @@ import {
   setDoc,
   doc,
   where,
+  orderBy,
+  limit,
 } from 'firebase/firestore';
 
 const SignupView = ({navigation}) => {
@@ -111,23 +113,12 @@ const SignupView = ({navigation}) => {
     tokenEndpoint: 'https://accounts.spotify.com/api/token',
   };
   const uploadImage = async (imageUri, path) => {
-    console.log('uploadImage');
     await fetch(imageUri).then(response => {
-      console.log('response');
-      console.log(response);
       response.blob().then(blob => {
-        console.log('blob');
-        console.log(blob);
         const storage = STORAGE;
         const storageRef = ref(storage, path);
-        console.log('storageRef');
-        console.log(storageRef);
-
         uploadBytes(storageRef, blob).then(snapshot => {
-          console.log('Uploaded a blob or file!');
           getDownloadURL(storageRef).then(url => {
-            console.log('url');
-            console.log(url);
             return url;
           });
         });
@@ -138,7 +129,6 @@ const SignupView = ({navigation}) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
         const user = userCredential.user;
-        console.log('Registered with: ', user.email);
         await DatabaseHandle(user.uid, topInfo);
         put('@user_id', user.uid);
         onSignUp();
@@ -147,11 +137,25 @@ const SignupView = ({navigation}) => {
         console.log('Error:', error);
       });
   };
+  const updatePopularSongs = async () => {
+    try {
+      const songsRef = collection(DB_FIREBASE, 'songs');
+      const q = query(songsRef, orderBy('popularity', 'desc'), limit(10));
+      const querySnapshot = await getDocs(q);
+      const popularSongs = [];
+      querySnapshot.forEach(doc => {
+        popularSongs.push({id: doc.id, ...doc.data()});
+      });
+      for (const song of popularSongs) {
+        await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
+      }
+      console.log('Popular songs updated successfully');
+    } catch (error) {
+      console.error('Error updating popular songs:', error);
+    }
+  };
   const DatabaseHandle = async (userID, topInfo) => {
-    console.log('DatabaseHandle');
     uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
-      console.log('url');
-      console.log(url);
       Promise.all(
         photos.map((photo, index) =>
           photo
@@ -159,14 +163,9 @@ const SignupView = ({navigation}) => {
             : Promise.resolve(null),
         ),
       ).then(photoUrls => {
-        console.log('photoUrls');
-        console.log(photoUrls);
         get('@access_token').then(data1 => {
-          console.log('data', data1);
           get('@refresh_token').then(data2 => {
-            console.log('data', data2);
             get('@expirationToken').then(data3 => {
-              console.log('data', data3);
               setDoc(doc(DB_FIREBASE, 'users', userID), {
                 name: name,
                 username: username,
@@ -193,7 +192,7 @@ const SignupView = ({navigation}) => {
                 mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
                 recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
                 friendCount: 0,
-                friends: [userID],
+                friends: [],
                 pendingFriends: [],
                 requestedFriends: [],
                 access_token: data1,
@@ -201,6 +200,9 @@ const SignupView = ({navigation}) => {
                 expirationToken: data3,
               }).then(() => {
                 console.log('Document successfully written!');
+                updatePopularSongs().then(() => {
+                  console.log('Popular songs update');
+                });
               });
             });
           });
@@ -210,8 +212,6 @@ const SignupView = ({navigation}) => {
   };
 
   const SongsDatabase = async extractedSongs => {
-    console.log('SongsDatabase');
-    console.log('extractedSongs', extractedSongs);
     const songsRef = collection(DB_FIREBASE, 'songs');
     extractedSongs.forEach(async song => {
       if (song.trackID) {
@@ -286,23 +286,16 @@ const SignupView = ({navigation}) => {
   useEffect(() => {
     if (response?.type === 'success') {
       const {code} = response.params;
-      console.log('code', code);
       getToken(code).then(() => {
         console.log('getToken finished');
         get('@access_token').then(data1 => {
-          console.log('data', data1);
           setAccessToken(data1);
           token = data1;
           try {
             SPOTIFY(token).then(data => {
-              console.log('SONGS handle');
               SONGS(token).then(data2 => {
                 SongsDatabase(data2).then(() => {
-                  console.log('SONGS handle finished');
-                  console.log('data2', data2);
                   TOP(token).then(data3 => {
-                    console.log('TOP handle');
-                    console.log('data3', data3);
                     console.log('signup handle');
                     SignupHandle(data3);
                     console.log('signup handle finished');
@@ -312,7 +305,6 @@ const SignupView = ({navigation}) => {
                     //     console.log('vectorResponse', vectorResponse);
                     //   });
                     // });
-                    console.log('TOP handle finished');
                   });
                 });
               });

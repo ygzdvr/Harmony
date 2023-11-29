@@ -19,6 +19,8 @@ import {
   where,
   updateDoc,
   setDoc,
+  orderBy,
+  limit,
 } from 'firebase/firestore';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
@@ -26,80 +28,17 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {get} from '../../api/util/get';
+import {put} from '../../api/util/put';
 import {refreshTokens} from '../../api/spotify/refreshTokens';
 import {TOP} from '../../api/spotify/TOP';
 import {SONGS} from '../../api/spotify/SONGS';
 import {SPOTIFY} from '../../api/spotify/SPOTIFY';
-const Tile = ({
-  title,
-  artist,
-  album,
-  imageUrl,
-  previewURL,
-  isRectangle = false,
-  currentSound,
-  setCurrentSound,
-  isPlaying,
-  setIsPlaying,
-}) => {
-  const playSound = () => {
-    if (currentSound && isPlaying) {
-      // If a sound is playing, stop it
-      currentSound.stop(() => {
-        currentSound.release();
-        setCurrentSound(null);
-        setIsPlaying(false);
-      });
-    } else {
-      // No sound is playing, start a new one
-      const sound = new Sound(previewURL, null, error => {
-        if (error) {
-          console.log('Failed to load the sound', error);
-          return;
-        }
-        sound.play(() => {
-          sound.release();
-          setIsPlaying(false);
-        });
-        setCurrentSound(sound);
-        setIsPlaying(true);
-      });
-    }
-  };
-  return (
-    <TouchableOpacity
-      style={[styles.tile, isRectangle ? styles.rectangleTile : null]}>
-      <Image
-        source={{uri: imageUrl}}
-        style={styles.tileImage}
-        resizeMode="cover"
-      />
-      <TouchableOpacity style={styles.playButton} onPress={playSound}>
-        <Icon name="zap" size={20} color={COLORS.background} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.likeButton}>
-        <Icon name="heart" size={18} color={COLORS.background} />
-      </TouchableOpacity>
-      <LinearGradient
-        colors={['transparent', COLORS.background]}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 1}}
-        style={styles.textOverlay}>
-        <Text style={styles.tileTitle} numberOfLines={1} ellipsizeMode="tail">
-          {title}
-        </Text>
-        <Text
-          style={styles.tileSubtitle}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {artist} - {album}
-        </Text>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
-};
+import Tile from '../../partials/home/Tile';
+import Bar from '../../partials/home/Bar';
+import styles from '../../constants/styles/HomeStyles';
 
 const HomeView = ({navigation}) => {
+  put('@authenticated', 'authenticated');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [songs, setSongs] = useState([]);
@@ -109,6 +48,8 @@ const HomeView = ({navigation}) => {
   const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState([]);
   const [campus, setCampus] = useState('');
   const [nearbySongs, setNearbySongs] = useState([]);
+  const [friendsRecentPlays, setFriendsRecentPlays] = useState([]);
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     if (searchQuery.trim().length > 3) {
@@ -129,12 +70,10 @@ const HomeView = ({navigation}) => {
 
           const results = await Promise.all(resultsPromises);
           setSearchResults(results);
-          console.log('Search results:', results); // Log the results
         } catch (error) {
           console.error('Error during search:', error);
         }
       };
-
       performSearch();
     }
   }, [searchQuery]);
@@ -248,19 +187,67 @@ const HomeView = ({navigation}) => {
       return '';
     }
   };
+  const fetchFriendsData = async () => {
+    const userId = await get('@user_id');
+    const userRef = doc(DB_FIREBASE, 'users', userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const friends = userSnap.data().friends || [];
+      const friendDataPromises = friends.map(async friend => {
+        const friendRef = doc(DB_FIREBASE, 'users', friend.userId);
+        const friendSnap = await getDoc(friendRef);
+
+        if (friendSnap.exists()) {
+          const friendData = friendSnap.data();
+          const songDocRef = doc(
+            DB_FIREBASE,
+            'songs',
+            friendData.mostRecentlyPlayedSong,
+          );
+          const songSnap = await getDoc(songDocRef);
+          const songData = songSnap.exists() ? songSnap.data() : null;
+
+          return {
+            username: friendData.username,
+            name: friendData.name,
+            mostRecentlyPlayedSong: songData,
+          };
+        }
+      });
+
+      const friendsData = await Promise.all(friendDataPromises);
+      console.log('friendsData2', friendsData);
+      setFriendsRecentPlays(friendsData);
+    }
+  };
 
   useEffect(() => {
+    const initializeData = async () => {
+      const newAccessToken = await refreshAccessToken();
+      setToken(newAccessToken);
+      if (newAccessToken) {
+        try {
+          SONGS(newAccessToken).then(songsFetched => {
+            SongsDatabase(songsFetched).then(() => {
+              TOP(newAccessToken).then(topSongs => {
+                refreshRecentlyPlayed(topSongs).then(() => {
+                  fetchRecentSongs();
+                });
+              });
+            });
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
     const fetchFeaturedSongs = async () => {
       const userId = await get('@user_id');
       const featuredSongIds = await fetchUserFeaturedSongs(userId);
       const featuredSongsClone = await fetchSongsDetails(featuredSongIds);
       setFeaturedSongs(featuredSongsClone);
     };
-
-    fetchFeaturedSongs();
-  }, []);
-
-  useEffect(() => {
     const fetchRecentSongs = async () => {
       const userId = await get('@user_id');
       const recentlyPlayedIDs = await fetchUserRecentlyPlayedSongs(userId);
@@ -268,11 +255,6 @@ const HomeView = ({navigation}) => {
       const recentlyPlayed = await fetchSongsDetails(recentlyPlayedIDs);
       setRecentlyPlayedSongs(recentlyPlayed);
     };
-
-    fetchRecentSongs();
-  }, []);
-
-  useEffect(() => {
     const fetchSongs = async () => {
       console.log('Fetching songs...');
       try {
@@ -288,9 +270,35 @@ const HomeView = ({navigation}) => {
         console.error('Error fetching songs: ', error);
       }
     };
+    const updatePopularSongs = async () => {
+      try {
+        const songsRef = collection(DB_FIREBASE, 'songs');
+        const q = query(songsRef, orderBy('popularity', 'desc'), limit(10));
+        const querySnapshot = await getDocs(q);
+        const popularSongs = [];
+        querySnapshot.forEach(doc => {
+          popularSongs.push({id: doc.id, ...doc.data()});
+        });
+        for (const song of popularSongs) {
+          await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
+        }
 
-    fetchSongs();
+        console.log('Popular songs updated successfully');
+      } catch (error) {
+        console.error('Error updating popular songs:', error);
+      }
+    };
+    initializeData().then(() => {
+      console.log('Data initialized');
+      console.log('Songs fetched');
+      updatePopularSongs();
+      fetchSongs();
+      fetchFeaturedSongs();
+      fetchFriendsData();
+      fetchRecentSongs();
+    });
   }, []);
+
   const refreshAccessToken = async () => {
     try {
       const newAccessToken = await refreshTokens();
@@ -327,41 +335,8 @@ const HomeView = ({navigation}) => {
       console.error('Error refreshing access token:', error);
     }
   };
-  useEffect(() => {
-    const initializeData = async () => {
-      const newAccessToken = await refreshAccessToken();
-      if (newAccessToken) {
-        console.log('Initializing data...');
-        try {
-          console.log('Checking Songs For User');
-          SONGS(newAccessToken).then(songsFetched => {
-            console.log('SONGS handle started');
-            console.log('songsFetched', songsFetched);
-            console.log('Add songs to database');
-            SongsDatabase(songsFetched).then(() => {
-              console.log('Added songs to database');
-              console.log('Fetching Top Songs');
-              TOP(newAccessToken).then(topSongs => {
-                console.log('Top songs fetched');
-                console.log('topSongs', topSongs);
-                console.log('Updating user top songs');
-                refreshRecentlyPlayed(topSongs).then(() => {
-                  console.log('Updated user top songs');
-                });
-              });
-            });
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
-
-    initializeData();
-  }, []);
   const SongsDatabase = async extractedSongs => {
     console.log('SongsDatabase Update');
-    console.log('extractedSongs', extractedSongs);
     const songsRef = collection(DB_FIREBASE, 'songs');
     extractedSongs.forEach(async song => {
       if (song.trackID) {
@@ -369,7 +344,60 @@ const HomeView = ({navigation}) => {
       }
     });
   };
-
+  const renderVibeWithFriends = () => {
+    if (friendsRecentPlays.length === 0) {
+      return (
+        <View
+          style={{
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.tabBar,
+            borderRadius: 15,
+          }}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: COLORS.text,
+              textAlign: 'center',
+            }}>
+            You don't have any friends yet. Add some friends to see what they're
+            listening to!
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          paddingHorizontal: 8,
+        }}>
+        {friendsRecentPlays.map((song, index) => (
+          <Bar
+            key={song.id}
+            title={song.mostRecentlyPlayedSong.name}
+            artist={song.mostRecentlyPlayedSong.artist}
+            album={song.mostRecentlyPlayedSong.albumName}
+            imageUrl={song.mostRecentlyPlayedSong.albumImage}
+            previewURL={song.mostRecentlyPlayedSong.previewURL}
+            currentSound={currentSound}
+            setCurrentSound={setCurrentSound}
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
+            username={song.username}
+            name={song.name}
+          />
+        ))}
+      </View>
+    );
+  };
+  const uniqueRecentlyPlayedSongs = recentlyPlayedSongs
+    .map(song => song.id)
+    .filter((id, index, array) => array.indexOf(id) === index)
+    .map(id => recentlyPlayedSongs.find(song => song.id === id));
   return (
     <ScrollView style={styles.container}>
       <View style={styles.searchContainer}>
@@ -406,6 +434,8 @@ const HomeView = ({navigation}) => {
               setCurrentSound={setCurrentSound}
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
+              authCode={token}
+              trackID={song.id}
             />
           ))}
         </ScrollView>
@@ -427,6 +457,8 @@ const HomeView = ({navigation}) => {
               isRectangle={true}
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
+              authCode={token}
+              trackID={song.id}
             />
           ))}
         </ScrollView>
@@ -435,7 +467,7 @@ const HomeView = ({navigation}) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Continue Listening</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {recentlyPlayedSongs.map((song, index) => (
+          {uniqueRecentlyPlayedSongs.map((song, index) => (
             <Tile
               key={song.id}
               title={song.name}
@@ -448,9 +480,16 @@ const HomeView = ({navigation}) => {
               isRectangle={true}
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
+              authCode={token}
+              trackID={song.id}
             />
           ))}
         </ScrollView>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Your friends are listening</Text>
+        {renderVibeWithFriends()}
       </View>
 
       <View style={styles.section}>
@@ -474,6 +513,8 @@ const HomeView = ({navigation}) => {
               setCurrentSound={setCurrentSound}
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
+              authCode={token}
+              trackID={song.id}
             />
           ))}
         </View>
@@ -481,162 +522,5 @@ const HomeView = ({navigation}) => {
     </ScrollView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    alignItems: 'center',
-    padding: 20,
-  },
-  textTitle: {
-    fontSize: 24,
-    color: COLORS.text,
-    fontWeight: 'bold',
-  },
-  textDescription: {
-    fontSize: 16,
-    color: COLORS.text,
-    marginTop: 10,
-  },
-  section: {
-    marginTop: 10,
-    paddingHorizontal: 15,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 15,
-  },
-  tile: {
-    width: 150,
-    height: 150,
-    borderRadius: 15,
-    backgroundColor: COLORS.tabBar,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  rectangleTile: {
-    width: 300,
-    marginVertical: 0,
-  },
-  tileText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.text,
-  },
-  tileImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 15,
-    position: 'absolute',
-  },
-  textOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 10,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    height: 55,
-  },
-  tileTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 5,
-  },
-  tileSubtitle: {
-    fontSize: 12,
-    color: 'white',
-  },
-  playButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: 'rgba(228, 215, 244, 1)',
-    borderRadius: 5,
-    padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  likeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(228, 215, 244, 1)',
-    borderRadius: 5,
-    padding: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchContainer: {
-    paddingHorizontal: 15,
-  },
-  searchResultsContainer: {
-    padding: 10,
-  },
-  searchResultsOverlay: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(7, 3, 12, 0.9)',
-    padding: 10,
-    marginHorizontal: 15,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    zIndex: 1,
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.text,
-    borderRadius: 10,
-  },
-  searchInput: {
-    flex: 1,
-    padding: 12,
-    fontSize: 12,
-    color: COLORS.background,
-  },
-  searchIcon: {
-    marginLeft: 10,
-  },
-  searchProfileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 20,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: COLORS.text,
-  },
-  searchResultItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    padding: 10,
-    marginBottom: 5,
-  },
-  searchResultTextContainer: {
-    flexDirection: 'column',
-  },
-  searchResultText: {
-    color: COLORS.text,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  searchResultSubtext: {
-    color: COLORS.text,
-    fontSize: 12,
-  },
-});
 
 export default HomeView;

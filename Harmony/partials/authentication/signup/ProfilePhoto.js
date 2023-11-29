@@ -17,12 +17,9 @@ const ProfilePhotoInput = ({profilePhoto, setProfilePhoto}) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
       setProfilePhoto(result.assets[0].uri);
-      console.log(result.assets[0].uri);
     }
   };
 

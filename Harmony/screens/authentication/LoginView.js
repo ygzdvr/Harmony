@@ -28,7 +28,7 @@ import {
 const updatePopularSongs = async () => {
   try {
     const songsRef = collection(DB_FIREBASE, 'songs');
-    const q = query(songsRef, orderBy('popularity', 'desc'), limit(20));
+    const q = query(songsRef, orderBy('popularity', 'desc'), limit(10));
     const querySnapshot = await getDocs(q);
     const popularSongs = [];
     querySnapshot.forEach(doc => {
@@ -37,7 +37,6 @@ const updatePopularSongs = async () => {
     for (const song of popularSongs) {
       await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
     }
-
     console.log('Popular songs updated successfully');
   } catch (error) {
     console.error('Error updating popular songs:', error);
@@ -55,6 +54,7 @@ const LoginView = ({navigation}) => {
       .then(userCredential => {
         const user = userCredential.user;
         put('@user_id', user.uid);
+        put('@authenticated', 'authenticated');
         onSignIn();
         updatePopularSongs();
         navigation.navigate('HomeView');

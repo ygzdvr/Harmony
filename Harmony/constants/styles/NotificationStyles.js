@@ -29,7 +29,7 @@ const NotificationStyles = StyleSheet.create({
   },
   backButton: {
     marginTop: 30,
-    padding: 10,
+    padding: 7,
     backgroundColor: COLORS.text,
     borderRadius: 8,
     alignSelf: 'flex-start',
@@ -38,6 +38,16 @@ const NotificationStyles = StyleSheet.create({
     marginTop: 20,
   },
   sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: 10,
+  },
+  sectionNoRequests: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  noRequests: {
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.text,

@@ -84,7 +84,6 @@ const extractInfo = data => {
 };
 
 export const SPOTIFY = async access_token => {
-  console.log('access_token', access_token);
   const profile = await fetchProfile(access_token);
   const playlists = await Playlists(access_token);
   const topArtistsShortTerm = await TopArtistsShortTerm(access_token, 10);

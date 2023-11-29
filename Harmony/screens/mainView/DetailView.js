@@ -46,10 +46,9 @@ const DetailView = ({navigation}) => {
       }
     }
     setUserPhotos(photoUrls);
-    console.log('userPhotos2', userPhotos);
+    
   };
   const renderUserPhotos = () => {
-    console.log('userPhotos', userPhotos);
     return (
       <View style={DetailStyles.userPhotosContainer}>
         <View style={DetailStyles.column}>

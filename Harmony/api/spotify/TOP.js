@@ -35,7 +35,6 @@ const fetchTopInfo = data => {
 };
 
 export const TOP = async access_token => {
-  console.log('access_token', access_token);
   const topArtistsShortTerm = await TopArtistsShortTerm(access_token, 1);
   const topArtistsMediumTerm = await TopArtistsMediumTerm(access_token, 1);
   const topArtistsLongTerm = await TopArtistsLongTerm(access_token, 1);
