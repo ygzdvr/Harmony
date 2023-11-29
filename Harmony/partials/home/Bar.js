@@ -73,7 +73,7 @@ const Bar = ({
         colors={['transparent', COLORS.background]}
         start={{x: 0, y: 0}}
         end={{x: 0, y: 1}}
-        style={HomeStyles.textOverlay}>
+        style={HomeStyles.bartextOverlay}>
         <Text
           style={HomeStyles.barTitle}
           numberOfLines={1}

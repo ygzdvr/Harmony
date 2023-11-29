@@ -97,6 +97,16 @@ const HomeStyles = StyleSheet.create({
     borderBottomRightRadius: 15,
     height: 55,
   },
+  bartextOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 10,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    height: 55,
+  },
   tileTitle: {
     fontSize: 16,
     fontWeight: 'bold',

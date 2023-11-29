@@ -6,5 +6,5 @@ export async function SavedTracks(code, limit) {
       headers: {Authorization: `Bearer ${code}`},
     },
   );
-  console.log(await result.json());
+  return await result.json();
 }

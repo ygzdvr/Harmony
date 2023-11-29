@@ -12,13 +12,11 @@ const ProfileView = () => {
   const [name, setName] = useState('');
   const [userName, setUserName] = useState('');
   const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
-  const [followers, setFollowers] = useState(0);
-  const [following, setFollowing] = useState(0);
   const [friendCount, setFriendCount] = useState(0);
   const [genre, setGenre] = useState('');
   const [topArtist, setTopArtist] = useState('');
   const [topSong, setTopSong] = useState('');
-  const [userPhotos, setUserPhotos] = useState([]);
+  const [top6Tracks, setTop6Tracks] = useState([]);
 
   const fetchProfilePhoto = async userId => {
     const photoRef = ref(STORAGE, `profilePhotos/${userId}`);
@@ -31,33 +29,28 @@ const ProfileView = () => {
     }
   };
 
-  const fetchUserPhotos = async userId => {
-    const photoUrls = [];
-    for (let i = 0; i < 6; i++) {
-      const photoRef = ref(STORAGE, `userPhotos/${userId}/${i}`);
-      try {
-        const url = await getDownloadURL(photoRef);
-        photoUrls.push(url);
-      } catch (error) {
-        console.error(`Error fetching photo ${i}:`, error);
-      }
+  const fetchTop6Tracks = async userId => {
+    const userRef = doc(DB_FIREBASE, 'users', userId);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const trackIds = userData.top6TracksShortTerm || [];
+      setTop6Tracks(trackIds.map(trackId => ({uri: trackId.albumImage})));
     }
-    setUserPhotos(photoUrls);
   };
+
   useEffect(() => {
     const fetchUserData = async () => {
       const useruid = await get('@user_id');
       if (useruid) {
         fetchProfilePhoto(useruid);
-        fetchUserPhotos(useruid);
+        fetchTop6Tracks(useruid);
         const users = doc(DB_FIREBASE, 'users', useruid);
         const docSnap = await getDoc(users);
         if (docSnap.exists) {
           const userDataSnapshot = docSnap.data();
           setName(userDataSnapshot.name);
           setUserName(userDataSnapshot.username);
-          setFollowers(userDataSnapshot.followers);
-          setFollowing(userDataSnapshot.following);
           setGenre(userDataSnapshot.topArtistMediumTermGenres[0]);
           setTopArtist(userDataSnapshot.topArtistMediumTerm);
           setFriendCount(userDataSnapshot.friendCount);
@@ -76,14 +69,15 @@ const ProfileView = () => {
     };
     fetchUserData();
   }, []);
-  const renderUserPhotos = () => {
+
+  const renderTop6Tracks = () => {
     return (
       <View style={ProfileStyles.userPhotosContainer}>
         <View style={ProfileStyles.column}>
-          {userPhotos.slice(0, 3).map((url, index) => (
+          {top6Tracks.slice(0, 3).map((track, index) => (
             <Image
               key={`left-${index}`}
-              source={{uri: url}}
+              source={{uri: track.uri}}
               style={
                 index === 1
                   ? ProfileStyles.verticalRectangle
@@ -94,15 +88,15 @@ const ProfileView = () => {
         </View>
 
         <View style={ProfileStyles.column}>
-          <Image
-            source={{uri: userPhotos[3]}}
-            style={ProfileStyles.verticalRectangle}
-          />
-          {userPhotos.slice(4, 6).map((url, index) => (
+          {top6Tracks.slice(3, 6).map((track, index) => (
             <Image
-              key={`right-${index}`}
-              source={{uri: url}}
-              style={ProfileStyles.square}
+              key={`left-${index}`}
+              source={{uri: track.uri}}
+              style={
+                index === 0
+                  ? ProfileStyles.verticalRectangle
+                  : ProfileStyles.square
+              }
             />
           ))}
         </View>
@@ -154,7 +148,7 @@ const ProfileView = () => {
   return (
     <ScrollView style={ProfileStyles.container}>
       {renderTopSection()}
-      {renderUserPhotos()}
+      {renderTop6Tracks()}
     </ScrollView>
   );
 };

@@ -33,15 +33,15 @@ const NotificationView = ({navigation}) => {
             const senderRef = doc(DB_FIREBASE, 'users', request.userId);
             const senderSnap = await getDoc(senderRef);
             const senderData = senderSnap.exists() ? senderSnap.data() : {};
-            //const senderProfilePhoto = await getDownloadURL(
-            //  ref(STORAGE, `profilePhotos/${request.userId}`),
-            //);
+            const senderProfilePhoto = await getDownloadURL(
+              ref(STORAGE, `profilePhotos/${request.userId}`),
+            );
 
             return {
               ...request,
               senderName: senderData.name,
               senderUsername: senderData.username,
-              //senderProfilePhoto,
+              senderProfilePhoto,
             };
           }),
         );

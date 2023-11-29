@@ -10,6 +10,8 @@ import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import GradientText from '../../components/GradientText';
 import {get} from '../../api/util/get';
 import {ref, getDownloadURL} from 'firebase/storage';
+import {playTrack} from '../../api/spotify/playTrack';
+import {getDeviceID} from '../../api/spotify/getDeviceID';
 import {
   doc,
   getDoc,
@@ -26,56 +28,68 @@ import {
 } from 'firebase/firestore';
 const DetailView = ({navigation}) => {
   const route = useRoute();
-  const {userId, profilePhoto} = route.params;
+  const {userId, profilePhoto, authCode} = route.params;
   const [userData, setUserData] = useState(null);
   const [topSong, setTopSong] = useState('');
-  const [userPhotos, setUserPhotos] = useState([]);
+  const [top6Tracks, setTop6Tracks] = useState([]);
   const [friendRequestStatus, setFriendRequestStatus] =
     useState('Send Request');
 
-  const fetchUserPhotos = async () => {
-    console.log('fetchUserPhotos');
-    const photoUrls = [];
-    for (let i = 0; i < 6; i++) {
-      const photoRef = ref(STORAGE, `userPhotos/${userId}/${i}`);
-      try {
-        const url = await getDownloadURL(photoRef);
-        photoUrls.push(url);
-      } catch (error) {
-        console.error(`Error fetching photo ${i}:`, error);
-      }
+  const fetchTop6Tracks = async () => {
+    const userRef = doc(DB_FIREBASE, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const trackIds = userData.top6TracksShortTerm || [];
+      setTop6Tracks(
+        trackIds.map(trackId => ({
+          uri: trackId.albumImage,
+          trackID: trackId.id,
+        })),
+      );
     }
-    setUserPhotos(photoUrls);
-    
   };
-  const renderUserPhotos = () => {
+  const handlePlayTrack = async trackID => {
+    try {
+      const deviceID = await getDeviceID(authCode);
+      if (deviceID) {
+        playTrack(deviceID, authCode, trackID);
+      } else {
+        console.error('No active device found');
+      }
+    } catch (error) {
+      console.error('Error playing track:', error);
+    }
+  };
+
+  const renderTop6Tracks = () => {
+    console.log('Rendering top 6 tracks');
     return (
       <View style={DetailStyles.userPhotosContainer}>
         <View style={DetailStyles.column}>
-          {userPhotos.slice(0, 3).map((url, index) => (
-            <Image
+          {top6Tracks.slice(0, 3).map((track, index) => (
+            <TouchableOpacity
               key={`left-${index}`}
-              source={{uri: url}}
-              style={
-                index === 1
-                  ? DetailStyles.verticalRectangle
-                  : DetailStyles.square
-              }
-            />
+              onPress={() => handlePlayTrack(track.trackID)}>
+              <Image
+                source={{uri: track.uri}}
+                style={
+                  index === 1
+                    ? DetailStyles.verticalRectangle
+                    : DetailStyles.square
+                }
+              />
+            </TouchableOpacity>
           ))}
         </View>
 
         <View style={DetailStyles.column}>
-          <Image
-            source={{uri: userPhotos[3]}}
-            style={DetailStyles.verticalRectangle}
-          />
-          {userPhotos.slice(4, 6).map((url, index) => (
-            <Image
+          {top6Tracks.slice(3, 6).map((track, index) => (
+            <TouchableOpacity
               key={`right-${index}`}
-              source={{uri: url}}
-              style={DetailStyles.square}
-            />
+              onPress={() => handlePlayTrack(track.trackID)}>
+              <Image source={{uri: track.uri}} style={DetailStyles.square} />
+            </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -83,10 +97,10 @@ const DetailView = ({navigation}) => {
   };
 
   const handleMessagePress = () => {
-    if (friendRequestStatus !== 'Harmony') {
+    if (friendRequestStatus !== 'Already Friends') {
       Alert.alert(
-        "Can't Send Message",
-        'You need to be friends with this user to send a message.',
+        "Can't run Harmony!",
+        'You need to be friends with this user to check your harmony.',
         [{text: 'OK', onPress: () => console.log('OK Pressed')}],
         {cancelable: false},
       );
@@ -142,11 +156,11 @@ const DetailView = ({navigation}) => {
           friendCount: viewedUserData.friendCount + 1,
           tempTimestamp: deleteField(),
         });
-        setFriendRequestStatus('Harmony');
+        setFriendRequestStatus('Already Friends');
       } else if (
         !currentUserData.friends.includes(viewedUserUid) &&
         !viewedUserData.friends.includes(currentUserUid) &&
-        friendRequestStatus !== 'Harmony'
+        friendRequestStatus !== 'Already Friends'
       ) {
         transaction.update(currentUserRef, {
           requestedFriends: arrayUnion({
@@ -163,7 +177,7 @@ const DetailView = ({navigation}) => {
           tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Request Sent');
-      } else if (friendRequestStatus === 'Harmony') {
+      } else if (friendRequestStatus === 'Already Friends') {
         console.log('Already friends!');
       }
     });
@@ -185,8 +199,8 @@ const DetailView = ({navigation}) => {
         array.some(item => item.userId === userId);
 
       if (isInArray(currentUserData.friends, viewedUserUid)) {
-        setFriendRequestStatus('Harmony');
-        return 'Harmony';
+        setFriendRequestStatus('Already Friends');
+        return 'Already Friends';
       } else if (isInArray(currentUserData.pendingFriends, viewedUserUid)) {
         setFriendRequestStatus('Accept Request');
         return 'Accept Request';
@@ -203,8 +217,8 @@ const DetailView = ({navigation}) => {
   useEffect(() => {
     handleFriendRequestStatus().then(status => {
       setFriendRequestStatus(status);
-      if (status === 'Harmony') {
-        fetchUserPhotos();
+      if (status === 'Already Friends') {
+        fetchTop6Tracks();
       }
     });
   }, [userId]);
@@ -215,6 +229,7 @@ const DetailView = ({navigation}) => {
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setUserData(userSnap.data());
+        fetchTop6Tracks();
         const topMediumTimeTrackID = userSnap.data().topTrackMediumTerm;
         if (topMediumTimeTrackID) {
           const songDocRef = doc(DB_FIREBASE, 'songs', topMediumTimeTrackID);
@@ -274,7 +289,7 @@ const DetailView = ({navigation}) => {
           <TouchableOpacity
             style={DetailStyles.messageButton}
             onPress={handleMessagePress}>
-            <Text style={DetailStyles.buttonTextWhite}>Message</Text>
+            <Text style={DetailStyles.buttonTextWhite}>Harmony</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -284,7 +299,7 @@ const DetailView = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      {friendRequestStatus === 'Harmony' && renderUserPhotos()}
+      {friendRequestStatus === 'Already Friends' && renderTop6Tracks()}
     </ScrollView>
   );
 };

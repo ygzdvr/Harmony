@@ -20,7 +20,6 @@ import UsernameInput from '../../partials/authentication/signup/Username';
 import PasswordInput from '../../partials/authentication/signup/Password';
 import EmailInput from '../../partials/authentication/signup/Email';
 import ProfilePhotoInput from '../../partials/authentication/signup/ProfilePhoto';
-import PhotosInput from '../../partials/authentication/signup/Photos';
 import GenderInput from '../../partials/authentication/signup/Gender';
 import BirthdayInput from '../../partials/authentication/signup/Birthday';
 import ModeInput from '../../partials/authentication/signup/Modes';
@@ -34,13 +33,8 @@ import {put} from '../../api/util/put';
 import {get} from '../../api/util/get';
 import {textify} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
-import {
-  APP_FIREBASE,
-  AUTH_FIREBASE,
-  DB_FIREBASE,
-  STORAGE,
-} from '../../api/firebase/firebase';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {AUTH_FIREBASE, DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {
   collection,
@@ -99,7 +93,6 @@ const SignupView = ({navigation}) => {
   const [expirationToken, setExpirationToken] = useState('');
 
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [photos, setPhotos] = useState(Array(6).fill(null));
 
   const auth = AUTH_FIREBASE;
   const checkUserExists = async (field, value) => {
@@ -156,53 +149,46 @@ const SignupView = ({navigation}) => {
   };
   const DatabaseHandle = async (userID, topInfo) => {
     uploadImage(profilePhoto, `profilePhotos/${userID}`).then(url => {
-      Promise.all(
-        photos.map((photo, index) =>
-          photo
-            ? uploadImage(photo, `userPhotos/${userID}/${index}`)
-            : Promise.resolve(null),
-        ),
-      ).then(photoUrls => {
-        get('@access_token').then(data1 => {
-          get('@refresh_token').then(data2 => {
-            get('@expirationToken').then(data3 => {
-              setDoc(doc(DB_FIREBASE, 'users', userID), {
-                name: name,
-                username: username,
-                email: email,
-                password: password,
-                gender: gender,
-                birthMonth: birthMonth,
-                birthDay: birthDay,
-                birthYear: birthYear,
-                mode: mode,
-                interest: interest,
-                campus: 'Princeton University',
-                location: 'Princeton, NJ',
-                featuredSongs: [],
-                topArtistShortTerm: topInfo.topArtistShortTerm.name,
-                topArtistShortTermGenres: topInfo.topArtistShortTerm.genres,
-                topArtistMediumTerm: topInfo.topArtistMediumTerm.name,
-                topArtistMediumTermGenres: topInfo.topArtistMediumTerm.genres,
-                topArtistLongTerm: topInfo.topArtistLongTerm.name,
-                topArtistLongTermGenres: topInfo.topArtistLongTerm.genres,
-                topTrackShortTerm: topInfo.topTrackShortTerm,
-                topTrackMediumTerm: topInfo.topTrackMediumTerm,
-                topTrackLongTerm: topInfo.topTrackLongTerm,
-                mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
-                recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
-                friendCount: 0,
-                friends: [],
-                pendingFriends: [],
-                requestedFriends: [],
-                access_token: data1,
-                refresh_token: data2,
-                expirationToken: data3,
-              }).then(() => {
-                console.log('Document successfully written!');
-                updatePopularSongs().then(() => {
-                  console.log('Popular songs update');
-                });
+      get('@access_token').then(data1 => {
+        get('@refresh_token').then(data2 => {
+          get('@expirationToken').then(data3 => {
+            setDoc(doc(DB_FIREBASE, 'users', userID), {
+              name: name,
+              username: username,
+              email: email,
+              password: password,
+              gender: gender,
+              birthMonth: birthMonth,
+              birthDay: birthDay,
+              birthYear: birthYear,
+              mode: mode,
+              interest: interest,
+              campus: 'Princeton University',
+              location: 'Princeton, NJ',
+              featuredSongs: [],
+              topArtistShortTerm: topInfo.topArtistShortTerm.name,
+              topArtistShortTermGenres: topInfo.topArtistShortTerm.genres,
+              topArtistMediumTerm: topInfo.topArtistMediumTerm.name,
+              topArtistMediumTermGenres: topInfo.topArtistMediumTerm.genres,
+              topArtistLongTerm: topInfo.topArtistLongTerm.name,
+              topArtistLongTermGenres: topInfo.topArtistLongTerm.genres,
+              topTrackShortTerm: topInfo.topTrackShortTerm,
+              topTrackMediumTerm: topInfo.topTrackMediumTerm,
+              topTrackLongTerm: topInfo.topTrackLongTerm,
+              mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
+              recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
+              top6TracksShortTerm: topInfo.top6TracksShortTerm,
+              friendCount: 0,
+              friends: [],
+              pendingFriends: [],
+              requestedFriends: [],
+              access_token: data1,
+              refresh_token: data2,
+              expirationToken: data3,
+            }).then(() => {
+              console.log('Document successfully written!');
+              updatePopularSongs().then(() => {
+                console.log('Popular songs update');
               });
             });
           });
@@ -290,12 +276,19 @@ const SignupView = ({navigation}) => {
         console.log('getToken finished');
         get('@access_token').then(data1 => {
           setAccessToken(data1);
+          console.log('data1');
           token = data1;
           try {
+            console.log('try');
             SPOTIFY(token).then(data => {
+              console.log('spotify');
+              console.log(data);
+              console.log('spotifyInfo');
               SONGS(token).then(data2 => {
                 SongsDatabase(data2).then(() => {
                   TOP(token).then(data3 => {
+                    console.log('topInfo');
+                    console.log(data3);
                     console.log('signup handle');
                     SignupHandle(data3);
                     console.log('signup handle finished');
@@ -317,7 +310,7 @@ const SignupView = ({navigation}) => {
     }
   }, [response]);
 
-  const totalSteps = 16;
+  const totalSteps = 15;
   const progress = step / totalSteps;
 
   const renderStep = () => {
@@ -381,8 +374,6 @@ const SignupView = ({navigation}) => {
           />
         );
       case 11:
-        return <PhotosInput photos={photos} setPhotos={setPhotos} />;
-      case 12:
         return (
           <BirthdayInput
             birthMonth={birthMonth}
@@ -396,7 +387,7 @@ const SignupView = ({navigation}) => {
             verifyYear={verifyYear}
           />
         );
-      case 13:
+      case 12:
         return (
           <GenderInput
             gender={gender}
@@ -405,12 +396,12 @@ const SignupView = ({navigation}) => {
           />
         );
 
-      case 14:
+      case 13:
         return (
           <ModeInput mode={mode} setMode={setMode} verifyMode={verifyMode} />
         );
 
-      case 15:
+      case 14:
         return (
           <InterestedInput
             interest={interest}
@@ -418,7 +409,7 @@ const SignupView = ({navigation}) => {
             verifyInterest={verifyInterest}
           />
         );
-      case 16:
+      case 15:
         return <Spotify />;
       default:
         return null;
@@ -456,20 +447,18 @@ const SignupView = ({navigation}) => {
       case 10:
         return profilePhoto !== null;
       case 11:
-        return photos.every(photo => photo !== null);
-      case 12:
         return (
           birthDay.trim() !== '' &&
           birthMonth.trim() !== '' &&
           birthYear.trim() !== ''
         ); // Validate birthday
-      case 13:
+      case 12:
         return gender.trim() !== '';
-      case 14:
+      case 13:
         return mode.trim() !== '';
-      case 15:
+      case 14:
         return interest.trim() !== '';
-      case 16:
+      case 15:
         return true;
 
       default:
@@ -519,22 +508,20 @@ const SignupView = ({navigation}) => {
           case 10:
             break;
           case 11:
-            break;
-          case 12:
             setVerifyMonth('');
             setVerifyDay('');
             setVerifyYear('');
             break;
-          case 13:
+          case 12:
             setVerifyGender('');
             break;
-          case 14:
+          case 13:
             setVerifyMode('');
             break;
-          case 15:
+          case 14:
             setVerifyInterest('');
             break;
-          case 16:
+          case 15:
             break;
           default:
             break;
@@ -579,26 +566,20 @@ const SignupView = ({navigation}) => {
           );
           break;
         case 11:
-          Alert.alert(
-            'Photos required',
-            'Please upload all six photos to continue.',
-          );
-          break;
-        case 12:
           setVerifyMonth('Please enter a valid month.');
           setVerifyDay('Please enter a valid day.');
           setVerifyYear('Please enter a valid year.');
           break;
-        case 13:
+        case 12:
           setVerifyGender('Please select one of the options.');
           break;
-        case 14:
+        case 13:
           setVerifyMode('Please select one of the options.');
           break;
-        case 15:
+        case 14:
           setVerifyInterest('Please select one of the options.');
           break;
-        case 16:
+        case 15:
           break;
         default:
           break;

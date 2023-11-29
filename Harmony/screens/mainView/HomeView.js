@@ -81,6 +81,7 @@ const HomeView = ({navigation}) => {
     navigation.navigate('DetailView', {
       userId: user.id,
       profilePhoto: user.profilePhotoUrl,
+      authCode: token,
     });
   };
   const renderSearchResults = () => {
@@ -329,6 +330,7 @@ const HomeView = ({navigation}) => {
       await updateDoc(userRef, {
         mostRecentlyPlayedSong: topInfo.mostRecentlyPlayedSong,
         recentlyPlayedSongs: topInfo.recentlyPlayedSongs,
+        top6TracksShortTerm: topInfo.top6TracksShortTerm,
       });
       console.log('Updated successfully');
     } catch (error) {
