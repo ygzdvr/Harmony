@@ -207,7 +207,7 @@ const HomeView = ({navigation}) => {
           );
           const songSnap = await getDoc(songDocRef);
           const songData = songSnap.exists() ? songSnap.data() : null;
-
+          console.log('songData', songData);
           return {
             username: friendData.username,
             name: friendData.name,
@@ -389,6 +389,8 @@ const HomeView = ({navigation}) => {
             setIsPlaying={setIsPlaying}
             username={song.username}
             name={song.name}
+            trackID={song.mostRecentlyPlayedSong.trackID}
+            authCode={token}
           />
         ))}
       </View>

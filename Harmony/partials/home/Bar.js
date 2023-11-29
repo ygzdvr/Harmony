@@ -5,7 +5,8 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import HomeStyles from '../../constants/styles/HomeStyles';
-
+import {playTrack} from '../../api/spotify/playTrack';
+import {getDeviceID} from '../../api/spotify/getDeviceID';
 const Bar = ({
   title,
   artist,
@@ -18,6 +19,8 @@ const Bar = ({
   setIsPlaying,
   username,
   name,
+  trackID,
+  authCode,
 }) => {
   const playSound = () => {
     if (currentSound && isPlaying) {
@@ -43,8 +46,24 @@ const Bar = ({
       });
     }
   };
+  const playSpotify = async () => {
+    console.log('Play Spotify');
+    console.log('authCode', authCode);
+    console.log('trackID', trackID);
+    try {
+      const deviceID = await getDeviceID(authCode);
+      if (deviceID) {
+        await playTrack(deviceID, authCode, trackID);
+        console.log('Track playing on device');
+      } else {
+        console.log('No active device found');
+      }
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  };
   return (
-    <TouchableOpacity style={[HomeStyles.bar]} onPress={playSound}>
+    <TouchableOpacity style={[HomeStyles.bar]} onPress={playSpotify}>
       <Image
         source={{uri: imageUrl}}
         style={HomeStyles.barImage}

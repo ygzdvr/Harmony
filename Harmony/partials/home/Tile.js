@@ -9,6 +9,8 @@ import HomeStyles from '../../constants/styles/HomeStyles';
 import {Like} from '../../api/spotify/Like';
 import {Dislike} from '../../api/spotify/Dislike';
 import {CheckLiked} from '../../api/spotify/CheckLiked';
+import {playTrack} from '../../api/spotify/playTrack';
+import {getDeviceID} from '../../api/spotify/getDeviceID';
 const Tile = ({
   title,
   artist,
@@ -58,6 +60,19 @@ const Tile = ({
       });
     }
   };
+  const playSpotify = async () => {
+    try {
+      const deviceID = await getDeviceID(authCode);
+      if (deviceID) {
+        await playTrack(deviceID, authCode, trackID);
+        console.log('Track playing on device');
+      } else {
+        console.log('No active device found');
+      }
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  };
   const likeSong = () => {
     console.log('Like song');
     Like(authCode, trackID);
@@ -72,7 +87,8 @@ const Tile = ({
   };
   return (
     <TouchableOpacity
-      style={[HomeStyles.tile, isRectangle ? HomeStyles.rectangleTile : null]}>
+      style={[HomeStyles.tile, isRectangle ? HomeStyles.rectangleTile : null]}
+      onPress={playSpotify}>
       <Image
         source={{uri: imageUrl}}
         style={HomeStyles.tileImage}
