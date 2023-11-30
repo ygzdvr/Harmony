@@ -25,6 +25,7 @@ export async function textify(data) {
 }
 
 export async function textifySongs(data) {
+  console.log('this is the data', data);
   try {
     const prompt = `Analyze this song data and generate a text representing the features and details about the song:
 
@@ -60,16 +61,17 @@ export async function textifySongs(data) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization:
-          'Bearer ',
+          'Bearer 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',
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo-instruct',
         prompt: prompt,
-        max_tokens: 1000,
-        temperature: 0.5,
+        max_tokens: 2000,
+        temperature: 0.7,
       }),
     });
     const json = await response.json();
+    console.log('this is the response', json);
     return json.choices[0].text.replace(/(\r\n|\n|\r)/gm, '');
   } catch (error) {
     console.error('this is the result for the song', error);
