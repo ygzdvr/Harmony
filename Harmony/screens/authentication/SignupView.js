@@ -32,6 +32,7 @@ import {TOP} from '../../api/spotify/TOP';
 import {put} from '../../api/util/put';
 import {get} from '../../api/util/get';
 import {textify} from '../../api/openai/textify';
+import {textifySongs} from '../../api/openai/textify';
 import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
 import {AUTH_FIREBASE, DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
@@ -46,11 +47,12 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
+import {storeVectorPinecone} from '../../api/pinecone/storeVectorPinecone';
 
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(15);
   // States for form data
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyPhone, setVerifyPhone] = useState(''); // [TODO
@@ -201,7 +203,7 @@ const SignupView = ({navigation}) => {
     const songsRef = collection(DB_FIREBASE, 'songs');
     extractedSongs.forEach(async song => {
       if (song.trackID) {
-        await setDoc(doc(songsRef, song.trackID), song);
+        //await setDoc(doc(songsRef, song.trackID), song);
       }
     });
   };
@@ -289,15 +291,41 @@ const SignupView = ({navigation}) => {
                   TOP(token).then(data3 => {
                     console.log('topInfo');
                     console.log(data3);
+                    console.log('topInfo finished');
+
+                    console.log('songs');
+                    console.log(data2);
+                    console.log('songs finished');
+
+                    console.log('one element');
+                    console.log(data2[0]);
+                    console.log('one element finished');
+
+                    textifySongs(data2[0]).then(textResponse => {
+                      console.log('textResponse', textResponse);
+                      vectorEmbedding(textResponse).then(vectorResponse => {
+                        console.log('vectorResponse', vectorResponse);
+                        console.log(vectorResponse.data[0]);
+                        console.log(vectorResponse.data[0].embedding.length);
+                        storeVectorPinecone({
+                          id: data2[0].trackID,
+                          embedding: vectorResponse.data[0].embedding,
+                        });
+                      });
+                    });
+
                     console.log('signup handle');
-                    SignupHandle(data3);
+                    //SignupHandle(data3);
                     console.log('signup handle finished');
-                    // textify(data).then(textResponse => {
-                    //   console.log('textResponse', textResponse);
-                    //   vectorEmbedding(textResponse).then(vectorResponse => {
-                    //     console.log('vectorResponse', vectorResponse);
-                    //   });
-                    // });
+                    //textify(data).then(textResponse => {
+                    //  console.log('textResponse', textResponse);
+                    //  vectorEmbedding(textResponse).then(vectorResponse => {
+                    //    console.log('vectorResponse', vectorResponse);
+                    //    console.log(vectorResponse.data[0]);
+                    //    console.log(vectorResponse.data[0].embedding);
+                    //    console.log(vectorResponse.data[0].embedding.length);
+                    //  });
+                    //});
                   });
                 });
               });

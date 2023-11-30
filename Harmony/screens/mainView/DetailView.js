@@ -12,6 +12,7 @@ import {get} from '../../api/util/get';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {playTrack} from '../../api/spotify/playTrack';
 import {getDeviceID} from '../../api/spotify/getDeviceID';
+import {LinearGradient} from 'react-native-linear-gradient';
 import {
   doc,
   getDoc,
@@ -45,6 +46,9 @@ const DetailView = ({navigation}) => {
         trackIds.map(trackId => ({
           uri: trackId.albumImage,
           trackID: trackId.id,
+          name: trackId.name,
+          artist: trackId.artist,
+          album: trackId.album,
         })),
       );
     }
@@ -79,6 +83,24 @@ const DetailView = ({navigation}) => {
                     : DetailStyles.square
                 }
               />
+              <LinearGradient
+                colors={['transparent', COLORS.background]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={DetailStyles.textOverlay}>
+                <Text
+                  style={DetailStyles.tileTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.name}
+                </Text>
+                <Text
+                  style={DetailStyles.tileSubtitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.artist} - {track.album}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
           ))}
         </View>
@@ -88,7 +110,32 @@ const DetailView = ({navigation}) => {
             <TouchableOpacity
               key={`right-${index}`}
               onPress={() => handlePlayTrack(track.trackID)}>
-              <Image source={{uri: track.uri}} style={DetailStyles.square} />
+              <Image
+                source={{uri: track.uri}}
+                style={
+                  index === 0
+                    ? DetailStyles.verticalRectangle
+                    : DetailStyles.square
+                }
+              />
+              <LinearGradient
+                colors={['transparent', COLORS.background]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={DetailStyles.textOverlay}>
+                <Text
+                  style={DetailStyles.tileTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.name}
+                </Text>
+                <Text
+                  style={DetailStyles.tileSubtitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.artist} - {track.album}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
           ))}
         </View>

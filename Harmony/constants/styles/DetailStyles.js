@@ -161,8 +161,10 @@ const DetailStyles = StyleSheet.create({
   verticalRectangle: {
     width: 160,
     height: 250,
-    borderRadius: 10,
+    borderRadius: 20,
     marginVertical: 5,
+    borderWidth: 2,
+    borderColor: COLORS.text,
   },
   separator: {
     height: 10,
@@ -201,6 +203,26 @@ const DetailStyles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  tileTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 5,
+  },
+  tileSubtitle: {
+    fontSize: 12,
+    color: 'white',
+  },
+  textOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 10,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    height: 60,
   },
 });
 

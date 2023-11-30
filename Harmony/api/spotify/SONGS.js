@@ -13,15 +13,53 @@ import {
 import {History} from './History';
 import {SavedAlbums} from './Saved/SavedAlbums';
 import {SavedTracks} from './Saved/SavedTracks';
-import {SavedShows} from './Saved/SavedShows';
-import {SavedEpisodes} from './Saved/SavedEpisodes';
-import {TopTracksArtist} from './TopTracksArtist';
-import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
 
+const fetchAudioFeatures = async (accessToken, trackIDs) => {
+  const url = `https://api.spotify.com/v1/audio-features?ids=${trackIDs}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {Authorization: `Bearer ${accessToken}`},
+  });
+  const data = await response.json();
+  return data.audio_features || []; // Array of audio features objects
+};
 const extractSongInfo = async data => {
-  const extractTrackInfo = async track => {
-    //const audioFeatures = await TrackAudioFeatures(data.access_token, track.id);
-    //console.log('audioFeatures', audioFeatures);
+  const allTracks = [
+    ...data.topTracksShortTerm.items,
+    ...data.topTracksMediumTerm.items,
+    ...data.topTracksLongTerm.items,
+    ...data.history.items.map(item => item.track),
+    ...data.savedTracks.items.map(item => item.track),
+  ];
+
+  // Remove duplicate tracks
+  const uniqueTracks = Array.from(
+    new Set(allTracks.map(track => track.id)),
+  ).map(id => allTracks.find(track => track.id === id));
+
+  // Split unique track IDs into batches of 100
+  const trackIDBatches = [];
+  for (let i = 0; i < uniqueTracks.length; i += 100) {
+    trackIDBatches.push(uniqueTracks.slice(i, i + 100).map(track => track.id));
+  }
+
+  // Fetch audio features for each batch and flatten the results
+  const audioFeatures = (
+    await Promise.all(
+      trackIDBatches.map(ids =>
+        fetchAudioFeatures(data.access_token, ids.join(',')),
+      ),
+    )
+  ).flat();
+
+  // Map audio features to track IDs
+  const audioFeaturesMap = audioFeatures.reduce((acc, feature) => {
+    acc[feature.id] = feature;
+    return acc;
+  }, {});
+
+  const extractTrackInfo = track => {
+    const features = audioFeaturesMap[track.id];
     return {
       name: track.name,
       artist: track.artists.map(artist => artist.name).join(', '),
@@ -32,36 +70,19 @@ const extractSongInfo = async data => {
       previewURL: track.preview_url,
       trackID: track.id,
       // Add the audio features
-      //acousticness: audioFeatures.acousticness,
-      //danceability: audioFeatures.danceability,
-      //energy: audioFeatures.energy,
-      //instrumentalness: audioFeatures.instrumentalness,
-      //liveness: audioFeatures.liveness,
-      //loudness: audioFeatures.loudness,
-      //speechiness: audioFeatures.speechiness,
-      //tempo: audioFeatures.tempo,
-      //valence: audioFeatures.valence,
+      acousticness: features?.acousticness,
+      danceability: features?.danceability,
+      energy: features?.energy,
+      instrumentalness: features?.instrumentalness,
+      liveness: features?.liveness,
+      loudness: features?.loudness,
+      speechiness: features?.speechiness,
+      tempo: features?.tempo,
+      valence: features?.valence,
     };
   };
 
-  const combinedTracksPromises = [
-    ...data.topTracksShortTerm.items.map(extractTrackInfo),
-    ...data.topTracksMediumTerm.items.map(extractTrackInfo),
-    ...data.topTracksLongTerm.items.map(extractTrackInfo),
-    ...data.history.items.map(item => extractTrackInfo(item.track)),
-    ...data.savedTracks.items.map(item => extractTrackInfo(item.track)),
-  ];
-
-  const combinedTracks = await Promise.all(combinedTracksPromises);
-
-  const trackSet = new Set();
-  const uniqueTracks = combinedTracks.filter(track => {
-    const duplicate = trackSet.has(track.trackID);
-    trackSet.add(track.trackID);
-    return !duplicate;
-  });
-
-  return uniqueTracks;
+  return uniqueTracks.map(extractTrackInfo);
 };
 
 export const SONGS = async access_token => {
@@ -75,8 +96,6 @@ export const SONGS = async access_token => {
   const history = await History(access_token, 50);
   const savedAlbums = await SavedAlbums(access_token, 50);
   const savedTracks = await SavedTracks(access_token, 50);
-  const savedShows = await SavedShows(access_token);
-  const savedEpisodes = await SavedEpisodes(access_token);
 
   const data = {
     access_token,
@@ -90,8 +109,6 @@ export const SONGS = async access_token => {
     history,
     savedAlbums,
     savedTracks,
-    savedShows,
-    savedEpisodes,
   };
   const extractedInfo = extractSongInfo(data);
   return extractedInfo;

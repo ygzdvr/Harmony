@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: 55,
+    height: 60,
   },
   tileTitle: {
     fontSize: 16,

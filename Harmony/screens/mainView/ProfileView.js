@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, ScrollView} from 'react-native';
+import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import {DB_FIREBASE} from '../../api/firebase/firebase';
 import {getDoc, doc} from 'firebase/firestore';
 import {get} from '../../api/util/get';
@@ -7,7 +7,10 @@ import ProfileStyles from '../../constants/styles/ProfileStyles';
 import {STORAGE} from '../../api/firebase/firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
 import GradientText from '../../components/GradientText';
-
+import {playTrack} from '../../api/spotify/playTrack';
+import {getDeviceID} from '../../api/spotify/getDeviceID';
+import {LinearGradient} from 'react-native-linear-gradient';
+import COLORS from '../../constants/colors';
 const ProfileView = () => {
   const [name, setName] = useState('');
   const [userName, setUserName] = useState('');
@@ -17,6 +20,23 @@ const ProfileView = () => {
   const [topArtist, setTopArtist] = useState('');
   const [topSong, setTopSong] = useState('');
   const [top6Tracks, setTop6Tracks] = useState([]);
+
+  const handlePlayTrack = async trackID => {
+    const authCode = await get('@access_token');
+    console.log('authCode', authCode);
+    try {
+      const deviceID = await getDeviceID(authCode);
+      if (deviceID) {
+        console.log('deviceID', deviceID);
+        console.log('trackID', trackID);
+        playTrack(deviceID, authCode, trackID);
+      } else {
+        console.error('No active device found');
+      }
+    } catch (error) {
+      console.error('Error playing track:', error);
+    }
+  };
 
   const fetchProfilePhoto = async userId => {
     const photoRef = ref(STORAGE, `profilePhotos/${userId}`);
@@ -35,7 +55,15 @@ const ProfileView = () => {
     if (docSnap.exists()) {
       const userData = docSnap.data();
       const trackIds = userData.top6TracksShortTerm || [];
-      setTop6Tracks(trackIds.map(trackId => ({uri: trackId.albumImage})));
+      setTop6Tracks(
+        trackIds.map(trackId => ({
+          uri: trackId.albumImage,
+          trackID: trackId.id,
+          name: trackId.name,
+          artist: trackId.artist,
+          album: trackId.album,
+        })),
+      );
     }
   };
 
@@ -45,6 +73,8 @@ const ProfileView = () => {
       if (useruid) {
         fetchProfilePhoto(useruid);
         fetchTop6Tracks(useruid);
+        console.log('useruid', useruid);
+        console.log('top6Tracks', top6Tracks);
         const users = doc(DB_FIREBASE, 'users', useruid);
         const docSnap = await getDoc(users);
         if (docSnap.exists) {
@@ -75,29 +105,71 @@ const ProfileView = () => {
       <View style={ProfileStyles.userPhotosContainer}>
         <View style={ProfileStyles.column}>
           {top6Tracks.slice(0, 3).map((track, index) => (
-            <Image
+            <TouchableOpacity
               key={`left-${index}`}
-              source={{uri: track.uri}}
-              style={
-                index === 1
-                  ? ProfileStyles.verticalRectangle
-                  : ProfileStyles.square
-              }
-            />
+              onPress={() => handlePlayTrack(track.trackID)}>
+              <Image
+                source={{uri: track.uri}}
+                style={
+                  index === 1
+                    ? ProfileStyles.verticalRectangle
+                    : ProfileStyles.square
+                }
+              />
+              <LinearGradient
+                colors={['transparent', COLORS.background]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={ProfileStyles.textOverlay}>
+                <Text
+                  style={ProfileStyles.tileTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.name}
+                </Text>
+                <Text
+                  style={ProfileStyles.tileSubtitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.artist} - {track.album}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           ))}
         </View>
 
         <View style={ProfileStyles.column}>
           {top6Tracks.slice(3, 6).map((track, index) => (
-            <Image
-              key={`left-${index}`}
-              source={{uri: track.uri}}
-              style={
-                index === 0
-                  ? ProfileStyles.verticalRectangle
-                  : ProfileStyles.square
-              }
-            />
+            <TouchableOpacity
+              key={`right-${index}`}
+              onPress={() => handlePlayTrack(track.trackID)}>
+              <Image
+                source={{uri: track.uri}}
+                style={
+                  index === 0
+                    ? ProfileStyles.verticalRectangle
+                    : ProfileStyles.square
+                }
+              />
+              <LinearGradient
+                colors={['transparent', COLORS.background]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={ProfileStyles.textOverlay}>
+                <Text
+                  style={ProfileStyles.tileTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.name}
+                </Text>
+                <Text
+                  style={ProfileStyles.tileSubtitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {track.artist} - {track.album}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

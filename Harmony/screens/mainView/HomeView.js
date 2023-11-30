@@ -309,6 +309,7 @@ const HomeView = ({navigation}) => {
         await updateDoc(userRef, {access_token: newAccessToken});
         console.log('Access token refreshed successfully');
         console.log('new access token:', newAccessToken);
+        await put('@access_token', newAccessToken);
         return newAccessToken;
       }
     } catch (error) {
