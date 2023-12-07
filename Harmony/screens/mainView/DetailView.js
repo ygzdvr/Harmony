@@ -143,8 +143,10 @@ const DetailView = ({navigation}) => {
     );
   };
 
-  const handleMessagePress = () => {
-    if (friendRequestStatus !== 'Already Friends') {
+  const handleMessagePress = async () => {
+    const currentUserUid = await get('@user_id');
+    const viewedUserUid = route.params.userId;
+    if (friendRequestStatus !== 'Message') {
       Alert.alert(
         "Can't run Harmony!",
         'You need to be friends with this user to check your harmony.',
@@ -153,6 +155,11 @@ const DetailView = ({navigation}) => {
       );
     } else {
       console.log('Navigate to messaging screen or handle message sending');
+      navigation.navigate('BlendView', {
+        userId1: currentUserUid,
+        userId2: viewedUserUid,
+        authCode: authCode,
+      });
     }
   };
 
@@ -203,11 +210,11 @@ const DetailView = ({navigation}) => {
           friendCount: viewedUserData.friendCount + 1,
           tempTimestamp: deleteField(),
         });
-        setFriendRequestStatus('Already Friends');
+        setFriendRequestStatus('Message');
       } else if (
         !currentUserData.friends.includes(viewedUserUid) &&
         !viewedUserData.friends.includes(currentUserUid) &&
-        friendRequestStatus !== 'Already Friends'
+        friendRequestStatus !== 'Message'
       ) {
         transaction.update(currentUserRef, {
           requestedFriends: arrayUnion({
@@ -224,8 +231,8 @@ const DetailView = ({navigation}) => {
           tempTimestamp: deleteField(),
         });
         setFriendRequestStatus('Request Sent');
-      } else if (friendRequestStatus === 'Already Friends') {
-        console.log('Already friends!');
+      } else if (friendRequestStatus === 'Message') {
+        console.log('Message!');
       }
     });
   };
@@ -246,8 +253,8 @@ const DetailView = ({navigation}) => {
         array.some(item => item.userId === userId);
 
       if (isInArray(currentUserData.friends, viewedUserUid)) {
-        setFriendRequestStatus('Already Friends');
-        return 'Already Friends';
+        setFriendRequestStatus('Message');
+        return 'Message';
       } else if (isInArray(currentUserData.pendingFriends, viewedUserUid)) {
         setFriendRequestStatus('Accept Request');
         return 'Accept Request';
@@ -264,7 +271,7 @@ const DetailView = ({navigation}) => {
   useEffect(() => {
     handleFriendRequestStatus().then(status => {
       setFriendRequestStatus(status);
-      if (status === 'Already Friends') {
+      if (status === 'Message') {
         fetchTop6Tracks();
       }
     });
@@ -346,7 +353,7 @@ const DetailView = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      {friendRequestStatus === 'Already Friends' && renderTop6Tracks()}
+      {friendRequestStatus === 'Message' && renderTop6Tracks()}
     </ScrollView>
   );
 };

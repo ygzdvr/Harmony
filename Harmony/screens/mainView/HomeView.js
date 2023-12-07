@@ -21,6 +21,7 @@ import {
   setDoc,
   orderBy,
   limit,
+  onSnapshot,
 } from 'firebase/firestore';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
@@ -36,8 +37,13 @@ import {SPOTIFY} from '../../api/spotify/SPOTIFY';
 import Tile from '../../partials/home/Tile';
 import Bar from '../../partials/home/Bar';
 import styles from '../../constants/styles/HomeStyles';
+import {Pinecone} from '@pinecone-database/pinecone';
 
 const HomeView = ({navigation}) => {
+  const pinecone = new Pinecone({
+    environment: 'us-west1-gcp',
+    apiKey: '1eb47e0b-06bb-4b48-b1a1-152c4bedd031',
+  });
   put('@authenticated', 'authenticated');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -133,6 +139,9 @@ const HomeView = ({navigation}) => {
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
       const userData = userDoc.data();
+      setCampus(userData.campus);
+      const campus = userData.campus;
+      await fetchNearbySongs(campus);
       return userData.recentlyPlayedSongs;
     } else {
       console.log('No such document!');
@@ -191,36 +200,42 @@ const HomeView = ({navigation}) => {
   const fetchFriendsData = async () => {
     const userId = await get('@user_id');
     const userRef = doc(DB_FIREBASE, 'users', userId);
-    const userSnap = await getDoc(userRef);
 
-    if (userSnap.exists()) {
-      const friends = userSnap.data().friends || [];
-      const friendDataPromises = friends.map(async friend => {
-        const friendRef = doc(DB_FIREBASE, 'users', friend.userId);
-        const friendSnap = await getDoc(friendRef);
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(userRef, async userSnap => {
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const friends = userData.friends || [];
+        const friendDataPromises = friends.map(async friend => {
+          const friendRef = doc(DB_FIREBASE, 'users', friend.userId);
+          const friendSnap = await getDoc(friendRef);
 
-        if (friendSnap.exists()) {
-          const friendData = friendSnap.data();
-          const songDocRef = doc(
-            DB_FIREBASE,
-            'songs',
-            friendData.mostRecentlyPlayedSong,
-          );
-          const songSnap = await getDoc(songDocRef);
-          const songData = songSnap.exists() ? songSnap.data() : null;
-          console.log('songData', songData);
-          return {
-            username: friendData.username,
-            name: friendData.name,
-            mostRecentlyPlayedSong: songData,
-          };
-        }
-      });
+          if (friendSnap.exists()) {
+            const friendData = friendSnap.data();
+            const songDocRef = doc(
+              DB_FIREBASE,
+              'songs',
+              friendData.mostRecentlyPlayedSong,
+            );
+            const songSnap = await getDoc(songDocRef);
+            const songData = songSnap.exists() ? songSnap.data() : null;
+            console.log('songData', songData);
+            return {
+              username: friendData.username,
+              name: friendData.name,
+              mostRecentlyPlayedSong: songData,
+            };
+          }
+        });
 
-      const friendsData = await Promise.all(friendDataPromises);
-      console.log('friendsData2', friendsData);
-      setFriendsRecentPlays(friendsData);
-    }
+        const friendsData = await Promise.all(friendDataPromises);
+        console.log('friendsData2', friendsData);
+        setFriendsRecentPlays(friendsData); // Update state
+      }
+    });
+
+    // Return unsubscribe function to clean up the listener on component unmount
+    return unsubscribe;
   };
 
   useEffect(() => {
@@ -243,11 +258,20 @@ const HomeView = ({navigation}) => {
         }
       }
     };
-    const fetchFeaturedSongs = async () => {
-      const userId = await get('@user_id');
-      const featuredSongIds = await fetchUserFeaturedSongs(userId);
-      const featuredSongsClone = await fetchSongsDetails(featuredSongIds);
-      setFeaturedSongs(featuredSongsClone);
+    const fetchFeaturedSongs = async userId => {
+      // Real-time listener setup
+      const userDocRef = doc(DB_FIREBASE, 'users', userId);
+      const unsubscribe = onSnapshot(userDocRef, async doc => {
+        if (doc.exists()) {
+          const userData = doc.data();
+          const featuredSongIds = userData.featuredSongs || [];
+          const featuredSongsData = await fetchSongsDetails(featuredSongIds);
+          setFeaturedSongs(featuredSongsData); // Update state
+        }
+      });
+
+      // Return unsubscribe function to clean up the listener
+      return unsubscribe;
     };
     const fetchRecentSongs = async () => {
       const userId = await get('@user_id');
@@ -281,7 +305,7 @@ const HomeView = ({navigation}) => {
           popularSongs.push({id: doc.id, ...doc.data()});
         });
         for (const song of popularSongs) {
-          await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
+          //await setDoc(doc(DB_FIREBASE, 'popularSongs', song.id), song);
         }
 
         console.log('Popular songs updated successfully');
@@ -289,14 +313,23 @@ const HomeView = ({navigation}) => {
         console.error('Error updating popular songs:', error);
       }
     };
-    initializeData().then(() => {
-      console.log('Data initialized');
-      console.log('Songs fetched');
-      updatePopularSongs();
-      fetchSongs();
-      fetchFeaturedSongs();
-      fetchFriendsData();
-      fetchRecentSongs();
+
+    const userId = get('@user_id'); // Fetch user ID
+    userId.then(uid => {
+      if (uid) {
+        initializeData().then(() => {
+          // Additional data fetching calls
+          updatePopularSongs();
+          fetchSongs();
+          fetchRecentSongs();
+          fetchUserRecentlyPlayedSongs(uid).then(recentlyPlayedIDs => {
+            fetchSongsDetails(recentlyPlayedIDs).then(setRecentlyPlayedSongs);
+          });
+          const unsubscribeFriendsData = fetchFriendsData();
+          const unsubscribeFeaturedSongs = fetchFeaturedSongs(uid);
+          return unsubscribeFeaturedSongs; // Cleanup on component unmount
+        });
+      }
     });
   }, []);
 
@@ -343,7 +376,7 @@ const HomeView = ({navigation}) => {
     const songsRef = collection(DB_FIREBASE, 'songs');
     extractedSongs.forEach(async song => {
       if (song.trackID) {
-        await setDoc(doc(songsRef, song.trackID), song);
+        //await setDoc(doc(songsRef, song.trackID), song);
       }
     });
   };
@@ -380,7 +413,7 @@ const HomeView = ({navigation}) => {
         }}>
         {friendsRecentPlays.map((song, index) => (
           <Bar
-            key={song.id}
+            key={song.username}
             title={song.mostRecentlyPlayedSong.name}
             artist={song.mostRecentlyPlayedSong.artist}
             album={song.mostRecentlyPlayedSong.albumName}

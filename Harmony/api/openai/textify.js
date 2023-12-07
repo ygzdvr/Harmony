@@ -1,26 +1,68 @@
-export async function textify(data) {
+export async function textifyUserPreferences(data) {
+  console.log('this is the data', data);
   try {
+    const prompt = `Analyze the following music preferances. Generate a descriptive, long, text analyzing these Spotify user music preferences:
+
+    Profile Name: ${data.profileInfo.displayName}
+
+    Top 10 Most Listened Artists (Short Term): ${data.TopArtistsShortTerm.map(
+      artist =>
+        `${artist.name} (Genres: ${artist.genre.join(', ')}, Popularity: ${
+          artist.popularity
+        })`,
+    ).join('; ')}
+    Top 10 Most Listened Artists (Medium Term): ${data.TopArtistsMediumTerm.map(
+      artist =>
+        `${artist.name} (Genres: ${artist.genre.join(', ')}, Popularity: ${
+          artist.popularity
+        })`,
+    ).join('; ')}
+
+    Top 10 Most Listened Tracks (Short Term): ${data.TopTracksShortTerm.map(
+      track =>
+        `${track.name} by ${track.artist.join(', ')} (Album: ${
+          track.albumName
+        }, Popularity: ${track.popularity})`,
+    ).join('; ')}
+    Top 10 Most Listened Tracks (Medium Term): ${data.TopTracksMediumTerm.map(
+      track =>
+        `${track.name} by ${track.artist.join(', ')} (Album: ${
+          track.albumName
+        }, Popularity: ${track.popularity})`,
+    ).join('; ')}
+
+    Recently Played 10 Tracks: ${data.RecentlyPlayed.map(
+      track => `${track.name} by ${track.artist} (Album: ${track.albumName})`,
+    ).join('; ')}
+    Saved Albums: ${data.SavedAlbums.map(
+      album => `${album.name} by ${album.artist}`,
+    ).join('; ')}
+    Saved Tracks: ${data.SavedTracks.map(
+      track => `${track.name} by ${track.artist} (Album: ${track.albumName})`,
+    ).join('; ')}
+
+    Please analyze these preferences and provide an insight into the user's musical taste, preferred genres, and overall listening habits in a descriptive, long, text analyzing these Spotify user music preferences.`;
+
     const response = await fetch('https://api.openai.com/v1/completions', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization:
-          'Bearer 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',
+          'Bearer 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', // Replace with your API key
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo-instruct',
-        prompt:
-          'Imagine you have the following music preferences, analyze this data and generate a text representing your preferences ' +
-          JSON.stringify(data),
-        max_tokens: 1500,
+        prompt: prompt,
+        max_tokens: 2000,
         temperature: 0.7,
       }),
     });
     const json = await response.json();
+    console.log('this is the response', json);
     return json.choices[0].text.replace(/(\r\n|\n|\r)/gm, '');
   } catch (error) {
-    console.error('this is the result', error);
+    console.error('Error generating text for user preferences:', error);
   }
 }
 
@@ -61,7 +103,7 @@ export async function textifySongs(data) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization:
-          'Bearer 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',
+          'Bearer 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',
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo-instruct',

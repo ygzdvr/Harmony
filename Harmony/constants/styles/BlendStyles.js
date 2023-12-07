@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 import COLORS from '../colors';
 
-const DetailStyles = StyleSheet.create({
+const BlendStyles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.background,
     flex: 1,
@@ -63,8 +63,15 @@ const DetailStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
-  nameText: {
+  titleText: {
     fontSize: 20,
+    color: COLORS.text,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  nameText: {
+    fontSize: 15,
     color: COLORS.text,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -226,4 +233,4 @@ const DetailStyles = StyleSheet.create({
   },
 });
 
-export default DetailStyles;
+export default BlendStyles;

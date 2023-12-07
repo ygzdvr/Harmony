@@ -31,14 +31,12 @@ import {SONGS} from '../../api/spotify/SONGS';
 import {TOP} from '../../api/spotify/TOP';
 import {put} from '../../api/util/put';
 import {get} from '../../api/util/get';
-import {textify} from '../../api/openai/textify';
-import {textifySongs} from '../../api/openai/textify';
 import {generateEmbeddingsForSongs} from '../../api/openai/generateEmbeddingsForSongs';
-
-import {vectorEmbedding} from '../../api/openai/vectorEmbedding';
+import {generateEmbeddingForUser} from '../../api/openai/generateEmbeddingForUser';
 import {AUTH_FIREBASE, DB_FIREBASE, STORAGE} from '../../api/firebase/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {Pinecone} from '@pinecone-database/pinecone';
 import {
   collection,
   query,
@@ -49,8 +47,13 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
-import {storeVectorPinecone} from '../../api/pinecone/storeVectorPinecone';
-
+import {storeSongVectorPinecone} from '../../api/pinecone/storeSongVectorPinecone';
+import {storeUserVectorPinecone} from '../../api/pinecone/storeUserVectorPinecone';
+import {updateFeaturedSongsForUser} from '../../api/pinecone/updateFeaturedSongsForUser';
+const pinecone = new Pinecone({
+  environment: 'us-west1-gcp',
+  apiKey: '1eb47e0b-06bb-4b48-b1a1-152c4bedd031',
+});
 const SignupView = ({navigation}) => {
   const route = useRoute();
   const {onSignUp} = route.params;
@@ -115,20 +118,37 @@ const SignupView = ({navigation}) => {
         const storage = STORAGE;
         const storageRef = ref(storage, path);
         uploadBytes(storageRef, blob).then(snapshot => {
-          getDownloadURL(storageRef).then(url => {
-            return url;
-          });
+          console.log('Uploaded a blob or file!');
         });
       });
     });
   };
-  const SignupHandle = async topInfo => {
+  const SignupHandle = async (topInfo, userPreferances) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
         const user = userCredential.user;
         await DatabaseHandle(user.uid, topInfo);
         put('@user_id', user.uid);
-        onSignUp();
+
+        // Generate and store user embeddings
+        const userEmbedding = await generateEmbeddingForUser(
+          userPreferances,
+          user.uid,
+        );
+        await storeUserVectorPinecone(userEmbedding);
+
+        console.log('User embedding stored successfully');
+
+        // Update featured songs based on user embeddings
+
+        const status = await updateFeaturedSongsForUser(user.uid);
+        if (!status) {
+          console.log('Error updating featured songs');
+        } else {
+          console.log('Featured songs updated');
+
+          onSignUp(); // Proceed to the HomeView
+        }
       })
       .catch(error => {
         console.log('Error:', error);
@@ -187,6 +207,7 @@ const SignupView = ({navigation}) => {
               pendingFriends: [],
               requestedFriends: [],
               matches: [],
+              passedMatches: [],
               access_token: data1,
               refresh_token: data2,
               expirationToken: data3,
@@ -283,6 +304,7 @@ const SignupView = ({navigation}) => {
           setAccessToken(data1);
           console.log('data1');
           token = data1;
+          console.log(token);
           try {
             console.log('try');
             SPOTIFY(token).then(data => {
@@ -292,40 +314,17 @@ const SignupView = ({navigation}) => {
               SONGS(token).then(data2 => {
                 SongsDatabase(data2).then(() => {
                   TOP(token).then(async data3 => {
-                    console.log('topInfo');
-                    console.log(data3);
-                    console.log('topInfo finished');
-
-                    console.log('songs');
-                    console.log(data2);
-                    console.log('songs finished');
-
-                    console.log('one element');
-                    console.log(data2[0]);
-                    console.log('one element finished');
-
-                    generateEmbeddingsForSongs(data2).then(songEmbeddings => {
-                      console.log('songEmbeddings');
-                      console.log(songEmbeddings);
-                      console.log('songEmbeddings finished');
-
-                      console.log('storeVectorPinecone');
-                      storeVectorPinecone(songEmbeddings).then(() => {
-                        console.log('storeVectorPinecone finished');
-                        console.log('signup handle started');
-                        SignupHandle(data3);
-                        console.log('signup handle finished');
-                        //textify(data).then(textResponse => {
-                        //  console.log('textResponse', textResponse);
-                        //  vectorEmbedding(textResponse).then(vectorResponse => {
-                        //    console.log('vectorResponse', vectorResponse);
-                        //    console.log(vectorResponse.data[0]);
-                        //    console.log(vectorResponse.data[0].embedding);
-                        //    console.log(vectorResponse.data[0].embedding.length);
-                        //  });
-                        //});
-                      });
-                    });
+                    console.log('Processing songs for embeddings');
+                    const pineconeIndex = pinecone.index('harmony-songs');
+                    generateEmbeddingsForSongs(data2, pineconeIndex).then(
+                      songEmbeddings => {
+                        console.log('Storing embeddings in Pinecone');
+                        storeSongVectorPinecone(songEmbeddings).then(() => {
+                          console.log('Signup and other processes');
+                          SignupHandle(data3, data);
+                        });
+                      },
+                    );
                   });
                 });
               });

@@ -19,67 +19,71 @@ import {TopTracksArtist} from './TopTracksArtist';
 import {TrackAudioFeatures} from './Audio/TrackAudioFeatures';
 
 const extractInfo = data => {
+  console.log('Extracting Info');
   const extractedInfo = {
     profileInfo: {
       displayName: data.profile.display_name,
       followers: data.profile.followers.total,
     },
-
     TopArtistsShortTerm: data.topArtistsShortTerm.items.map(artist => ({
       name: artist.name,
       genre: artist.genres,
       popularity: artist.popularity,
     })),
-
     TopArtistsMediumTerm: data.topArtistsMediumTerm.items.map(artist => ({
       name: artist.name,
       genre: artist.genres,
       popularity: artist.popularity,
     })),
-
     TopArtistsLongTerm: data.topArtistsLongTerm.items.map(artist => ({
       name: artist.name,
       genre: artist.genres,
       popularity: artist.popularity,
     })),
-
     TopTracksShortTerm: data.topTracksShortTerm.items.map(track => ({
       name: track.name,
       popularity: track.popularity,
       artist: track.artists.map(artist => artist.name),
       albumName: track.album.name,
     })),
-
     TopTracksMediumTerm: data.topTracksMediumTerm.items.map(track => ({
       name: track.name,
       popularity: track.popularity,
       artist: track.artists.map(artist => artist.name),
       albumName: track.album.name,
     })),
-
     TopTracksLongTerm: data.topTracksLongTerm.items.map(track => ({
       name: track.name,
       popularity: track.popularity,
       artist: track.artists.map(artist => artist.name),
       albumName: track.album.name,
     })),
-    RecentlyPlayed: data.history.items.map(track => ({
-      name: track.track.name,
-      popularity: track.track.popularity,
-      artist: track.track.artists.map(artist => artist.name),
-      albumName: track.track.album.name,
+    topArtists: {
+      shortTerm: data.topArtistsShortTerm.items.map(artist => artist.name),
+      mediumTerm: data.topArtistsMediumTerm.items.map(artist => artist.name),
+      longTerm: data.topArtistsLongTerm.items.map(artist => artist.name),
+    },
+    topTracks: {
+      shortTerm: data.topTracksShortTerm.items.map(track => track.name),
+      mediumTerm: data.topTracksMediumTerm.items.map(track => track.name),
+      longTerm: data.topTracksLongTerm.items.map(track => track.name),
+    },
+    RecentlyPlayed: data.history.items.map(item => ({
+      name: item.track.name,
+      artist: item.track.artists.map(artist => artist.name).join(', '),
+      albumName: item.track.album.name,
     })),
     SavedAlbums: data.savedAlbums.items.map(album => ({
       name: album.album.name,
-      artist: album.album.artists.map(artist => artist.name),
+      artist: album.album.artists.map(artist => artist.name).join(', '),
     })),
     SavedTracks: data.savedTracks.items.map(track => ({
       name: track.track.name,
-      popularity: track.track.popularity,
-      artist: track.track.artists.map(artist => artist.name),
+      artist: track.track.artists.map(artist => artist.name).join(', '),
       albumName: track.track.album.name,
     })),
   };
+  console.log(extractedInfo);
   return extractedInfo;
 };
 

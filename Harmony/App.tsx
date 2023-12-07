@@ -6,6 +6,7 @@ import LoginView from './screens/authentication/LoginView';
 import SignupView from './screens/authentication/SignupView';
 import SettingView from './screens/mainView/SettingView';
 import DetailView from './screens/mainView/DetailView';
+import BlendView from './screens/mainView/BlendView';
 import ProfileView from './screens/mainView/ProfileView';
 import NotificationView from './screens/mainView/NotificationView';
 import CustomHeader from './partials/home/CustomHeader';
@@ -14,10 +15,13 @@ import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {AUTH_FIREBASE} from './api/firebase/firebase';
 import {get} from './api/util/get';
 import {put} from './api/util/put';
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const Stack = createNativeStackNavigator();
 
-function App(): JSX.Element { 
+function App(): JSX.Element {
   const [authenticated, setAuthenticated] = useState(false);
 
   const handleLogout = async () => {
@@ -33,6 +37,7 @@ function App(): JSX.Element {
 
   const handleSign = async () => {
     try {
+      console.log('Sign in success');
       put('@authenticated', 'authenticated');
       setAuthenticated(true);
     } catch (error) {
@@ -111,6 +116,12 @@ function App(): JSX.Element {
         <Stack.Screen
           name="DetailView"
           component={DetailView}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="BlendView"
+          component={BlendView}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

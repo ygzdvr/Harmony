@@ -6,7 +6,7 @@ export async function vectorEmbedding(textData) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization:
-          'Bearer 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',
+          'Bearer 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',
       },
       body: JSON.stringify({
         model: 'text-embedding-ada-002',

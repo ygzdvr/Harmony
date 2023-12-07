@@ -85,7 +85,7 @@ const ProfileStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
-    marginBottom: 100,
+    marginBottom: 50,
   },
   column: {
     flexDirection: 'column',

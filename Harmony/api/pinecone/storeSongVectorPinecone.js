@@ -1,6 +1,6 @@
 import {Pinecone} from '@pinecone-database/pinecone';
 
-export async function storeVectorPinecone(songsData) {
+export async function storeSongVectorPinecone(songsData) {
   console.log('this is the songs data', songsData);
   try {
     const pinecone = new Pinecone({
